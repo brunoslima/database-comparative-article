@@ -1,0 +1,142 @@
+\documentclass[a4paper,12pt,onecolumn,titlepage]{article}
+
+\usepackage{natbib}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+%\usepackage[latin1]{inputenc}               %%% acentuação
+\usepackage[brazil]{babel}
+%\let\cite=\citep
+\usepackage{pslatex} %Para fonte Times
+\usepackage{microtype} %Para melhorar justificação
+\usepackage{graphicx}
+\graphicspath{{figuras/}}
+\usepackage{geometry}
+\geometry{
+	left=3cm,
+	top=3cm,
+	right=2cm,
+	bottom=2cm
+}
+\usepackage{float}
+\usepackage{hyperref} %Permite inserir url
+\usepackage{setspace} %Permite definir espaçamento
+%\usepackage{indentfirst} % Indenta o primeiro parágrafo de cada seção.
+
+\usepackage{amsmath}
+\usepackage{multirow}
+%\usepackage[dvipsnames,svgnames,x11names]{xcolor}
+%\definecolor{grey}{RGB}{221,221,221} %define cor cinza.
+
+%\usepackage{tocbibind}
+%\usepackage[alf]{abntex2cite}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document} %Inicio do documento
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{titlepage} %Capa	
+	\vfill
+	\begin{center}	
+		{\large \uppercase{Universidade Estadual Paulista ``Júlio de Mesquita Filho''}} \\[0.5cm]
+		{\large Faculdade de Ciências e Tecnologia -- Campus de Presidente Prudente} \\[0.5cm]					
+		{\large Programa de Pós-Graduação em Ciência da Computação} \\[5cm]
+		{\Large \textbf{Definir posteriormente}}\\[6cm]
+	\hspace{.45\textwidth}
+	\begin{minipage}{.5\textwidth}
+		\small Definição e Revisão Bibliográfica do Trabalho da disciplina de Banco de Dados do Programa de Pós-Graduação em Ciência da Computação da Universidade Estadual Paulista.\\[0.5cm]
+	\end{minipage}
+	\vfill
+	\vspace{2.5cm}
+	\small Bruno Santos de Lima\\
+	\small Leandro Ungari Cayres\\[1cm]
+	\small Presidente Prudente - SP\\
+	\small Abril - 2019	
+	\end{center}	
+\end{titlepage}
+%Fim da capa
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\onehalfspacing %Espaçamento entre linhas 1.5
+%\doublespacing %Espaçameno duplo entre linhas (exigência da FAPESP)
+
+\setcounter{page}{2}
+%\tableofcontents %Sumario
+%\newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\setcounter{page}{3}
+
+\section{Informações gerais}
+\label{sec:informacoes-gerais}
+
+\subsection{Título}
+\label{subsec:titulo}
+
+\begin{itemize}
+
+\item Definir posteriormente...
+
+%\item Uma revisão sistemática da literatura sobre o panorama dos estudos acerca de \textit{Self-Admitted Technical Debt}.
+
+%\item O panorama dos estudos acerca de \textit{Self-Admitted Technical Debt}: Uma revisão sistemática da literatura.
+\end{itemize}
+
+\subsection{Pesquisadores}
+\label{subsec:pesquisadores}
+
+\begin{enumerate}
+\item \textbf{Nome:} Bruno Santos de Lima\\
+	  \textbf{E-mail:} bruno.s.lima@unesp.br\\
+	  \textbf{Titulação:} Bacharel\\
+	  \textbf{Instituição:} Universidade Estadual Paulista - Unesp\\
+	  \textbf{Página Pessoal:} \url{https://brunoslima.github.io/}\\
+	  \textbf{Currículo Lattes:} \url{http://lattes.cnpq.br/2119168921461476}
+	  
+\item \textbf{Nome:} Leandro Ungari Cayres\\
+	  \textbf{E-mail:} leandroungari@gmail.com\\
+	  \textbf{Titulação:} Bacharel\\
+	  \textbf{Instituição:} Universidade Estadual Paulista - Unesp\\
+	  %\textbf{Página Pessoal:} \url{https://brunoslima.github.io/}\\
+	  \textbf{Currículo Lattes:} \url{http://lattes.cnpq.br/5996829502147029}
+
+\end{enumerate}
+
+\subsection{Objetivos}
+\label{subsec:objetivos}
+
+Definir.
+
+\subsection{Metodologia}
+\label{subsec:metodologia}
+
+Definir.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%Revisão da Literatura
+\section{Banco de Dados Relacional}
+\label{sec:relacional}
+
+\section{Banco de Dados Não-Relacional}
+\label{sec:nao-relacional}
+
+\section{CRUD}
+\label{sec:crud}
+
+\section{Trabalhos Relacionados}
+\label{sec:relacionados}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%REFERÊNCIAS BIBLIOGRÁFICAS
+%\clearpage
+\renewcommand{\refname}{Bibliografia}
+\bibliographystyle{icmc2}
+\bibliography{referencias/referencias}
+
+\end{document}
