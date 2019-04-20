@@ -136,14 +136,33 @@ Os banco de dados NoSQL, "Não apenas SQL", foram desenvolvidos visando armazena
 
 O termo NoSQL é comumente utilizado para se referir a uma ampla variedade de armazenamentos de dados nos quais as restrições de transação ACID foram relaxadas para permitir melhor dimensionamento e desempenho horizontal~\citep{rafique:2018}. Os recursos gerais presentes nos bancos de dados NoSQL são sumarizados em: esquemas menos estruturados, suporte a operações de junção, alta escalabilidade, modelagem de dados simples com linguagem de consulta simples~\citep{ramesh:2016}. Os bancos de dados NoSQL foram categorizados em: armazenamento de documentos, famílias de colunas, chave/valor, gráficos e multimodais~\citep{aparicio:2016}.
 
-Orientado por colunas, contém colunas extensíveis de dados relacionados, mas não suportam associação de tabelas. Por exemplo: Cassandra, HBase.
+\subsection{Orientado por Colunas}
+\label{subsec:colunas}
 
-Valor-chave corresponde a uma chave e os dados são armazenados como pares de valores-chave. Por exemplo: Redis, flare.
+o modelo de banco de dados não-relacional orientado por colunas foi projetado especialmente visando processar grandes quantidades de dados espalhados por vários servidores. Eles armazenam dados usando um mapa distribuído, multidimensional e esparso, permitindo que um número variável de colunas possa ser armazenado em cada registro, em linhas gerais as colunas são extensões de dados relacionados, podem não suportam associação de tabelas, esse conceito não é utilizado~\citep{patil:2017}. 
 
-Orientado a Documentos os dados são organizados e armazenados como uma coleção de documentos, mas o valor é armazenado no formato JSON ou XML. Por exemplo: MongoDB, Couch DB.
+Neste modelo ainda existe o conceito de chaves, entretanto elas apontam para várias colunas. Um conjunto de colunas pode ser formado pelo agrupamento de várias colunas, podendo ser acessadas como colunas únicas ou famílias de colunas~\citep{patil:2017}. Dentre os exemplos de bancos de dados orientados a colunas citamos o Cassandra e o HBase.
 
-\subsection{MongoDB}
-\label{subsec:mongo}
+%chave-valor ou valor-chave?
+\subsection{Chave-Valor}
+\label{subsec:chave-valor}
+
+Dentre os modelos utilizados para banco de dados não-relacionais o mais simples a ser implementado é o modelo de Chave-valor. O conceito utilizado por esse modelo é utilizar uma tabela de hash e fornecer a cada item de dados uma chave exclusiva e um ponteiro, os dados só podem ser consultados usando uma chave específica. Esse modelo é útil para representar dados polimórficos e não estruturados, mas é considerado ineficiente para aplicações voltadas apenas para consultas ou atualizações de partes de um determinado valor~\citep{patil:2017}. Os exemplos de bancos de dados de chave-valor são o Amazon SimpleDB, OracleBDB, Redis e flare.
+
+\subsection{Armazenamento em Gráfico}
+\label{subsec:grafico}
+
+O banco de dados não-relacional que utiliza como estrategia modelar uma rede de relacionamentos entre elementos específicos de estruturas gráficas como nós e arestas para representar dados é denominado Banco de Dados de Armazenamento Gráfico. Diferentemente do SQL, que utiliza linguagem de consulta declarativas de alto nível, neste tipo de banco de dados não-relacional, a consulta é específica do modelo de dados. A vantagem adquirida pelo uso do armazenado em gráfico é que o processo de modelagem de dados e relacionamentos entre entidades é bastante simplificado~\citep{patil:2017}. Dentre os bancos de dados de armazenamento gráfico conhecidos podemos citar o Neo4j e o Giraph.
+
+\subsection{Orientado a Documentos}
+\label{subsec:documentos}
+
+Os bancos de dados relacionais armazenam os dados em linhas e colunas, em contrapartida os bancos de dados não-relacionais orientados a documentos organizam e armazenam os dados como uma coleção de documentos, nos quais utilizam uma estrutura semelhante a JSON (JavaScript Object Notation) ou XML (Extensible Markup Language). 
+
+Uma característica desse tipo de Banco de dados é a possibilidade de naturalmente modelar dados que estão estreitamente relacionados com a programação orientada a objetos. Cada documento é considerado como um objeto, da mesma forma cada documento pode ser um JSON ou um XML no banco de dados orientado a documentos. O conceito de esquema nos bancos de dados de documentos é dinâmico, uma vez que, cada documento pode conter campos distintos um dos outros. Essa característica é útil na modelagem de dados não estruturados e polimórficos. Por fim, os bancos de dados orientados a documentos possibilitam consultas robustas, em que qualquer combinação de campos no documento pode ser realizada visando consultar dados~\citep{patil:2017}. Dentre os bancos de dados não-relacionais orientados a documentos podemos citar como exemplo o MongoDB e o CouchDB.
+
+\subsubsection{MongoDB}
+\label{subsubsec:mongo}
 
 \section{Escalabilidade em Banco de Dados}
 \label{sec:escalabilidade}
