@@ -123,14 +123,62 @@ Definidas as bases de dados que subsidiam a realização do estudo de caso, o pr
 \section{Banco de Dados Relacional}
 \label{sec:relacional}
 
+Os Bases de dados relacionais são baseadas no conjunto de propriedades ACID (atomicidade, consistência, isolamento e durabilidade), entretanto não acomodam características pertencentes ao Big Data. O principal motivo dessa situação ocorrer é a alta consistência presente nos bancos de dados relacionais. Contudo, no ambiente de Big Data, a alta consistência afeta diretamente os aspectos de disponibilidade e  eficiência, que são importantes, devido ao alto volume, variedade e velocidade presente em Big Data~\citep{aparicio:2016}.
+
+Os Bancos de Dados Relacionais utilizam o modelo relacional em sua composição, foram projetados para atender ao processamento de dados corporativos e tornaram-se a melhor opção para armazenar informações que variam de registros financeiros, dados pessoais, entre outros. No entanto, os requisitos dos usuários e características de hardware têm evoluído desde então para incluir data warehouses, gerenciamento de texto e processamento de fluxo, nos quais tem requisitos diferentes do existentes em processamento de dados tradicionais para negócios. Além disso, a web 2.0 possui novas aplicações que dependem de armazenar e processar grande quantidade de dados e precisa de alta disponibilidade e escalabilidade que adicionou mais desafios para os bancos de dados relacionais. E por causa disso um número crescente de empresas adotou vários tipos de bancos de dados não relacionais, comumente referidos como bancos de dados NoSQL~\citep{mohamed:2014}.
+
+Deste modo, os Bancos de dados Relacionais funcionam perfeitamente para manipular um volume limitado de dados. Contudo, ao trabalhar com a análise de dados, dados relacionados a serviços sociais que possuem um volume demasiadamente alto de dados, os bancos de dados relacionais tornam-se muito caros e complexos~\citep{ramesh:2016}.
+
 \section{Banco de Dados Não-Relacional}
 \label{sec:nao-relacional}
+
+Os banco de dados NoSQL, "Não apenas SQL", foram desenvolvidos visando armazenar e processar grandes volumes de dados. Em linhas gerais os bancos de dados NoSQL são livres de esquematizações, lidam com dados não estruturados como e-mail, documentos e mídias sociais de maneira eficiente, suportam replicação e consistência eventual usando critérios de correção, como BASE (Básico, Disponibilidade, estado de consistência, consistência eventual)~\citep{mohamed:2014}~\citep{ramesh:2016}.
+
+O termo NoSQL é comumente utilizado para se referir a uma ampla variedade de armazenamentos de dados nos quais as restrições de transação ACID foram relaxadas para permitir melhor dimensionamento e desempenho horizontal~\citep{rafique:2018}. Os recursos gerais presentes nos bancos de dados NoSQL são sumarizados em: esquemas menos estruturados, suporte a operações de junção, alta escalabilidade, modelagem de dados simples com linguagem de consulta simples~\citep{ramesh:2016}. Os bancos de dados NoSQL foram categorizados em: armazenamento de documentos, famílias de colunas, chave/valor, gráficos e multimodais~\citep{aparicio:2016}.
+
+Orientado por colunas, contém colunas extensíveis de dados relacionados, mas não suportam associação de tabelas. Por exemplo: Cassandra, HBase.
+
+Valor-chave corresponde a uma chave e os dados são armazenados como pares de valores-chave. Por exemplo: Redis, flare.
+
+Orientado a Documentos os dados são organizados e armazenados como uma coleção de documentos, mas o valor é armazenado no formato JSON ou XML. Por exemplo: MongoDB, Couch DB.
+
+\subsection{MongoDB}
+\label{subsec:mongo}
+
+\section{Escalabilidade em Banco de Dados}
+\label{sec:escalabilidade}
+
+Com o objetivo de garantia das propriedades ACID (Atomicidade, Consistência, Isolamento e Durabilidade), é mais complexo e desafiador prover alta escalabilidade em um Sistema de Gerenciamento de Banco de Dados Relacional do que outras formas de armazenamento de dados~\citep{fisher:2011}. Os Sistemas Gerenciadores de Banco de Dados Relacionais oferecem muitas vantagens sobre o ACID, como operações transacionais, removendo os efeitos de transações de banco de dados parciais decorrentes de falha do sistema, situação inesperada ou uma transação interrompida. No entanto, os Sistemas Gerenciadores de Banco de Dados Relacionais também traz impactos na escalabilidade do sistema ao trabalhar com várias operações simultâneas no banco de dados~\citep{silva:2015}.
+
+Os serviços e plataformas mais populares presentes na Internet como Amazon, Google, Facebook, Twitter e E-bay são dependentes do armazenamento e processamento de grandes volumes de dados em uma escala que os Sistemas Gerenciadores de Banco de Dados Relacionais tradicionais tornam-se insuficientes~\citep{pokorny:2011}~\citep{rafique:2018}.
+
+~\cite{silva:2015} cita outras soluções para prover escalabilidade em sistemas, como o agrupamento de instâncias de bancos de dados, o uso de bancos de dados não relacionais~\citep{pokorny:2011}, sistemas baseados em MapReduce~\citep{abouzeid:2009}, ajuste de desempenho disponível para cada Sistema Gerenciador de Banco de Dados Relacionais, replicação de banco de dados~\citep{kemme:2010}, atualização de hardware, entre outros.
+
+\subsection{Escalabilidade Vertical}
+\label{subsec:vertical}
+
+\subsection{Escalabilidade Horizontal}
+\label{subsec:horizontal}
 
 \section{CRUD}
 \label{sec:crud}
 
-\section{Trabalhos Relacionados}
-\label{sec:relacionados}
+\section{Ferramentas de Benchmarking}
+\label{sec:ferramentas}
+
+\section{Trabalhos Relacionados 1 - Escalabilidade Horizontal}
+\label{sec:relacionados1}
+
+Ao apresentar o framework YCSB,~\cite{cooper:2010} submeteram a benchmarking as bases de dados não relacionais Cassandra, Hbase, Yahoo!'s PNUTS e o sharded MySQL para exemplificar seu uso de maneira prática. Ao realizarem os testes avaliando as camadas de performance e escalabilidade,~\cite{cooper:2010} concluem que, assim como suposto pelas descrições dos desenvolvedores, Cassandra e Hbase apresentam maior latência para operações read e menor latência para operações update e write em relação ao PNUTS e MySQL; O PNUTS e Cassandra possuem uma escalabilidade melhor que o HBase quando o número de servidores no cluster aumenta proporcionalmente com a carga de trabalho. Escalabilidade esta, que daremos maior foco ao decorrer do artigo; Cassandra, Hbase e PNUTS são aptos a crescer elasticamente durante a execução de uma carga de trabalho, porém o PNUTS apresenta uma latência melhor e mais estável para tal.
+
+Os autores~\cite{jogi:2016} comparam o banco de dados relacional MySQL com os bancos não relacionais Cassandra e Hbase quanto a operações heavy write. O teste foi realizado por meio de uma aplicação web REST (Representacional State Transfer) em Java que recebe dados gerados pela ferramenta web nGrinder em formato JSON e os armazenava no banco. O desempenho de cada banco foi calculado pelo nGrinder em termos  de TPS (Transações por segundo) ao longo de 10 minutos de testes. Chegou-se à conclusão de que o Cassandra tem o melhor desempenho entre os três bancos com a maior velocidade de escrita. O Hbase por sua vez, se mostrou aproximadamente duas vezes mais rápido que o banco relacional MySQL. Segundo~\cite{jogi:2016} o Cassandra apresenta tamanho desempenho para operações heavy write por incorporar ao mesmo tempo características do Big Table do Google e do Dynamo da Amazon.
+
+O trabalho de~\cite{swaminathan:2016}, prioriza a análise da escalabilidade dos bancos de dados Hbase, Cassandra e MongoDB. Para obter os resultados foi utilizado o framework YCSB aplicando as cargas de trabalho 50\% read – 50\% write, 100\% read, 100\% blind write, 100\% read–modify–write e 100\% scan, variando o conjunto de dados a ser manipulado entre 1, 4, 10 e 40 GB a medida que foi aumentado o tamanho do cluster em 2, 3, 5, 6, 12 e 13 nós. O objetivo dos testes foi evidenciar as vantagens e desvantagens de cada ferramenta para um cenário específico dadas as suas diferenças de design.
+
+De acordo com~\cite{waage:2015}, o fato de estas diversas ferramentas não relacionais existentes oferecerem a possibilidade de armazenagem “em nuvem” e, esses ambientes não garantem a confidencialidade dos dados armazenados, é um obstaculo para uma maior adoção das mesmas. Desta forma,~\cite{waage:2015} propõem que os dados sejam criptografados antes de armazenados em bases de dados na nuvem e, realizam um estudo do impacto que essa alteração no conjunto de dados causa ao desempenho dos bancos de dados Cassandra e Hbase. Tal estudo foi realizado com o uso do framework YCSB onde as workloads foram aplicadas a dados não encriptados e, encriptados usando o algoritmo Advanced Encryption Standard (AES) com chaves de 128, 192 e 256 bits de comprimento, relatando uma redução no desempenho médio do cluster e que, esse custo é relativamente o mesmo independente do tamanho da chave de encriptação.
+
+\section{Trabalhos Relacionados 2 - Comparação de Desempenho}
+\label{sec:relacionados2}
 
 \section{Bases de Dados}
 \label{sec:bases}
