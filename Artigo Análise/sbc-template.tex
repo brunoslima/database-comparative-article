@@ -1,0 +1,140 @@
+\documentclass[12pt]{article}
+
+\usepackage{sbc-template}
+\usepackage{graphicx,url}
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+
+     
+\sloppy
+
+\title{Análise Comparativa de Desempenho em Drivers para MongoDB em Aplicações Node.js}
+
+\author{Leandro Ungari Cayres, Ronaldo Celso Messias Correia }
+
+
+\address{Faculdade de Ciências e Tecnologia -- Universidade Estadual Paulista (UNESP)\\
+  Presidente Prudente -- SP -- Brazil
+  \email{\{leandro.ungari,ronaldo.correia\}@unesp.br}
+}
+
+\begin{document} 
+
+\maketitle
+
+\begin{abstract}
+  This meta-paper describes the style to be used in articles and short papers
+  for SBC conferences. For papers in English, you should add just an abstract
+  while for the papers in Portuguese, we also ask for an abstract in
+  Portuguese (``resumo''). In both cases, abstracts should not have more than
+  10 lines and must be in the first page of the paper.
+\end{abstract}
+     
+\begin{resumo} 
+  Este meta-artigo descreve o estilo a ser usado na confecção de artigos e
+  resumos de artigos para publicação nos anais das conferências organizadas
+  pela SBC. É solicitada a escrita de resumo e abstract apenas para os artigos
+  escritos em português. Artigos em inglês deverão apresentar apenas abstract.
+  Nos dois casos, o autor deve tomar cuidado para que o resumo (e o abstract)
+  não ultrapassem 10 linhas cada, sendo que ambos devem estar na primeira
+  página do artigo.
+\end{resumo}
+
+
+\section{Introdução}
+Nos últimos anos, o crescimento no volume de dados mudou a utilização desses por empresas e organizações; tais dados, inicialmente considerados agentes passivos, relacionados às regras de negócio empresarial; tornaram-se potenciais oportunidades de lucro através da análise de informações, e consequentemente, do conhecimento presente no conjunto de dados.
+
+Essa crescente quantidade de dados, chamado de~\emph{Big Data}, não somente requer maior espaço de armazenamento, mas uma mudança em sua organização com base em cada contexto, considerando características como volume, variedade, velocidade e valores~\cite{ward2013undefined}.
+A arquitetura dos tradicionais bancos de dados relacionais, baseada no modelo ACID (\textit{atomicity},~\textit{consistency},~\textit{isolation} e~\textit{durability}), não se encaixa de modo adequado em ambientes de~\emph{big data}, principalmente devido a forte consistência dos dados e a garantia de integridade dos relacionamentos. 
+
+Nesse cenário surgem os banco de dados NoSQL (``Not only SQL'') provendo maior flexibilidade estrutural, suporte a replicação e consistência eventual consistência seguindo o critério BASE (\textit{basic},~\textit{availability},~\textit{soft-state} e~\textit{eventual consistency})~\cite{han2011survey}. 
+Nos últimos anos, a popularidade dos banco de dados não-relacionais tem crescido~\cite{cooper2010benchmarking,edlich2015nosql} proporcionando diversas soluções conforme características dos dados cada aplicação.
+
+Diferentemente do modelo relacional, os bancos NoSQL não possuem uma linguagem comum entre eles que permita a realização de operações, como o SQL (\emph{Structured Query Language}), desse modo, cada banco provê uma interface nativa para manipulação dos dados. 
+Contudo, uso de chamadas de sistema para execução de comandos dessas interfaces não é reconhecida como uma boa prática, que pode incorrer em diversos problemas. 
+
+De modo a contornar essa situação, para os diferentes ambientes de desenvolvimento e linguagens de programação,~\emph{drivers} tem sido desenvolvidos de modo a viabilizar a execução dos comandos no banco de dados. 
+Em muitas situações, a decisão de qual combinação entre banco de dados não-relacional e~\emph{driver} a ser empregada pode ser um problema, devido a variedade de possibilidades, assim como o desconhecimento dos pontos positivos e negativos de cada solução.
+
+Neste artigo, por meio de um estudo comparativo, busca-se avaliar as duas principais soluções de~\emph{drivers} para o MongoDB~\footnote{https://www.mongodb.com/}, MongoClient~\footnote{https://mongodb.github.io/node-mongodb-native/} e Mongoose~\footnote{https://mongoosejs.com/}, para ambiente de aplicação Node.js. 
+A escolha do banco de dados MongoDB ocorreu devido a sua enorme popularidade recente, empregado em diversas aplicações e linhas de pesquisa; assim como sua integração com o ambiente Node.js, em que ambos utilizam a linguagem de programação JavaScript, de modo a proporcionar um sistema uniforme desde o "cliente-servidor-banco de dados".
+
+falar sobre a escolha do node js, falando que é uma tecnologia crescente.
+
+
+\section{Banco de Dados Não-Relacional}
+
+
+\subsection{MongoDB}
+
+
+\subsubsection{MongoClient}
+
+\subsubsection{Mongoose}
+
+
+
+\section{Trabalhos Relacionados} 
+\label{section:relacionados}
+
+The first page must display the paper title, the name and address of the
+authors, the abstract in English and ``resumo'' in Portuguese (``resumos'' are
+required only for papers written in Portuguese). The title must be centered
+over the whole page, in 16 point boldface font and with 12 points of space
+before itself. Author names must be centered in 12 point font, bold, all of
+them disposed in the same line, separated by commas and with 12 points of
+space after the title. Addresses must be centered in 12 point font, also with
+12 points of space after the authors' names. E-mail addresses should be
+written using font Courier New, 10 point nominal size, with 6 points of space
+before and 6 points of space after.
+
+The abstract and ``resumo'' (if is the case) must be in 12 point Times font,
+indented 0.8cm on both sides. The word \textbf{Abstract} and \textbf{Resumo},
+should be written in boldface and must precede the text.
+
+\section{Estudo Comparativo}
+
+\subsection{Dataset}
+
+In some conferences, the papers are published on CD-ROM while only the
+abstract is published in the printed Proceedings. In this case, authors are
+invited to prepare two final versions of the paper. One, complete, to be
+published on the CD and the other, containing only the first page, with
+abstract and ``resumo'' (for papers in Portuguese).
+
+\section{Sections and Paragraphs}
+
+Section titles must be in boldface, 13pt, flush left. There should be an extra
+12 pt of space before each title. Section numbering is optional. The first
+paragraph of each section should not be indented, while the first lines of
+subsequent paragraphs should be indented by 1.27 cm.
+
+%\begin{figure}[ht]
+%\centering
+%\includegraphics[width=.5\textwidth]{fig1.jpg}
+%\caption{A typical figure}
+%\label{fig:exampleFig1}
+%\end{figure}
+
+In tables, try to avoid the use of colored or shaded backgrounds, and avoid
+thick, doubled, or unnecessary framing lines. When reporting empirical data,
+do not use more decimal digits than warranted by their precision and
+reproducibility. Table caption must be placed before the table (see Table 1)
+and the font used must also be Helvetica, 10 point, boldface, with 6 points of
+space before and after each caption.
+
+%\begin{table}[ht]
+%\centering
+%\caption{Variables to be considered on the evaluation of interaction
+%  techniques}
+%\label{tab:exTable1}
+%\includegraphics[width=.7\textwidth]{table.jpg}
+%\end{table}
+
+
+\section{Referências Bibliográficas}
+
+\bibliographystyle{sbc}
+\bibliography{sbc-template}
+
+\end{document}
