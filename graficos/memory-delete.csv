@@ -1,0 +1,17 @@
+quantity,class,time
+1000,"Mongoclient conj. pequeno",0
+10000,"Mongoclient conj. pequeno",0
+100000,"Mongoclient conj. pequeno",0
+200000,"Mongoclient conj. pequeno",0
+1000,"Mongoose conj. pequeno",0
+10000,"Mongoose conj. pequeno",0
+100000,"Mongoose conj. pequeno",24.8
+200000,"Mongoose conj. pequeno",0
+1000,"Mongoclient conj. grande",1331.2
+10000,"Mongoclient conj. grande",0
+100000,"Mongoclient conj. grande",0
+200000,"Mongoclient conj. grande",0
+1000,"Mongoose conj. grande",21.6
+10000,"Mongoose conj. grande",0
+100000,"Mongoose conj. grande",0
+200000,"Mongoose conj. grande",20.8

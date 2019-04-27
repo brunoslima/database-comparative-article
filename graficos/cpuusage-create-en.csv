@@ -1,0 +1,17 @@
+quantity,class,time
+1000,"Mongoclient small set",31.536500000000007
+10000,"Mongoclient small set",126.90519999999997
+100000,"Mongoclient small set",1026.8849999999998
+200000,"Mongoclient small set",1944.7503000000002
+1000,"Mongoose small set",577.0031
+10000,"Mongoose small set",4359.9208
+100000,"Mongoose small set",43886.0816
+200000,"Mongoose small set",44140.526300000005
+1000,"Mongoclient big set",36.110699999999994
+10000,"Mongoclient big set",124.84380000000002
+100000,"Mongoclient big set",1096.2832
+200000,"Mongoclient big set",1964.3996
+1000,"Mongoose big set",535.9583
+10000,"Mongoose big set",4160.472600000001
+100000,"Mongoose big set",41907.70100000001
+200000,"Mongoose big set",91402.41750000001
