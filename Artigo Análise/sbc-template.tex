@@ -2,6 +2,7 @@
 
 \usepackage{sbc-template}
 \usepackage{graphicx,url}
+\usepackage{subcaption}
 \usepackage[utf8]{inputenc}
 \usepackage[brazil]{babel}
 
@@ -56,16 +57,19 @@ Contudo, uso de chamadas de sistema para execução de comandos dessas interface
 De modo a contornar essa situação, para os diferentes ambientes de desenvolvimento e linguagens de programação,~\emph{drivers} tem sido desenvolvidos de modo a viabilizar a execução dos comandos no banco de dados. 
 Em muitas situações, a decisão de qual combinação entre banco de dados não-relacional e~\emph{driver} a ser empregada pode ser um problema, devido a variedade de possibilidades, assim como o desconhecimento dos pontos positivos e negativos de cada solução.
 
-Neste artigo, por meio de um estudo comparativo, busca-se avaliar as duas principais soluções de~\emph{drivers} para o MongoDB~\footnote{https://www.mongodb.com/}, MongoClient~\footnote{https://mongodb.github.io/node-mongodb-native/} e Mongoose~\footnote{https://mongoosejs.com/}, para ambiente de aplicação Node.js. 
-A escolha do banco de dados MongoDB ocorreu devido a sua enorme popularidade recente, empregado em diversas aplicações e linhas de pesquisa; assim como sua integração com o ambiente Node.js, em que ambos utilizam a linguagem de programação JavaScript, de modo a proporcionar um sistema uniforme desde o "cliente-servidor-banco de dados".
+Neste artigo, por meio de um estudo comparativo, busca-se avaliar as duas principais soluções de~\emph{drivers} para o MongoDB~\footnote{https://www.mongodb.com/}, respectivamente MongoClient~\footnote{https://mongodb.github.io/node-mongodb-native/} e Mongoose~\footnote{https://mongoosejs.com/}, em ambientes de aplicação Node.js. 
+O principal fator considerado para a realização desse análise consiste na definição prévia de esquema para a manipulação dos dados em operações de CRUD (\emph{create}-\emph{read}-\emph{update}-\emph{delete}). Conceitualmente, os banco de dados não-relacionais não requerem esse predefinição, proporcionando flexibilidade, contudo não existe nada que impeça sua utilização, principalmente quanto a respeito do desempenho; possibilitando algum impacto relevante.
 
-falar sobre a escolha do node js, falando que é uma tecnologia crescente.
+A escolha do banco de dados MongoDB ocorreu devido a sua enorme popularidade recente, empregado em diversas aplicações e linhas de pesquisa; o qual consiste na principal opção dentre os bancos de dados que adotam a estratégia de armazenamento orientada a documentos.
+A respeito do ambiente Node.js, apesar de uma tecnologia recentes alguns trabalhos apontam a sua viabilidade no desenvolvimento de aplicações~\cite{chaniotis2015node}; além disso, com essa escolha, tanto aplicação quanto banco de dados utilizam JavaScript, permitindo a elaboração de um sistema uniforme, em termos de linguagem de programação.
 
-OBJETIVO - Quais drivers são melhores para cada operação do CRUD?
+Na análise conduzida neste trabalho, o desempenho do banco de dados MongoDB atrelado a cada um dos~\emph{drivers} investigados é analisado sobre perspectivas de tempo de execução, tempo de uso de processamento e consumo de memória sob um conjunto de dados genérico, propiciando a identificação de algumas características.
+
+O restante desse trabalho está organizado do seguinte modo: na Seção~\ref{section:nao-relacional} é realiza uma revisão conceitual sobre banco de dados não-relacional, assim como sobre o MongoDB e seus drivers. A Seção~\ref{section:estudo} é apresentado o estudo comparativo realizado neste trabalho. Seção~\ref{section:resultados} são apresentados os resultados quantitativos obtidos, cuja discussão é elaborada na Seção~\ref{section:discussao}. Em seguida, na Seção~\ref{section:limitacoes} e, por fim, na Seção~\ref{section:consideracoes} as considerações finais desse trabalho.
 
 
 \section{Banco de Dados Não-Relacional}
-
+\label{section:nao-relacional}
 
 \subsection{MongoDB}
 
@@ -73,6 +77,154 @@ OBJETIVO - Quais drivers são melhores para cada operação do CRUD?
 \subsubsection{MongoClient}
 
 \subsubsection{Mongoose}
+
+
+
+\section{Estudo Comparativo}
+\label{section:estudo}
+
+Dentre as perspectivas de análise desse trabalho consiste na comparação de dois drivers, em que um utiliza definição previamente e outro não, assim
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.6\textwidth]{images/diagram-banco}
+    \label{fig:diagrama-banco}
+\end{figure}
+
+
+\textbf{Q1} --~\emph{O tamanho médio dos registros impacta de modo relevantes quanto ao uso de memória nas operações de CRUD?}
+
+\textbf{Q2} -- O tamanho médio dos registros pode influenciar no uso de CPU nas operações de CRUD? 
+
+\textbf{Q3} -- O tamanho médio dos registros impacta no tempo de execução de cada uma das operações de CRUD?
+
+
+\subsection{Dataset}
+
+O presente estudo utilizou um conjunto de dados com cerca 18 mil instâncias de dados, proveniente do seguinte dataset~\footnote{https://www.kaggle.com/karangadiya/fifa19}.
+Originalmente, todos os registros presentes são compostos por 89 atributos, predominante textuais, obtendo um tamanho médio de 1,37KB.
+A partir do conjunto original, foi construído um conjunto reduzido em número de atributos (6 atributos), com o mesmo total de instância, porém com tamanho médio de 0,13KB.
+
+
+\subsection{Ambiente de Execução}
+
+O ambiente de execução para os testes de desempenho consistiu em um computador pessoal com sistema operacional Ubuntu 18.04.2, processador Intel i3 3217U e memória RAM de 5GB. 
+
+Durante a execução dos testes, o ambiente de execução da aplicação Node.js foi definido o uso do~\emph{heap} de memória com limite máximo de 3GB, o que restringiu no limite superior do número de operações executadas em cada cenário de teste.
+
+Em cada cenário de execução, foram extraídos dados relativos ao tempo de execução, tempo de uso de CPU e uso de memória RAM.
+Foram analisados cenários com diferentes quantidades de operações CRUD realizadas, as quais variaram de 1000, 10000, 100000 e 200000; cada qual foi repetido 10 vezes. 
+
+\subsection{Resultados}
+\label{section:resultados}
+
+
+Esses são os resultados de tempo
+\begin{figure*}
+  \centering
+  \begin{subfigure}[b]{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{images/difftime-create-pt}
+    \label{fig:difftime-a}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[b]{0.48\textwidth}  
+    \centering 
+    \includegraphics[width=\textwidth]{images/difftime-read-pt}
+    \label{fig:difftime-b}
+  \end{subfigure}
+  \vskip\baselineskip
+  \begin{subfigure}[b]{0.48\textwidth}   
+    \centering 
+    \includegraphics[width=\textwidth]{images/difftime-update-pt}   
+    \label{fig:difftime-c}
+  \end{subfigure}
+  \quad
+  \begin{subfigure}[b]{0.48\textwidth}   
+    \centering 
+    \includegraphics[width=\textwidth]{images/difftime-delete-pt}  
+    \label{fig:difftime-d}
+  \end{subfigure}
+  \caption{ The average and standard deviation of critical parameters}
+\label{fig:diff-geral}
+\end{figure*}
+
+
+Esses são os resultados de uso de cpu
+\begin{figure*}
+  \centering
+  \begin{subfigure}[b]{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{images/cpuusage-create-pt}
+    \label{fig:cpuusage-a}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[b]{0.48\textwidth}  
+    \centering 
+    \includegraphics[width=\textwidth]{images/cpuusage-read-pt}
+    \label{fig:cpuusage-b}
+  \end{subfigure}
+  \vskip\baselineskip
+  \begin{subfigure}[b]{0.48\textwidth}   
+    \centering 
+    \includegraphics[width=\textwidth]{images/cpuusage-update-pt}   
+    \label{fig:cpuusage-c}
+  \end{subfigure}
+  \quad
+  \begin{subfigure}[b]{0.48\textwidth}   
+    \centering 
+    \includegraphics[width=\textwidth]{images/cpuusage-delete-pt}  
+    \label{fig:cpuusage-d}
+  \end{subfigure}
+  \caption{ The average and standard deviation of critical parameters}
+\label{fig:cpuusage-geral}
+\end{figure*}
+
+
+Esses são os resultados de uso de memoria
+\begin{figure*}
+  \centering
+  \begin{subfigure}[b]{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{images/memory-create-pt}
+    \label{fig:memory-a}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[b]{0.48\textwidth}  
+    \centering 
+    \includegraphics[width=\textwidth]{images/memory-read-pt}
+    \label{fig:memory-b}
+  \end{subfigure}
+  \vskip\baselineskip
+  \begin{subfigure}[b]{0.48\textwidth}   
+    \centering 
+    \includegraphics[width=\textwidth]{images/memory-update-pt}   
+    \label{fig:memory-c}
+  \end{subfigure}
+  \quad
+  \begin{subfigure}[b]{0.48\textwidth}   
+    \centering 
+    \includegraphics[width=\textwidth]{images/memory-delete-pt}  
+    \label{fig:memory-d}
+  \end{subfigure}
+  \caption{ The average and standard deviation of critical parameters}
+\label{fig:memory-geral}
+\end{figure*}
+
+
+
+\section{Discussão dos Resultados}
+\label{section:discussao}
+
+\subsection{Discussão da Q1}
+
+\subsection{Discussão da Q2}
+
+\subsection{Discussão da Q3}
+
+
+\section{Ameaças à Validação}
+\label{section:limitacoes}
 
 
 
@@ -94,55 +246,9 @@ The abstract and ``resumo'' (if is the case) must be in 12 point Times font,
 indented 0.8cm on both sides. The word \textbf{Abstract} and \textbf{Resumo},
 should be written in boldface and must precede the text.
 
-\section{Estudo Comparativo}
 
-\subsection{Dataset}
-
-In some conferences, the papers are published on CD-ROM while only the
-abstract is published in the printed Proceedings. In this case, authors are
-invited to prepare two final versions of the paper. One, complete, to be
-published on the CD and the other, containing only the first page, with
-abstract and ``resumo'' (for papers in Portuguese).
-
-\subsection{Análise de Pesquisa}
-des
-
-\textbf{Q1} --~\emph{O tamanho médio dos registros impacta de modo relevantes quanto ao uso de memória nas operações de CRUD?}
-
-\textbf{Q2} -- O tamanho médio dos registros pode influenciar no uso de CPU nas operações de CRUD? 
-
-\textbf{Q3} -- O tamanho médio dos registros impacta no tempo de execução de cada uma das operações de CRUD?
-
-
-\section{Sections and Paragraphs}
-
-Section titles must be in boldface, 13pt, flush left. There should be an extra
-12 pt of space before each title. Section numbering is optional. The first
-paragraph of each section should not be indented, while the first lines of
-subsequent paragraphs should be indented by 1.27 cm.
-
-%\begin{figure}[ht]
-%\centering
-%\includegraphics[width=.5\textwidth]{fig1.jpg}
-%\caption{A typical figure}
-%\label{fig:exampleFig1}
-%\end{figure}
-
-In tables, try to avoid the use of colored or shaded backgrounds, and avoid
-thick, doubled, or unnecessary framing lines. When reporting empirical data,
-do not use more decimal digits than warranted by their precision and
-reproducibility. Table caption must be placed before the table (see Table 1)
-and the font used must also be Helvetica, 10 point, boldface, with 6 points of
-space before and after each caption.
-
-%\begin{table}[ht]
-%\centering
-%\caption{Variables to be considered on the evaluation of interaction
-%  techniques}
-%\label{tab:exTable1}
-%\includegraphics[width=.7\textwidth]{table.jpg}
-%\end{table}
-
+\section{Considerações Finais}
+\label{section:consideracoes}
 
 \section{Referências Bibliográficas}
 
