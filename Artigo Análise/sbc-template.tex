@@ -46,7 +46,7 @@
 Nos últimos anos, o crescimento no volume de dados mudou a utilização desses por empresas e organizações; tais dados, inicialmente considerados agentes passivos, relacionados às regras de negócio empresarial; tornaram-se potenciais oportunidades de lucro através da análise de informações, e consequentemente, do conhecimento presente no conjunto de dados.
 
 Essa crescente quantidade de dados, chamado de~\emph{Big Data}, não somente requer maior espaço de armazenamento, mas uma mudança em sua organização com base em cada contexto, considerando características como volume, variedade, velocidade e valores~\cite{ward2013undefined}.
-A arquitetura dos tradicionais bancos de dados relacionais, baseada no modelo ACID (\textit{atomicity},~\textit{consistency},~\textit{isolation} e~\textit{durability}), não se encaixa de modo adequado em ambientes de~\emph{big data}, principalmente devido a forte consistência dos dados e a garantia de integridade dos relacionamentos. 
+A arquitetura dos tradicionais bancos de dados relacionais, baseada no modelo ACID (\textit{atomicity},~\textit{consistency},~\textit{isolation} e~\textit{durability}), contudo, em ambientes de~\emph{Big Data}, a alta consistência afeta diretamente os aspectos de disponibilidade e  eficiência, que são importantes, devido ao alto volume, variedade e velocidade presente em Big Data~\cite{aparicio:2016}. 
 
 Nesse cenário surgem os banco de dados NoSQL (``Not only SQL'') provendo maior flexibilidade estrutural, suporte a replicação e consistência eventual consistência seguindo o critério BASE (\textit{basic},~\textit{availability},~\textit{soft-state} e~\textit{eventual consistency})~\cite{han2011survey}. 
 Nos últimos anos, a popularidade dos banco de dados não-relacionais tem crescido~\cite{cooper2010benchmarking,edlich2015nosql} proporcionando diversas soluções conforme características dos dados cada aplicação.
@@ -70,6 +70,17 @@ O restante desse trabalho está organizado do seguinte modo: na Seção~\ref{sec
 
 \section{Banco de Dados Não-Relacional}
 \label{section:nao-relacional}
+
+Os bancos de dados NoSQL, "Não apenas SQL", foram desenvolvidos visando armazenar e processar grandes volumes de dados. Em linhas gerais os bancos de dados NoSQL são livres de esquematizações, lidam com dados não estruturados como e-mail, documentos e mídias sociais de maneira eficiente~\cite{mohamed:2014,ramesh:2016}.
+
+O termo NoSQL é comumente utilizado para se referir a uma ampla variedade de armazenamentos de dados nos quais as restrições de transação ACID foram relaxadas para permitir melhor dimensionamento e desempenho horizontal~\cite{rafique:2018}. Os recursos gerais presentes nos bancos de dados NoSQL são sumarizados em: esquemas menos estruturados, suporte a operações de junção, alta escalabilidade, modelagem de dados simples com linguagem de consulta simples~\cite{ramesh:2016}. Os bancos de dados NoSQL foram categorizados em: armazenamento de documentos, famílias de colunas, chave/valor, gráficos e multimodais~\cite{aparicio:2016}.
+
+Este trabalho foca na categoria orientada a documentos, a qual permite a modelagem de dados que estão estreitamente relacionados com a programação orientada a objetos. 
+Cada documento é considerado como um objeto, da mesma forma cada documento pode ser um JSON ou um XML no banco de dados orientado a documentos. 
+O conceito de esquema nos bancos de dados de documentos é dinâmico, uma vez que, cada documento pode conter campos distintos um dos outros, sendo útil na modelagem de dados não estruturados e polimórficos. 
+Por fim, os bancos de dados orientados a documentos possibilitam consultas robustas, em que qualquer combinação de campos no documento pode ser realizada visando consultar dados~\cite{patil:2017}.
+
+O MongoDB se enquadra nessa categoria, que organizam e armazenam os dados em coleções de documentos, nos quais utilizam uma estrutura semelhante a JSON (\emph{JavaScript Object Notation}) ou XML (\emph{Extensible Markup Language}). 
 
 \subsection{MongoDB}
 
