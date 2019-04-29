@@ -48,7 +48,7 @@ Nos últimos anos, o crescimento no volume de dados mudou a utilização desses 
 Essa crescente quantidade de dados, chamado de~\emph{Big Data}, não somente requer maior espaço de armazenamento, mas uma mudança em sua organização com base em cada contexto, considerando características como volume, variedade, velocidade e valores~\cite{ward2013undefined}.
 A arquitetura dos tradicionais bancos de dados relacionais, baseada no modelo ACID (\textit{atomicity},~\textit{consistency},~\textit{isolation} e~\textit{durability}), contudo, em ambientes de~\emph{Big Data}, a alta consistência afeta diretamente os aspectos de disponibilidade e  eficiência, que são importantes, devido ao alto volume, variedade e velocidade presente em Big Data~\cite{aparicio:2016}. 
 
-Nesse cenário surgem os banco de dados NoSQL (``Not only SQL'') provendo maior flexibilidade estrutural, suporte a replicação e consistência eventual consistência seguindo o critério BASE (\textit{basic},~\textit{availability},~\textit{soft-state} e~\textit{eventual consistency})~\cite{han2011survey}. 
+Nesse cenário surgem os banco de dados NoSQL (``Not only SQL'') provendo maior flexibilidade estrutural, suporte a replicação e consistência eventual seguindo o critério BASE (\textit{basic},~\textit{availability},~\textit{soft-state} e~\textit{eventual consistency})~\cite{han2011survey}. 
 Nos últimos anos, a popularidade dos banco de dados não-relacionais tem crescido~\cite{cooper2010benchmarking,edlich2015nosql} proporcionando diversas soluções conforme características dos dados cada aplicação.
 
 Diferentemente do modelo relacional, os bancos NoSQL não possuem uma linguagem comum entre eles que permita a realização de operações, como o SQL (\emph{Structured Query Language}), desse modo, cada banco provê uma interface nativa para manipulação dos dados. 
@@ -65,31 +65,68 @@ A respeito do ambiente Node.js, apesar de uma tecnologia recentes alguns trabalh
 
 Na análise conduzida neste trabalho, o desempenho do banco de dados MongoDB atrelado a cada um dos~\emph{drivers} investigados é analisado sobre perspectivas de tempo de execução, tempo de uso de processamento e consumo de memória sob um conjunto de dados genérico, propiciando a identificação de algumas características.
 
-O restante desse trabalho está organizado do seguinte modo: na Seção~\ref{section:nao-relacional} é realiza uma revisão conceitual sobre banco de dados não-relacional, assim como sobre o MongoDB e seus drivers. A Seção~\ref{section:estudo} é apresentado o estudo comparativo realizado neste trabalho. Seção~\ref{section:resultados} são apresentados os resultados quantitativos obtidos, cuja discussão é elaborada na Seção~\ref{section:discussao}. Em seguida, na Seção~\ref{section:limitacoes} e, por fim, na Seção~\ref{section:consideracoes} as considerações finais desse trabalho.
+O restante desse trabalho está organizado do seguinte modo: na Seção~\ref{section:nao-relacional} é realiza uma revisão conceitual sobre banco de dados não-relacional, assim como sobre o MongoDB e seus drivers. Na Seção~\ref{section:nodejs} é apresentado o ambiente de execução Node.js assim como detalhes sobre uso de memória que são relevantes no estudo comparativo. A Seção~\ref{section:estudo} é apresentado o estudo comparativo realizado neste trabalho. Seção~\ref{section:resultados} são apresentados os resultados quantitativos obtidos, cuja discussão é elaborada na Seção~\ref{section:discussao}. Em seguida, na Seção~\ref{section:limitacoes} e, por fim, na Seção~\ref{section:consideracoes} as considerações finais desse trabalho.
 
 
 \section{Banco de Dados Não-Relacional}
 \label{section:nao-relacional}
 
-Os bancos de dados NoSQL, "Não apenas SQL", foram desenvolvidos visando armazenar e processar grandes volumes de dados. Em linhas gerais os bancos de dados NoSQL são livres de esquematizações, lidam com dados não estruturados como e-mail, documentos e mídias sociais de maneira eficiente~\cite{mohamed:2014,ramesh:2016}.
+Os bancos de dados NoSQL, , foram desenvolvidos visando armazenar e processar grandes volumes de dados. Em linhas gerais os bancos de dados NoSQL são livres de esquematizações, lidam com dados não estruturados como e-mail, documentos e mídias sociais de maneira eficiente~\cite{mohamed:2014,ramesh:2016}.
 
 O termo NoSQL é comumente utilizado para se referir a uma ampla variedade de armazenamentos de dados nos quais as restrições de transação ACID foram relaxadas para permitir melhor dimensionamento e desempenho horizontal~\cite{rafique:2018}. Os recursos gerais presentes nos bancos de dados NoSQL são sumarizados em: esquemas menos estruturados, suporte a operações de junção, alta escalabilidade, modelagem de dados simples com linguagem de consulta simples~\cite{ramesh:2016}. Os bancos de dados NoSQL foram categorizados em: armazenamento de documentos, famílias de colunas, chave/valor, gráficos e multimodais~\cite{aparicio:2016}.
 
-Este trabalho foca na categoria orientada a documentos, a qual permite a modelagem de dados que estão estreitamente relacionados com a programação orientada a objetos. 
+Este trabalho tem como foco a categoria orientada a documentos, a qual permite a modelagem de dados estreitamente relacionados a programação orientada a objetos. 
 Cada documento é considerado como um objeto, da mesma forma cada documento pode ser um JSON ou um XML no banco de dados orientado a documentos. 
-O conceito de esquema nos bancos de dados de documentos é dinâmico, uma vez que, cada documento pode conter campos distintos um dos outros, sendo útil na modelagem de dados não estruturados e polimórficos. 
-Por fim, os bancos de dados orientados a documentos possibilitam consultas robustas, em que qualquer combinação de campos no documento pode ser realizada visando consultar dados~\cite{patil:2017}.
 
-O MongoDB se enquadra nessa categoria, que organizam e armazenam os dados em coleções de documentos, nos quais utilizam uma estrutura semelhante a JSON (\emph{JavaScript Object Notation}) ou XML (\emph{Extensible Markup Language}). 
+O conceito de esquema nos bancos de dados de documentos é dinâmico, uma vez que, cada documento pode conter campos distintos um dos outros, sendo útil na modelagem de dados não estruturados e polimórficos. 
+Essa categoria permite consultas robustas, em que qualquer combinação de campos no documento pode ser realizada visando consultar dados~\cite{patil:2017}.
+Em termos de estruturação, seus dados são organizados em coleções de documentos, as quais utilizam uma estrutura semelhante a JSON (\emph{JavaScript Object Notation}) ou XML (\emph{Extensible Markup Language}). 
 
 \subsection{MongoDB}
 
+O MongoDB~\cite{membrey2011definitive} é um banco de dados orientado a documentos de código-aberto. Embora são seja considerado um banco de dados relacional, esse apresenta muitas funcionalidades providas por essa categoria, como ordenação, indexação secundária e consultas de intervalo.
 
-\subsubsection{MongoClient}
+A estruturação dos dados não acontece com base em tabelas com suas respectivas colunas e tuplas, mas sim coleções de documentos.
+O banco de dados não impõe um esquema, contudo, normalmente todos os documentos em uma coleção são de propósito semelhante ou relacionado~\cite{kanade2014study,lutu2015big}. Há duas abordagens para modelagem de documentos: 
 
-\subsubsection{Mongoose}
+\begin{itemize}
+\item Modelo de dados incorporado: os dados relacionados são incorporados em uma única estrutura ou documento. Esses esquemas são geralmente conhecidos como modelos “desnormalizados”.
+\item Modelo de dados normalizado: os dados possuem referências de documentos para registrar relacionamentos entre esses, mas a "união" de documentos deve ser feita diretamente no código-fonte da aplicação.
+\end{itemize}
 
+O armazenamento dos dados ocorre através da serialização de objetos Javascript, também conhecidos JSON, cuja implementação interna utiliza uma codificação binária chamada BSON~\cite{bson}.
 
+O banco de dados MongoDB disponibiliza diversos drivers para linguagens de programação como Java, C++, C\#, PHP e Python~\cite{lutu2015big}, assim como para aplicações baseadas em Node.js.
+
+Nesse contexto, dentre os drivers existentes, tem-se como destaque o MongoClient~\footnote{https://mongodb.github.io/node-mongodb-native/index.html}, consiste na solução oficial e nativa provida organização, provendo um conjunto de funcionalidades que permite a manipulação dos dados e uso de recursos avançados do sistema. 
+Essa solução é caracterizada pela modelagem documentos-objeto (\emph{ODM -- Object-Document Modeler}) de modo implícito ao banco de dados.
+
+Assim como o anterior, o Mongoose consiste também em um driver para MongoDB, porém esse provê a modelagem de dados utilizando um mecanismo semelhante ao mapeamento de dados em tabelas (\emph{ORM -- Object Relational Mapping}) utilizado em banco de dados relacionais~\cite{mardan2014boosting}, executando diversas tarefas de verificação e validação dos dados, como nulidade ou tipagem, previamente definidos por meio da elaboração de um esquema.
+
+\section{Node.js}
+\label{section:nodejs}
+
+Node.js é uma plataforma construída sob o ambiente de execução para JavaScript do navegador Google Chrome, para criação facilitada de aplicações de internet rápidas e escaláveis~\cite{nodejs}. 
+Esse ambiente se baseia em mecanismo orientado a eventos de entrada e saída não-bloqueante, o que viabiliza a interação do usuário enquanto demais tarefas executam em segundo-plano, resultando em aplicações leves e eficientes.
+
+Atualmente, pode ser observado um crescente número de projetos utilizando essa tecnologia, o que é comprovado pela popularidade da plataforma desde as suas versões iniciais, atrelada a crescente utilização da linguagem Javascript~\footnote{https://github.com/search?l=JavaScript\&o=desc\&q=stars\%3A\%3E1\&s=stars\&type=Repositories}.
+
+\subsection{Organização de Memória em Aplicações Node.js}
+
+Toda aplicação Node.js em execução, assim como qualquer processo em geral, requer que uma região da memória seja reservada. 
+A Figura~\ref{figure:memoria} apresenta a organização da memória em processos Node.js.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.4\textwidth]{images/set}
+    \caption{Organização de memória de um processo Node.js -- adaptado de~\cite{nodememory}.}
+    \label{figure:memoria}
+\end{figure}
+
+A primeira região, que engloba as demais, é chamada~\emph{Resident Set}, essa corresponde a toda memória utilizada no processo. 
+Em seguida tem-se a região~\emph{Code Segment}, a qual armazenada todas as instruções definidas para o programa.
+A proxima região~\emph{Stack} armazena todas as variáveis e estruturas de dados utilizadas durante o tempo de vida dessas.
+Por fim, tem-se a região~\emph{Heap}, a qual armazena dados específicos como objetos, strings e closures; em geral, cada processo aloca esse região com um tamanho predefinido, contudo essa pode ser utilizada apenas parcialmente ou em sua totalidade~\cite{nodememory}. 
 
 \section{Estudo Comparativo}
 \label{section:estudo}
@@ -100,6 +137,7 @@ Dentre as perspectivas de análise desse trabalho consiste na comparação de do
     \centering
     \includegraphics[width=0.6\textwidth]{images/diagram-banco}
     \label{fig:diagrama-banco}
+    \caption{Estudo de caso para comparação dos drivers.}
 \end{figure}
 
 
@@ -125,6 +163,8 @@ Durante a execução dos testes, o ambiente de execução da aplicação Node.js
 
 Em cada cenário de execução, foram extraídos dados relativos ao tempo de execução, tempo de uso de CPU e uso de memória RAM.
 Foram analisados cenários com diferentes quantidades de operações CRUD realizadas, as quais variaram de 1000, 10000, 100000 e 200000; cada qual foi repetido 10 vezes. 
+
+A obtenção das métricas de desempenho de cada um dos cenários, para tempo de execução, tempo de uso de CPU e memória RAM, foi realizada através da biblioteca JSMeter~\footnote{https://github.com/wahengchang/js-meter}.
 
 \subsection{Resultados}
 \label{section:resultados}
@@ -242,20 +282,8 @@ Esses são os resultados de uso de memoria
 \section{Trabalhos Relacionados} 
 \label{section:relacionados}
 
-The first page must display the paper title, the name and address of the
-authors, the abstract in English and ``resumo'' in Portuguese (``resumos'' are
-required only for papers written in Portuguese). The title must be centered
-over the whole page, in 16 point boldface font and with 12 points of space
-before itself. Author names must be centered in 12 point font, bold, all of
-them disposed in the same line, separated by commas and with 12 points of
-space after the title. Addresses must be centered in 12 point font, also with
-12 points of space after the authors' names. E-mail addresses should be
-written using font Courier New, 10 point nominal size, with 6 points of space
-before and 6 points of space after.
-
-The abstract and ``resumo'' (if is the case) must be in 12 point Times font,
-indented 0.8cm on both sides. The word \textbf{Abstract} and \textbf{Resumo},
-should be written in boldface and must precede the text.
+\cite{kanade2014study} did a study for NoSQL databases with both normalized and denormalized forms using a similar dataset, and have found that the embedded MongoDB
+data model provides a much better efficiency as compared to a normalized model. 
 
 
 \section{Considerações Finais}
