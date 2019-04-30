@@ -8,19 +8,22 @@
      
 \sloppy
 
-\title{Análise Comparativa de Desempenho em Drivers para MongoDB em Aplicações Node.js}
+\title{Análise de Escalabilidade Horizontal em um Cluster Hbase}
 
-\author{Leandro Ungari Cayres, Ronaldo Celso Messias Correia }
+\author{Bruno Santos de Lima, Cedryk Augusto dos Santos, Ronaldo Celso Messias Correia }
 
 
 \address{Faculdade de Ciências e Tecnologia -- Universidade Estadual Paulista (UNESP)\\
   Presidente Prudente -- SP -- Brazil
-  \email{\{leandro.ungari,ronaldo.correia\}@unesp.br}
+  \email{bruno.s.lima@unesp.br,cedrykaugusto@gmail.com,ronaldo.correia@unesp.br}
 }
 
 \begin{document} 
 
 \maketitle
+
+%Resumo maximo 10 linhas.
+%Se o artigo estiver em português o abstract deve estar localizado antes do resumo.
 
 \begin{abstract}
   This meta-paper describes the style to be used in articles and short papers
@@ -31,48 +34,31 @@
 \end{abstract}
      
 \begin{resumo} 
-  Este meta-artigo descreve o estilo a ser usado na confecção de artigos e
-  resumos de artigos para publicação nos anais das conferências organizadas
-  pela SBC. É solicitada a escrita de resumo e abstract apenas para os artigos
-  escritos em português. Artigos em inglês deverão apresentar apenas abstract.
-  Nos dois casos, o autor deve tomar cuidado para que o resumo (e o abstract)
-  não ultrapassem 10 linhas cada, sendo que ambos devem estar na primeira
-  página do artigo.
+Com o surgimento do Big Data, identificou-se cenários onde a complexidade lógica existente na modelagem relacional não é necessária e novas soluções com características diferentes foram propostas, denominadas bancos de dados NoSQL. Os bancos de dados NoSQL tem como principal característica o escalonamento horizontal, em que os recursos de um sistema computacional aumenta com a adição de novos nós em um ambiente distribuído (cluster), em vez de substituição por um hardware mais potente. Diante disso, este trabalho avalia o potencial do escalonamento horizontal de um cluster executando o banco de dados NoSQL Hbase, realizando um benchmarking sobre diversos cenários, analisando se com o uso deste paradigma as aplicações podem continuar eficientes e disponíveis independente do tamanho da demanda de armazenamento e de consultas, quando há a adição novos nós no sistema. Os experimentos mostraram que a escalabilidade horizontal existe e é mais evidente, exceto para operações scan (busca), em conjuntos de dados maiores que no contexto dessa pesquisa foram de que neste trabalho foram 100.000 e 1.000.000 de registros de 1KB de tamanho cada e ao se aumentar o número de nós de 1 para 2 e, de 2 para 3 nós. No caso dos testes que executaram operações de busca, não há melhora no desempenho a medida que nós são adicionados ao sistema, devido ao método de busca implementado pelo Hbase ser linear
 \end{resumo}
 
 
 \section{Introdução}
-Nos últimos anos, o crescimento no volume de dados mudou a utilização desses por empresas e organizações; tais dados, inicialmente considerados agentes passivos, relacionados às regras de negócio empresarial; tornaram-se potenciais oportunidades de lucro através da análise de informações, e consequentemente, do conhecimento presente no conjunto de dados.
+\label{sec:introducao}
 
-Essa crescente quantidade de dados, chamado de~\emph{Big Data}, não somente requer maior espaço de armazenamento, mas uma mudança em sua organização com base em cada contexto, considerando características como volume, variedade, velocidade e valores~\cite{ward2013undefined}.
-A arquitetura dos tradicionais bancos de dados relacionais, baseada no modelo ACID (\textit{atomicity},~\textit{consistency},~\textit{isolation} e~\textit{durability}), não se encaixa de modo adequado em ambientes de~\emph{big data}, principalmente devido a forte consistência dos dados e a garantia de integridade dos relacionamentos. 
+Um dos grandes desafios computacionais é o armazenamento e a recuperação de dados
+de forma eficiente, para que possam ser acessados rapidamente e que estejam sempre disponíveis a quem os requisite. Durante muitos anos, a solução para a maioria dos problemas dessa área foram os sistemas gerenciadores de banco de dados relacionais (SGBDR), que garantem as propriedades de atomicidade, de consistência, de isolamento e de durabilidade (ACID). Porém, a maioria dos SGBDR’s não atendem mais de forma satisfatória às necessidades de certos cenários identificados com surgimento do Big Data [Brito 2010].
 
-Nesse cenário surgem os banco de dados NoSQL (``Not only SQL'') provendo maior flexibilidade estrutural, suporte a replicação e consistência eventual consistência seguindo o critério BASE (\textit{basic},~\textit{availability},~\textit{soft-state} e~\textit{eventual consistency})~\cite{han2011survey}. 
-Nos últimos anos, a popularidade dos banco de dados não-relacionais tem crescido~\cite{cooper2010benchmarking,edlich2015nosql} proporcionando diversas soluções conforme características dos dados cada aplicação.
+O conceito de Big Data refere-se ao grande volume de dados gerados em diversos domínios de aplicação, como: a Web, dispositivos móveis, sensores, motores de busca e principalmente nas redes sociais; volume este que está na ordem de 1 Zettabyte/dia [Index 2017] e, as tecnologias criadas para a manipulação desses dados garantindo escalabilidade, confiabilidade e tolerância a falhas [Han et al. 2011]. A partir deste conceito, identificou-se que a tecnologia relacional possui grande fragilidade no tratamento de dados classificados como semiestruturados e não estruturados (vídeos, áudios e posts em redes sociais), por exemplo, a dificuldade em acomodá-los no modelo relacional e a dificuldade de implementação distribuída (escalabilidade horizontal) de modo a continuar atendendo às propriedades ACID. A complexidade lógica existente na modelagem relacional somada ao volume exagerado de dados mostrou-se um problema pois pode propiciar deadlocks, problemas de concorrência e lentidão na leitura e escrita dos dados [Han et al. 2011] [Brito 2010].
 
-Diferentemente do modelo relacional, os bancos NoSQL não possuem uma linguagem comum entre eles que permita a realização de operações, como o SQL (\emph{Structured Query Language}), desse modo, cada banco provê uma interface nativa para manipulação dos dados. 
-Contudo, uso de chamadas de sistema para execução de comandos dessas interfaces não é reconhecida como uma boa prática, que pode incorrer em diversos problemas. 
+Como alternativa para esses cenários, surgiram os bancos de dados denominados
+NoSQL. Esse termo refere-se aos bancos de dados que não utilizam linguagem SQL para consulta de dados (Not Only SQL), não utilizam do modelo relacional e que em maioria são distribuídos. Tal tecnologia trabalha de forma mais eficiente com grande volume de dados, possibilitando escalar horizontalmente operações por diversos servidores, replicar e distribuir esses dados, adicionar dinamicamente novos atributos aos registros, entre outras. Embora o conceito das ferramentas não relacionais tenha sido apresentado com caráter comparativo, o objetivo destas não é substituir o modelo relacional em todas as situações, apenas nos casos em que é possível adotar uma maior flexibilidade de estruturação e assim, escalonar horizontalmente o sistema de forma eficiente [Brito 2010].
 
-De modo a contornar essa situação, para os diferentes ambientes de desenvolvimento e linguagens de programação,~\emph{drivers} tem sido desenvolvidos de modo a viabilizar a execução dos comandos no banco de dados. 
-Em muitas situações, a decisão de qual combinação entre banco de dados não-relacional e~\emph{driver} a ser empregada pode ser um problema, devido a variedade de possibilidades, assim como o desconhecimento dos pontos positivos e negativos de cada solução.
+No contexto dente trabalho, foi utilizado o ambiente de desenvolvimento estabelecido pelo framework open-source Hadoop, desenvolvido pela Fundação Apache, que reúne várias ferramentas de manipulação Big Data em um ponto central, envolvendo bancos de dados NoSQL (Hbase), um sistema de arquivos distribuídos denominado Hadoop Distributed File System (HDFS) e um modelo de programação para suportar computações paralelas em grandes coleções de dados em clusters de computadores chamado MapReduce [Apache Hadoop 2016].
 
-Neste artigo, por meio de um estudo comparativo, busca-se avaliar as duas principais soluções de~\emph{drivers} para o MongoDB~\footnote{https://www.mongodb.com/}, MongoClient~\footnote{https://mongodb.github.io/node-mongodb-native/} e Mongoose~\footnote{https://mongoosejs.com/}, para ambiente de aplicação Node.js. 
-A escolha do banco de dados MongoDB ocorreu devido a sua enorme popularidade recente, empregado em diversas aplicações e linhas de pesquisa; assim como sua integração com o ambiente Node.js, em que ambos utilizam a linguagem de programação JavaScript, de modo a proporcionar um sistema uniforme desde o "cliente-servidor-banco de dados".
+O banco de dados Hbase, utilizado neste trabalho, permite o processamento distribuído por meio de clusters. Funciona sobre o HDFS, proporcionando à ferramenta capacidades parecidas ao BigTable /citechang2008bigtable e alta tolerância a falhas ao armazenar grandes quantidades de dados esparsos [Hadoop Hbase 2016].
 
-falar sobre a escolha do node js, falando que é uma tecnologia crescente.
+O objetivo deste trabalho é verificar o potencial desse novo paradigma de armazenamento e recuperação de dados que utiliza de computação distribuída para criar um cenário onde aplicações e serviços continuem eficientes e disponíveis independente do tamanho da demanda de armazenamento e de consultas, apenas pela adição de novos nós ao ambiente distribuído. Dessa forma, foi avaliada a escalabilidade horizontal do banco de dados Hbase por meio de benchmarking com operações read, write, scan e read modifywrite, utilizando o framework Yahoo! Cloud Serving Benchmark (YCSB) a medida em que novos nós são adicionados ao sistema e o tamanho do conjunto de dados é aumentado.
 
+Este trabalho está organizado como segue: A Seção 2 apresenta a fundamentação teórica necessária para a compreensão do trabalho; Na Seção 3 são citados os principais trabalhos relacionados encontrados ao proceder a revisão bibliográfica; A Seção 4 apresenta os cenários de testes utilizados; A Seção 5 exibe a análise quanto aos resultados obtidos e a Seção 6 apresenta as conclusões obtidas.
 
-\section{Banco de Dados Não-Relacional}
-
-
-\subsection{MongoDB}
-
-
-\subsubsection{MongoClient}
-
-\subsubsection{Mongoose}
-
-
+\section{Background}
+\label{sec:background}
 
 \section{Trabalhos Relacionados} 
 \label{section:relacionados}
@@ -92,22 +78,18 @@ The abstract and ``resumo'' (if is the case) must be in 12 point Times font,
 indented 0.8cm on both sides. The word \textbf{Abstract} and \textbf{Resumo},
 should be written in boldface and must precede the text.
 
-\section{Estudo Comparativo}
+\section{Metodologia}
+\label{sec:metodologia}
 
-\subsection{Dataset}
+\section{Resultados e Discussões}
+\label{sec:resultados}
 
-In some conferences, the papers are published on CD-ROM while only the
-abstract is published in the printed Proceedings. In this case, authors are
-invited to prepare two final versions of the paper. One, complete, to be
-published on the CD and the other, containing only the first page, with
-abstract and ``resumo'' (for papers in Portuguese).
+\section{Considerações Finais}
+\label{sec:finais}
 
-\section{Sections and Paragraphs}
+%\section{Sections and Paragraphs}
 
-Section titles must be in boldface, 13pt, flush left. There should be an extra
-12 pt of space before each title. Section numbering is optional. The first
-paragraph of each section should not be indented, while the first lines of
-subsequent paragraphs should be indented by 1.27 cm.
+%Section titles must be in boldface, 13pt, flush left. There should be an extra 12 pt of space before each title. Section numbering is optional. The first paragraph of each section should not be indented, while the first lines of subsequent paragraphs should be indented by 1.27 cm.
 
 %\begin{figure}[ht]
 %\centering
@@ -116,12 +98,7 @@ subsequent paragraphs should be indented by 1.27 cm.
 %\label{fig:exampleFig1}
 %\end{figure}
 
-In tables, try to avoid the use of colored or shaded backgrounds, and avoid
-thick, doubled, or unnecessary framing lines. When reporting empirical data,
-do not use more decimal digits than warranted by their precision and
-reproducibility. Table caption must be placed before the table (see Table 1)
-and the font used must also be Helvetica, 10 point, boldface, with 6 points of
-space before and after each caption.
+%In tables, try to avoid the use of colored or shaded backgrounds, and avoid thick, doubled, or unnecessary framing lines. When reporting empirical data, do not use more decimal digits than warranted by their precision and reproducibility. Table caption must be placed before the table (see Table 1) and the font used must also be Helvetica, 10 point, boldface, with 6 points of space before and after each caption.
 
 %\begin{table}[ht]
 %\centering
