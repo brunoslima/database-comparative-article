@@ -9,7 +9,7 @@
      
 \sloppy
 
-\title{Análise Comparativa de Desempenho em Drivers para MongoDB em Aplicações Node.js}
+\title{Análise Comparativa de Desempenho em~\emph{drivers} para MongoDB em Aplicações Node.js}
 
 \author{Leandro Ungari Cayres, Ronaldo Celso Messias Correia }
 
@@ -48,7 +48,7 @@ Nos últimos anos, o crescimento no volume de dados mudou a utilização desses 
 Essa crescente quantidade de dados, chamado de~\emph{Big Data}, não somente requer maior espaço de armazenamento, mas uma mudança em sua organização com base em cada contexto, considerando características como volume, variedade, velocidade e valores~\cite{ward2013undefined}.
 A arquitetura dos tradicionais bancos de dados relacionais, baseada no modelo ACID (\textit{atomicity},~\textit{consistency},~\textit{isolation} e~\textit{durability}), contudo, em ambientes de~\emph{Big Data}, a alta consistência afeta diretamente os aspectos de disponibilidade e  eficiência, que são importantes, devido ao alto volume, variedade e velocidade presente em Big Data~\cite{aparicio:2016}. 
 
-Nesse cenário surgem os banco de dados NoSQL (``Not only SQL'') provendo maior flexibilidade estrutural, suporte a replicação e consistência eventual seguindo o critério BASE (\textit{basic},~\textit{availability},~\textit{soft-state} e~\textit{eventual consistency})~\cite{han2011survey}. 
+Nesse cenário surgem os banco de dados NoSQL (\emph{Not only SQL}) provendo maior flexibilidade estrutural, suporte a replicação e consistência eventual seguindo o critério BASE (\textit{basic},~\textit{availability},~\textit{soft-state} e~\textit{eventual consistency})~\cite{han2011survey}. 
 Nos últimos anos, a popularidade dos banco de dados não-relacionais tem crescido~\cite{cooper2010benchmarking,edlich2015nosql} proporcionando diversas soluções conforme características dos dados cada aplicação.
 
 Diferentemente do modelo relacional, os bancos NoSQL não possuem uma linguagem comum entre eles que permita a realização de operações, como o SQL (\emph{Structured Query Language}), desse modo, cada banco provê uma interface nativa para manipulação dos dados. 
@@ -96,9 +96,9 @@ O banco de dados não impõe um esquema, contudo, normalmente todos os documento
 
 O armazenamento dos dados ocorre através da serialização de objetos Javascript, também conhecidos JSON, cuja implementação interna utiliza uma codificação binária chamada BSON~\cite{bson}.
 
-O banco de dados MongoDB disponibiliza diversos drivers para linguagens de programação como Java, C++, C\#, PHP e Python~\cite{lutu2015big}, assim como para aplicações baseadas em Node.js.
+O banco de dados MongoDB disponibiliza diversos~\emph{drivers} para linguagens de programação como Java, C++, C\#, PHP e Python~\cite{lutu2015big}, assim como para aplicações baseadas em Node.js.
 
-Nesse contexto, dentre os drivers existentes, tem-se como destaque o MongoClient~\footnote{https://mongodb.github.io/node-mongodb-native/index.html}, consiste na solução oficial e nativa provida organização, provendo um conjunto de funcionalidades que permite a manipulação dos dados e uso de recursos avançados do sistema. 
+Nesse contexto, dentre os~\emph{drivers} existentes, tem-se como destaque o MongoClient~\footnote{https://mongodb.github.io/node-mongodb-native/index.html}, consiste na solução oficial e nativa provida organização, provendo um conjunto de funcionalidades que permite a manipulação dos dados e uso de recursos avançados do sistema. 
 Essa solução é caracterizada pela modelagem documentos-objeto (\emph{ODM -- Object-Document Modeler}) de modo implícito ao banco de dados.
 
 Assim como o anterior, o Mongoose consiste também em um driver para MongoDB, porém esse provê a modelagem de dados utilizando um mecanismo semelhante ao mapeamento de dados em tabelas (\emph{ORM -- Object Relational Mapping}) utilizado em banco de dados relacionais~\cite{mardan2014boosting}, executando diversas tarefas de verificação e validação dos dados, como nulidade ou tipagem, previamente definidos por meio da elaboração de um esquema.
@@ -131,15 +131,27 @@ Por fim, tem-se a região~\emph{Heap}, a qual armazena dados específicos como o
 \section{Estudo Comparativo}
 \label{section:estudo}
 
-Dentre as perspectivas de análise desse trabalho consiste na comparação de dois drivers, em que um utiliza definição previamente e outro não, assim
+Nesta seção é apresentado o estudo realizado comparando os~\emph{drivers}MongoClient e Mongoose, conforme apresentado na Figura~\ref{figure:diagrama-banco}. 
 
-\begin{figure}[h]
+\begin{figure}[ht]
     \centering
     \includegraphics[width=0.6\textwidth]{images/diagram-banco}
-    \label{fig:diagrama-banco}
     \caption{Estudo de caso para comparação dos drivers.}
+    \label{figure:diagrama-banco}
 \end{figure}
 
+A ideia principal consiste em analisar ambos sob o desempenho médio, em termos de algumas métricas, na execução das operações que compõem o CRUD, de modo avaliar o real impacto sob um mesmo cenário em termos de banco de dados e aplicação utilizada.
+
+Como principal ponto de diferença entre os~\emph{drivers} consiste na modelagem dos dados, neste estudo, foram conduzidas análises visando identificar se o tamanho médio de cada registro pode influenciar e qual a proporção desse impacto.
+
+As métricas escolhidas para análises de cada um dos cenários conduzidos foram as seguintes:
+\begin{itemize}
+\item Tempo de Execução Médio: consiste tempo médio total de execução de cada operação específica.
+\item Tempo de Processamento Médio: consiste no tempo médio de uso do processador durante a execução da operação específica.
+\item Variação Média de Uso de Memória: consiste na variação média de uso de memória RAM durante a execução da operação específica, sendo expressa em kilobytes (KB).
+\end{itemize}
+
+Por fim, os resultados obtidos em cada um dos cenários analisados são apresentados na Seção~\ref{section:resultados} e discutidos na Seção~\ref{section:discussao}, com base nas seguintes questões de pesquisa:
 
 \textbf{Q1} --~\emph{O tamanho médio dos registros impacta de modo relevantes quanto ao uso de memória nas operações de CRUD?}
 
@@ -157,44 +169,59 @@ A partir do conjunto original, foi construído um conjunto reduzido em número d
 
 \subsection{Ambiente de Execução}
 
-O ambiente de execução para os testes de desempenho consistiu em um computador pessoal com sistema operacional Ubuntu 18.04.2, processador Intel i3 3217U e memória RAM de 5GB. 
+O ambiente de execução para os testes de desempenho consistiu em um computador pessoal com sistema operacional Ubuntu 18.04.2, processador Intel i3 3217U e memória RAM de 4GB. 
 
 Durante a execução dos testes, o ambiente de execução da aplicação Node.js foi definido o uso do~\emph{heap} de memória com limite máximo de 3GB, o que restringiu no limite superior do número de operações executadas em cada cenário de teste.
 
 Em cada cenário de execução, foram extraídos dados relativos ao tempo de execução, tempo de uso de CPU e uso de memória RAM.
 Foram analisados cenários com diferentes quantidades de operações CRUD realizadas, as quais variaram de 1000, 10000, 100000 e 200000; cada qual foi repetido 10 vezes. 
 
-A obtenção das métricas de desempenho de cada um dos cenários, para tempo de execução, tempo de uso de CPU e memória RAM, foi realizada através da biblioteca JSMeter~\footnote{https://github.com/wahengchang/js-meter}.
+A obtenção das métricas de desempenho de cada um dos cenários, para tempo de execução, tempo de uso de CPU e memória RAM, foi realizada através da biblioteca JSMeter~\footnote{https://github.com/wahengchang/js-meter}. 
 
 \subsection{Resultados}
 \label{section:resultados}
 
+Todos os resultados a seguir são apresentados sob a perspectiva que cada uma das operações (\emph{create}-\emph{read}-\emph{update}-\emph{delete}) respectivamente, em que 100\% dos registros são atingidos em cada operação. 
+Cada resultado apresenta o tempo de execução, em uma operação específica, da combinação de um~\emph{driver} com o conjunto de dados pequeno (referente ao dataset original com todos atributos) ou grande (referente ao dataset com número reduzido de atributos).
 
-Esses são os resultados de tempo
 \begin{figure}[ht]
-    \centering
-    \includegraphics[width=\textwidth]{images/time}
-    \label{fig:time}
-    \caption{Comparativo de operações em relação ao tempo de execução.}
+\centering
+\includegraphics[width=\textwidth]{images/time}
+\caption{Comparativo de operações em relação ao tempo de execução.}
+\label{fig:time}
 \end{figure}
 
+A primeira análise, na Figura~\ref{fig:time}, apresenta os resultados relativos ao tempo de execução. 
+A Figura 3a apresenta, para operação de inserção, o tempo de execução do~\emph{driver} Mongoose maior, para os dois conjuntos, de modo relevante, enquanto para o MongoClient, aparenta não haver diferenças significativas entre os conjuntos. 
+Como exceção, pode-se observar a execução do conjunto pequeno para o Mongoose, em que o tempo para 200 000 operações não mantém a proporcionalidade das demais execuções. Um possível fator que justifique esse comportamento consiste na ocorrência de divisão de conjuntos na operação de inserção quando a quantidade excede 100 000 itens, contudo, isso não ocorre para o conjunto de registros grandes.
 
-Esses são os resultados de uso de cpu
+A Figura 3b também apresenta, para operação de busca, o tempo de execução inferior para ambos os conjuntos do MongoClient, em que ambos atuam de modo estritamente similar. 
+Quanto ao Mongoose, as execuções para conjunto reduzido e grande apresentam comportamente crescente e proporcional em detrimento a diferença de tamanho dos registros. 
+
+As Figuras 3c e 3d, para as operações de atualização e deleção de registros, ambos os~\emph{drivers} para os conjuntos obtiveram tempos de execução estritamente similares e proporcionando a quantidade de operações, não apresentando diferenças significativas, nem mesmo quanto ao tamanho médio dos registros.
+
 \begin{figure}[ht]
     \centering
     \includegraphics[width=\textwidth]{images/cpuusage}
-    \label{fig:cpuusage}
     \caption{Comparativo de operações em relação ao tempo de uso do processador.}
+    \label{fig:cpuusage}
 \end{figure}
 
+A próxima análise, na Figura~\ref{fig:cpuusage}, é referente aos resultados relacionados ao tempo de uso de processamento em cada operação.
+As Figuras 4a e 4b, assim como análise anterior, para as operações de inserção e busca, apresenta o MongoClient com tempo de execução médio significativamente inferior, em ambos os conjuntos, em detrimento do alto tempo apresentado pelo Mongoose.
 
-Esses são os resultados de uso de memoria
+A Figura 4c, representa a operação de atualização, em que se pode-se observar somente o~\emph{driver} Mongoose com conjunto de registros maiores apresentou maior tempo de uso de processamento, em detrimento dos demais, que foram semelhantes e com tempo menor relevantemente, mesmo com oscilações. 
+É importante salientar que o tempo de processamento de todas as execuções foram inferiores a 250ms.
+A Figura 4d, representa a operação de deleção, cada execução apresentou comportamento relativamente instável, tendo as execuções com~\emph{driver} com tempo um pouco maior, contudo não há diferença significativa, porque todas as execuções obtiveram tempo de processamento inferior a 10ms.
+
 \begin{figure}[ht]
     \centering
     \includegraphics[width=\textwidth]{images/memory}
-    \label{fig:memory}
     \caption{Comparativo de operações em relação ao uso de memória.}
+    \label{fig:memory}
 \end{figure}
+
+A última análise, apresentada na Figura~\ref{fig:memory}, refere-se a variação média do uso de memória RAM em cada operação. 
 
 
 
