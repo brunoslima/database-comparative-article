@@ -384,12 +384,12 @@ Para os testes onde os conjuntos de dados foram iguais a 100.000 registros obtev
 
 Os testes onde os conjuntos de dados foram iguais a 1.000 registros não tiveram alterações significativas no desempenho médio, sendo a variação mais expressiva de menos de 6\% aumentando de 1 para 2 region servers. Para o conjunto de 10.000 registro, a variação mais expressiva foi de aproximadamente 18,5\% quando aumentado de 1 para 2 region servers. As demais adições de nós apresentaram uma variação de menos de 4\%.
 
-A Figura 20 apresenta os resultados dos testes da~\emph{workload} 100\%~\emph{read/modify/write} quanto a latência. Novamente, o comportamento da latência acompanha o comportamento do desempenho médio de maneira inversamente proporcional e portanto, os testes com 1.000.000 de registros e 5~\emph{region servers} obtiveram uma latência menor que os testes com 4, 3, 2 e 1~\emph{region servers} em aproximadamente 4,4\%, 14,4\%, 29,9\% e 58,7\% respectivamente. 
+A Figura~\ref{figura20} apresenta os resultados dos testes da~\emph{workload} 100\%~\emph{read/modify/write} quanto a latência. Novamente, o comportamento da latência acompanha o comportamento do desempenho médio de maneira inversamente proporcional e portanto, os testes com 1.000.000 de registros e 5~\emph{region servers} obtiveram uma latência menor que os testes com 4, 3, 2 e 1~\emph{region servers} em aproximadamente 4,4\%, 14,4\%, 29,9\% e 58,7\% respectivamente. 
 Do mesmo modo, os testes com 100.000 registros e 5 region servers obtiveram uma latência menor que os testes com 4, 3, 2 e 1 region servers em aproximadamente 2,6\%, 7,7\%, 20,1\% e 47,9\% respectivamente.
 
 Os testes da~\emph{workload} 100\%~\emph{read/modify/write} em que os conjuntos de dados foram iguais a 1.000 e 10.000 registros não tiveram alterações significativas na latência, seguindo a mesma porcentagem calculada nos testes de desempenho médio.
 
-Os resultados dos testes da~\emph{workload} 100\%~\emph{scan} referentes ao desempenho médio e latência são apresentados nas Figuras 21 e 22. 
+Os resultados dos testes da~\emph{workload} 100\%~\emph{scan} referentes ao desempenho médio e latência são apresentados nas Figuras~\ref{figura21} e~\ref{figura22}. 
 Exceto nos testes cujos conjuntos de dados foram iguais a 1.000 registros, não houveram alterações significativas no desempenho médio do~\emph{cluster}  sendo a variação mais expressiva de todos os conjuntos menor que 1,4\%. 
 Portanto também não houve alteração significativa na latência em nenhum testes executados.
 
