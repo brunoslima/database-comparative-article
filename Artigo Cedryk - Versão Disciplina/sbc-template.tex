@@ -14,7 +14,8 @@
 
 \address{Faculdade de Ciências e Tecnologia -- Universidade Estadual Paulista (UNESP)\\
   Presidente Prudente -- SP -- Brasil
-  \email{cedrykaugusto@gmail.com,\{bruno.s.lima,leandro.ungari,rogerio.garcia,celso.olivete,danilo.eler,ronaldo.correia\}@unesp.br}
+  \email{cedrykaugusto@gmail.com, \{bruno.s.lima,leandro.ungari\}@unesp.br,}\vspace{-0.4cm}
+  \email{\{rogerio.garcia,celso.olivete,danilo.eler,ronaldo.correia\}@unesp.br}
 }
 
 \begin{document} 
@@ -172,7 +173,7 @@ Primeiramente foram organizados cinco cenários, de organização para o~\emph{c
 
 Para os cinco primeiros cenários foram executados os testes em um ambiente pseudo distribuído, com duas~\emph{workloads}: 100\%~\emph{write} e 100\%~\emph{read} -- 100.000 registros, tendo cada registro 1KB e distribuição uniforme. Cada teste sobre uma~\emph{workload} foi executado 3 vezes para uma dada quantidade de~\emph{threads} do YCSB \textit{Client}, foi obtido a média da latência (tempo de execução em milissegundos) e do desempenho médio (operações/segundo) para obter o resultado final do teste.
 
-Nos testes executados no sexto cenário, configurado de acordo com as conclusões obtidas nos testes dos cenários anteriores, é analisada a escalabilidade do HBase em um~\emph{cluster} totalmente distribuído, sendo esse, o foco principal do trabalho. Cada teste sobre uma~\emph{workload} também foi executado 3 vezes sendo o resultado final a média das saídas.
+Nos testes executados no sexto cenário, configurado de acordo com as conclusões obtidas nos testes dos cenários anteriores, é analisada a escalabilidade do HBase em um~\emph{cluster} totalmente distribuído, sendo esse, o foco principal do trabalho. Cada teste sobre uma~\emph{workload} também foi executado 3 vezes sendo o resultado final a média das saídas. A seguir é descrita a organização dos cenários:
 
 %Os testes foram organizados em seis cenários onde, os testes executados nos cinco primeiros cenários analisam a melhor alternativa para a implementação do~\emph{cluster}, ou seja, como serão dispostos os processos cliente, mestre e escravo. 
 %Nesses foram executados os testes em um ambiente pseudo distribuído, com apenas duas~\emph{workloads}: 100\%~\emph{write} -- 100.000 registros e 100\%~\emph{read} - 100.000 registros, tendo cada registro 1KB e com distribuição uniforme. Cada teste sobre uma~\emph{workload} foi executado 3 vezes para uma dada quantidade de~\emph{threads} do YCSB Client e então foi realizada a média da latência (tempo de execução em milissegundos) e do desempenho médio (operações/segundo) para obter o resultado final do teste.
@@ -222,27 +223,31 @@ Nos testes executados no sexto cenário, configurado de acordo com as conclusõe
     \caption{Configuração dos seis cenários de testes.}
 \end{figure}
 
-\subsection{Cenário 1}
+%\subsection{Cenário 1}
+\textbf{Cenário 1:} o~\emph{cluster} é configurado como se houvesse uma distribuição entre máquinas em redes, porém estão todos no mesmo nó. 
+Dessa forma, os processos mestre e escravo do Hadoop e HBase, os processos do ZooKeeper e do YCSB \emph{Client} são executados todos no hpcdmc~--~Figura~\ref{figura2a}.
 
-No cenário 1 o~\emph{cluster} é configurado de modo pseudo distribuído, ou seja, os processos são executados como se houvesse uma distribuição entre máquinas em redes, porém estão todos no mesmo nó. Dessa forma, os processos mestre e escravo do Hadoop e HBase, os processos do ZooKeeper e do YCSB \emph{Client} são executados todos no hpcdmc -- Figura~\ref{figura2a}.
+%\subsection{Cenário 2}
+\textbf{Cenário 2:} a execução de todos os processos mestre e escravo junto com o YCSB \emph{Client} pode comprometer a quantidade de requisições enviadas ao banco, alocou-se o YCSB em um nó separado para verificar essa hipótese. 
+Assim, os processos meste e escravo do Hadoop e HBase e os processos do ZooKeeper continuaram a ser executados no hpcdmc, mas o processo YCSB \emph{Client} foi executado no nó n01~--~Figura~~\ref{figura2b}.
 
-\subsection{Cenário 2}
+%\subsection{Cenário 3}
+\textbf{Cenário 3:} dada a limitação de~\emph{threads} do YCSB \emph{Client} que podem ser executadas no n01, pelo número de núcleos do processador, no cenário 3 a execução da~\emph{workload} foi dividida entre nós n01 e n02. 
+Cada nó foi encarregado pela metade dos registros e metade do número de~\emph{threads} do YCSB \emph{Client} total do teste. 
+Exemplo: na execução da~\emph{workload} 100\%~\emph{read} e 64~\emph{threads}, cada nó gerou 50.000 requisições~\emph{read} com 32~\emph{threads} ativas no YCSB. 
+A saída de cada teste foi a soma do desempenho médio (operações/segundo) e a maior latência (tempo de execução em milissegundos). 
+O hpcdmc permaneceu pseudo distribuído~--~Figura~\ref{figura2c}.
 
-No cenário 2, considerando que a execução de todos os processos mestre e escravo junto com o YCSB \emph{Client} pode comprometer a quantidade de requisições enviadas ao banco, alocou-se o YCSB em um nó separado para verificar essa hipótese. Dessa forma, os processos meste e escravo do Hadoop e HBase e os processos do ZooKeeper continuaram a ser executados no hpcdmc, mas o processo YCSB \emph{Client} foi executado no nó n01 -- Figura~~\ref{figura2b}.
+%\subsection{Cenário 4}
+\textbf{Cenário 4:} consiste na aproximação de uma situação mais adequada quanto a configuração do~\emph{cluster}, em que os processos cliente, mestre e escravo estão completamente distribuídos. 
+O n01 é responsável pelo YCSB \textit{Client}, o hpcdmc pelos processos mestre do Hadoop, HBase e dos processos do ZooKeeper, enquanto o n02 executou os processos escravos do Hadoop e HBase~--~Figura~\ref{figura2d}.
 
-\subsection{Cenário 3}
+%\subsection{Cenário 5}
+\textbf{Cenário 5:} analisou a necessidade de mais de um servidor gerando requisições na saturação do~\emph{cluster}. 
+Assim, o n01 e n02 dividiram a execução das~\emph{workloads}, o hpcdmc foi responsável pelos processos mestre do Hadoop, HBase e os processos do ZooKeeper e o n03 executou os processos escravos do Hadoop e HBase~--~Figura~\ref{figura2e}.
 
-Dada a limitação do número de~\emph{threads} do YCSB \emph{Client} que podem ser executadas no n01, pelo número de núcleos do processador, no cenário 3, a execução da~\emph{workload} foi dividida entre nós n01 e n02. Assim, cada nó foi encarregado pela metade dos registros e metade do número de~\emph{threads} do YCSB \emph{Client} total do teste. Exemplo: na execução da~\emph{workload} 100\%~\emph{read} -- 100.000 registros e 64~\emph{threads}, cada nó gerou 50.000 requisições~\emph{read} com 32~\emph{threads} ativas no YCSB. A saída de cada teste foi a soma do desempenho médio (operações/segundo) e a maior latência (tempo de execução em milissegundos) de ambos. O hpcdmc permaneceu pseudo distribuído -- Figura~\ref{figura2c}.
-
-\subsection{Cenário 4}
-O cenário 4 se aproxima de uma situação mais adequada quanto a configuração do~\emph{cluster} , onde os processos cliente, mestre e escravo estão completamente distribuídos. O n01 é responsável pelo YCSB \textit{Client}, o hpcdmc pelos processos mestre do Hadoop, HBase e dos processos do ZooKeeper, enquanto o n02 executou os processos escravos do Hadoop e HBase -- Figura~\ref{figura2d}.
-
-\subsection{Cenário 5}
-No cenário 5, o objetivo dos testes é analisar se é necessário mais de um servidor gerando
-requisições para saturar um~\emph{cluster}  completamente distribuío. Assim, o n01 e n02 dividiram a execução das~\emph{workloads}, o hpcdmc foi responsável pelos processos mestre do Hadoop, HBase e os processos do ZooKeeper e o n03 executou os processos escravos do Hadoop e HBase -- Figura~\ref{figura2e}.
-
-\subsection{Cenário 6}
-Os resultados dos testes realizados nos cenários anteriores apoiam as decisões quanto a estrutura geral do cenário 6 -- Figura~\ref{figura2f}. Foram executadas as~\emph{workloads}:~\emph{write},~\emph{read} e~\emph{scan}, variando entre 1.000, 10.000, 100.000 e 1.000.000 registros com tamanho igual a 1KB e com distribuição uniforme, variando o número de escravos de 1 a 5 e o número de~\emph{threads} do YCSB \textit{Client} fixo.
+%\subsection{Cenário 6}
+\textbf{Cenário 6:} Os resultados dos testes anteriores apoiaram as decisões quanto a estrutura do cenário 6~--~Figura~\ref{figura2f}. Foram executadas as~\emph{workloads}:~\emph{write},~\emph{read} e~\emph{scan}, variando entre 1.000, 10.000, 100.000 e 1.000.000 registros de tamanho 1KB e com distribuição uniforme, variando o número de escravos de 1 a 5 e o número de~\emph{threads} do YCSB \textit{Client} fixo.
 
 \section{Resultados e Discussões}
 \label{sec:resultados}
