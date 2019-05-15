@@ -13,18 +13,18 @@
 \title{Comparação de Desempenho entre~\emph{Drivers} do MongoDB em Aplicações Node.js}
 
 %\author{Leandro Ungari Cayres, Ronaldo Celso Messias Correia }
-%\author{Leandro Ungari Cayres, Bruno Santos de Lima, Ronaldo Celso Messias Correia, Rogério Eduardo Garcia}
-\author{OMITIDO}
+\author{Leandro Ungari Cayres, Bruno Santos de Lima, Rogério Eduardo Garcia,\\ Ronaldo Celso Messias Correia}
+%\author{OMITIDO}
 
-%\address{Faculdade de Ciências e Tecnologia -- Universidade Estadual Paulista (UNESP)\\
-%  Presidente Prudente -- SP -- Brazil
-%  \email{\{leandro.ungari,ronaldo.correia\}@unesp.br}
-%\email{\{leandro.ungari,bruno.s.lima,ronaldo.correia,rogerio.garcia\}@unesp.br}
-%}
-
-\address{OMITIDO\\
-\email{OMITIDO}
+\address{Faculdade de Ciências e Tecnologia -- Universidade Estadual Paulista (UNESP)\\
+  Presidente Prudente -- SP -- Brazil
+  %\email{\{leandro.ungari,ronaldo.correia\}@unesp.br}
+\email{\{leandro.ungari,bruno.s.lima,ronaldo.correia,rogerio.garcia\}@unesp.br}
 }
+
+%\address{OMITIDO\\
+%\email{OMITIDO}
+%}
 
 \begin{document} 
 
@@ -40,35 +40,24 @@ Nos últimos anos, o número de banco de dados NoSQL tem crescido significativam
 
 
 \section{Introdução}
-%Nos últimos anos, o crescimento no volume de dados mudou a utilização desses por empresas e organizações. Inicialmente, os dados eram considerados agentes passivos, relacionados às regras de negócio empresarial; tornaram-se potenciais oportunidades de lucro através da análise de informações, e consequentemente, do conhecimento presente no conjunto de dados.
+\label{sec:introducao}
 
 Nos últimos anos, o crescimento no volume de dados mudou a utilização desses por empresas e organizações. Inicialmente, os dados eram considerados agentes passivos, relacionados às regras de negócio empresarial; tornaram-se potenciais oportunidades de lucro e obtenção de conhecimento através de processos de análise de informações.
 
-%Essa crescente quantidade de dados, chamado de~\emph{Big Data}, não somente requer maior espaço de armazenamento, mas uma mudança em sua organização com base em cada contexto, considerando características como volume, variedade, velocidade e valores~\cite{ward2013undefined}.A arquitetura dos tradicionais bancos de dados relacionais, baseada no modelo ACID (\textit{atomicity},~\textit{consistency},~\textit{isolation} e~\textit{durability}), contudo, em ambientes de~\emph{Big Data}, a alta consistência afeta diretamente os aspectos de disponibilidade e  eficiência, que são importantes, devido ao alto volume, variedade e velocidade presente em Big Data~\cite{aparicio:2016}.
+O advento do~\emph{Big Data} não implicou somente em maior espaço de armazenamento, mas em uma mudança de organização, considerando características como volume, variedade, velocidade e valores~\cite{ward2013undefined}. A arquitetura dos tradicionais Bancos de Dados Relacionais são baseadas nas propriedades ACID (\textit{atomicity},~\textit{consistency},~\textit{isolation} e~\textit{durability}), contudo, em ambientes de~\emph{Big Data} a alta consistência provida pelos Bancos de Dados Relacionais, afeta diretamente os aspectos de disponibilidade e eficiência, que são primordiais, devido ao alto volume, variedade e velocidade~\cite{aparicio:2016}. Nesse cenário, os Banco de Dados \textit{NoSQL} (\emph{Not only SQL}) promovem maior flexibilidade estrutural, escalabilidade, suporte a replicação e consistência eventual e surguem como alternativas eficientes.~\cite{han2011survey}. 
+ 
+Diferentemente do modelo relacional, os Bancos de Dados \textit{NoSQL} não possuem uma linguagem semelhante ao SQL (\emph{Structured Query Language})~\cite{bugiotti2013object,sellami2014odbapi}. Desse modo, para os diferentes ambientes de desenvolvimento e linguagens de programação,~\emph{Drivers} tem sido desenvolvidos de modo a viabilizar a execução dos comandos no banco de dados. 
 
-A crescente quantidade de dados, fenomeno conhecido como~\emph{Big Data}, não somente requer maior espaço de armazenamento, mas uma mudança em sua organização com base em cada contexto, considerando características como volume, variedade, velocidade e valores~\cite{ward2013undefined}. A arquitetura dos tradicionais Bancos de Dados Relacionais são baseadas nas propriedades ACID (\textit{atomicity},~\textit{consistency},~\textit{isolation} e~\textit{durability}), contudo, em ambientes onde o~\emph{Big Data} se faz presente, a alta consistência afeta diretamente os aspectos de disponibilidade e eficiência, que são primordiais, devido ao alto volume, variedade e velocidade presente nesse fenomeno~\cite{aparicio:2016}. 
+Em muitos casos, os~\emph{Drivers}, além de recentes, apresentam limitações em sua implementações, falhas de entendimento e efeitos colaterais no acesso aos dados~\cite{rafique:2018}. Em muitas situações, a decisão de qual combinação entre Banco de Dados \textit{NoSQL} e~\emph{Driver} a ser empregada pode ser um problema, devido ao desconhecimento dos pontos positivos e negativos de cada combinação.
 
-%Nesse cenário, surgem os Banco de Dados \textit{NoSQL} (\emph{Not only SQL}) provendo maior flexibilidade estrutural, suporte a replicação e consistência eventual seguindo o critério BASE (\textit{basic},~\textit{availability},~\textit{soft-state} e~\textit{eventual consistency})~\cite{han2011survey}. Nos últimos anos, a popularidade dos banco de dados não-relacionais tem crescido~\cite{cooper2010benchmarking,edlich2015nosql} proporcionando diversas soluções conforme características dos dados cada aplicação.
+Neste artigo, por meio de um estudo comparativo de desempenho, busca-se avaliar as duas principais soluções de~\emph{Drivers} para o MongoDB~\footnote{https://www.mongodb.com/}, respectivamente MongoClient~\footnote{https://mongodb.github.io/node-mongodb-native/} e Mongoose~\footnote{https://mongoosejs.com/}, em ambientes de aplicação Node.js. 
+O principal fator considerado para a realização dessa análise consiste na definição prévia de esquema para a manipulação dos dados em operações de CRUD (\emph{create}-\emph{read}-\emph{update}-\emph{delete}). Conceitualmente, os Bancos de Dados~\textit{NoSQL} não requerem essa predefinição, proporcionando flexibilidade, entretanto, não existe nada que impeça sua utilização, principalmente quanto a respeito do desempenho; possibilitando algum impacto relevante.
 
-Nesse cenário, surgem os Banco de Dados \textit{NoSQL} (\emph{Not only SQL}) que em contraparida promovem maior flexibilidade estrutural, escalabilidade, suporte a replicação e consistência eventual, seguindo o critério BASE (\textit{basic},~\textit{availability},~\textit{soft-state} e~\textit{eventual consistency})~\cite{han2011survey}. Nos últimos anos, a popularidade dos Bancos de Dados ~\textit{NoSQL} tem crescido~\cite{cooper2010benchmarking,edlich2015nosql} proporcionando diversas soluções conforme características dos dados e do ambiente de cada aplicação.
+O Banco de Dados MongoDB foi escolhido devido a sua enorme popularidade recente, empregado em diversas aplicações e pesquisa~\cite{patil:2017,jung:2015,ongo:2018,kanade2014study}; e uma das principais opções de armazenamento orientada a documentos. Quanto ao Node.js, mesmo recente, alguns trabalhos apontam a sua viabilidade tecnológica no desenvolvimento de aplicações~\cite{chaniotis2015node}. Com essa escolha, tanto aplicação quanto banco de dados utilizam \textit{JavaScript}, uniformizando o sistema em termos de linguagem de programação.
 
-%Diferentemente do modelo relacional, os Bancos NoSQL não possuem uma linguagem comum entre eles que permita a realização de operações, como o SQL (\emph{Structured Query Language}), desse modo, cada banco provê uma interface nativa para manipulação dos dados. Contudo, uso de chamadas de sistema para execução de comandos dessas interfaces não é reconhecida como uma boa prática, que pode incorrer em diversos problemas. 
-
-Diferente do modelo relacional, os Bancos de Dados \textit{NoSQL} não possuem uma linguagem comum entre eles que permita a realização de operações, como o SQL (\emph{Structured Query Language}), muito em decorrência da variedade e heterogeneidade desses bancos de dados~\cite{bugiotti2013object,sellami2014odbapi}. 
-De modo a contornar essa situação, para os diferentes ambientes de desenvolvimento e linguagens de programação,~\emph{Drivers} tem sido desenvolvidos de modo a viabilizar a execução dos comandos no banco de dados. 
-
-Contudo, em muitos casos, tais~\emph{Drivers}, além de recentes, apresentam limitações em sua implementações, falhas de entendimento e efeitos colaterais no acesso aos dados~\cite{rafique2018performance}, entre outros possíveis impactos.
-Em muitas situações, a decisão de qual combinação entre Banco de Dados \textit{NoSQL} e~\emph{Driver} a ser empregada pode ser um problema, devido a variedade de possibilidades, assim como o desconhecimento dos pontos positivos e negativos de cada solução. %TENTAR CITAR ALGUEM PARA FORTACELER O ARGUMENTO, TENTAR ACHAR NOS TRABALHOS RELACIONADOS.
-
-Neste artigo, por meio de um estudo comparativo de desempenho, busca-se avaliar as duas principais soluções de~\emph{Drivers} para o MongoDB~\footnote{https://www.mongodb.com/}, respectivamente MongoClient~\footnote{https://mongodb.github.io/node-mongodb-native/} e Mongoose~\footnote{https://mongoosejs.com/}, em ambientes de aplicação Node.js. O principal fator considerado para a realização dessa análise consiste na definição prévia de esquema para a manipulação dos dados em operações de CRUD (\emph{create}-\emph{read}-\emph{update}-\emph{delete}). Conceitualmente, os Bancos de Dados \textit{NoSQL} não requerem essa predefinição, proporcionando flexibilidade. Contudo não existe nada que impeça sua utilização, principalmente quanto a respeito do desempenho; possibilitando algum impacto relevante.%MELHORAR AQUI!
-
-%ESSA PARTE AQUI ACHO QUE PODERIA ESTAR NA METODOLOGIA, NA INTRODUÇÃO ELA PODERIA APARECER DE MODO MAIS SUCINTO.
-A escolha do Banco de Dados MongoDB ocorreu devido a sua enorme popularidade recente, empregado em diversas aplicações e linhas de pesquisa; o qual consiste na principal opção dentre os Bancos de Dados que adotam a estratégia de armazenamento orientada a documentos. %QUAIS APLICAÇÕES? QUAIS LINHAS DE PESQUISA? PQ O MERCADO USA?
-A respeito do ambiente Node.js, apesar de ser uma tecnologia recente, alguns trabalhos apontam a sua viabilidade no desenvolvimento de aplicações~\cite{chaniotis2015node}. Além disso, com essa escolha, tanto aplicação quanto banco de dados utilizam JavaScript, permitindo a elaboração de um sistema uniforme, em termos de linguagem de programação.
-
-Na análise conduzida neste trabalho, o desempenho do Banco de Dados MongoDB atrelado a cada um dos~\emph{Drivers} investigados é analisado sobre perspectivas: de tempo de execução; tempo de uso de processamento; e consumo de memória. A análise é aplicada sob um conjunto de dados genérico, propiciando a identificação de algumas características.
-
-Além dessa Introdução, O restante desse artigo está organizado do seguinte modo: na Seção~\ref{section:fundamentacao} é apresentada uma breve fundamentação conceitual acerca de Banco de Dados NoSQL, MongoDB e seus \emph{Drivers}, além do ambiente de execução Node.js. A Seção~\ref{section:experimento} é apresentado a composição do experimento realizado neste trabalho. Na Seção~\ref{section:resultados} são apresentados os resultados quantitativos obtidos, cuja discussão é evidenciada na Seção~\ref{section:discussao}. Por fim, a Seção~\ref{section:consideracoes} expõe as considerações finais e perspectivas de trabalhos futuros.
+O restante desse artigo está organizado do seguinte modo: na Seção~\ref{section:fundamentacao} são apresentados conceitos de Banco de Dados NoSQL, MongoDB e seus \emph{Drivers}, além do ambiente de execução Node.js. 
+A Seção~\ref{section:experimento} é apresentada a estruturação do experimento. 
+Na Seção~\ref{section:resultados} são descritos os resultados quantitativos obtidos, cuja discussão está situada na Seção~\ref{section:discussao}. Na Seção~\ref{section:relacionados} relata os trabalhos relacionados. Por fim, a Seção~\ref{section:consideracoes} expressa as considerações finais e perspectivas de trabalhos futuros.
 
 \section{Fundamentação Teórica}
 \label{section:fundamentacao}
