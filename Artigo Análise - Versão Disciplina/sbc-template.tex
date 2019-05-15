@@ -68,7 +68,7 @@ A respeito do ambiente Node.js, apesar de ser uma tecnologia recente, alguns tra
 
 Na análise conduzida neste trabalho, o desempenho do Banco de Dados MongoDB atrelado a cada um dos~\emph{Drivers} investigados é analisado sobre perspectivas: de tempo de execução; tempo de uso de processamento; e consumo de memória. A análise é aplicada sob um conjunto de dados genérico, propiciando a identificação de algumas características.
 
-Além dessa Introdução, O restante desses artigo está organizado do seguinte modo: na Seção~\ref{section:fundamentacao} é apresentada uma breve fundamentação conceitual pertinente a esse estudo, são abordados os tópicos: Banco de Dados NoSQL, MongoDB e seus \emph{Drivers}, além do ambiente de execução Node.js. A Seção~\ref{section:experimento} é apresentado a composição do experimento realizado neste trabalho. Na Seção~\ref{section:resultados} são apresentados os resultados quantitativos obtidos, cuja discussão é elaborada na Seção~\ref{section:discussao}. Em seguida, na Seção~\ref{section:limitacoes} e, por fim, na Seção~\ref{section:consideracoes} as considerações finais e perspectivas de trabalhos futuros.
+Além dessa Introdução, O restante desse artigo está organizado do seguinte modo: na Seção~\ref{section:fundamentacao} é apresentada uma breve fundamentação conceitual acerca de Banco de Dados NoSQL, MongoDB e seus \emph{Drivers}, além do ambiente de execução Node.js. A Seção~\ref{section:experimento} é apresentado a composição do experimento realizado neste trabalho. Na Seção~\ref{section:resultados} são apresentados os resultados quantitativos obtidos, cuja discussão é evidenciada na Seção~\ref{section:discussao}. Por fim, a Seção~\ref{section:consideracoes} expõe as considerações finais e perspectivas de trabalhos futuros.
 
 \section{Fundamentação Teórica}
 \label{section:fundamentacao}
@@ -281,22 +281,25 @@ Em termos de comparação entre os~\emph{Drivers}, o MongoClient apresentou dese
 Portanto, conclui-se que, sob o critério exclusivo de desempenho, o~\emph{MongoClient} apresenta melhor desempenho em relação ao concorrente.
 Cabe ressaltar que se quaisquer recursos adicionais providos por uma das opções, como verificação de dados ou facilidade de implementação, consistirem em fatores relevantes, deve-se reavaliar a escolha, contudo, esse estudo tem caráter quantitativo e não visa mensurar a utilização de recursos adicionais que podem variar de contexto e aplicação utilizados.
 
-\section{Ameaças à Validação}
-\label{section:limitacoes}
+%\section{Ameaças à Validação}
+%\label{section:limitacoes}
 
-Esta seção apresenta as possíveis ameaças que podem comprometer os resultados desse estudo comparativo.
+%Esta seção apresenta as possíveis ameaças que podem comprometer os resultados desse estudo comparativo.
 
-Como ameaça à validação interna desse estudo tem a etapa da obtenção dos dados quantitativos quanto às análises conduzidas, desse modo, durante a execução dos testes, todos esses foram conduzidos repetidamente e de modo subsequente para que nenhuma interferência pudesse ser adicionada.
+%Como ameaça à validação interna desse estudo tem a etapa da obtenção dos dados quantitativos quanto às análises conduzidas, desse modo, durante a execução dos testes, todos esses foram conduzidos repetidamente e de modo subsequente para que nenhuma interferência pudesse ser adicionada.
 
-Como ameaça à validação externa, tem-se o conjunto de dados selecionado, o qual está diretamente atrelado aos resultados numéricos obtidos, porém análise é baseado na comparação relativa dos resultados, além a aplicação de teste foi projetada de modo aceitar um conjunto de dados genérico.
+%Como ameaça à validação externa, tem-se o conjunto de dados selecionado, o qual está diretamente atrelado aos resultados numéricos obtidos, porém análise é baseado na comparação relativa dos resultados, além a aplicação de teste foi projetada de modo aceitar um conjunto de dados genérico.
 
 \section{Trabalhos Relacionados} 
 \label{section:relacionados}
 
-\cite{kanade2014study} did a study for NoSQL databases with both normalized and denormalized forms using a similar dataset, and have found that the embedded MongoDB
-data model provides a much better efficiency as compared to a normalized model. 
+Com a crescente utilização dos Bancos de Dados NoSQL, \cite{patil:2017} realizou uma análise quantitativa de desempenho entre o MongoDB e o Banco de Dados Relacional MySQL. Como resultados, foi constatado que o MongoDB apresentou melhor performance em operações de inserção e recuperação se comparado com o MySQL. Em um estudo análogo~\cite{jung:2015}, foi demonstrado que o MongoDB possui em geral desempenho superior ao Banco de Dados Relacional PostgreSQL, considerando operações CRUD, entretanto o desempenho do PostgreSQL é superior quando é utilizado um modelo de dados estruturado.
 
-Este trabalho também busca analisar o desempenho de um Banco de Dados NoSQL considerando tempo de execução, consumo de CPU e Memória. Contudo, diferentemente dos trabalhos presentes na literatura até o momento, este trabalha buscou identificar se a utilização de diferentes \emph{Drivers} do Banco de Dados NoSQL MongoDB pode influenciar no desempenho do mesmo, e caso exista essa influencia qual dos~\emph{Drivers} possibilita um maior desempenho considerando operações CRUD.
+Em outro estudo, \cite{ongo:2018} por meio de uma aplicação web compara o desempenho da utilização integralmente do MySQL e de um modelo híbrido de MySQL e MongoDB. Em seus resultados, é expresso que o banco de dados híbrido obteve desempenho mais alto em operações de leitura e gravação se comparado ao MySQL sozinho. Além disso, o modelo híbrido consome menos disco, contudo consome mais memória se comparado com a utilização integral do MySQL, o consumo de CPU não apresenta diferença significativa entre as duas abordagens. Um possível trabalho futuro poderia comparar o modelo Híbrido com a utilização integralmente do MongoDB e investigar o desempenho, consumo de Disco, Memória RAM e CPU.
+
+\cite{kanade2014study} verificaram a variação do desempenho do Banco de Dados NoSQL MongoDB na perspectiva de dois estilos de modelagem diferentes: incorporação de documentos e normalização em coleções. Os resultados demonstraram que o modelo de dados incorporado do MongoDB oferece um desempenho superior e muito mais consistente em todas as consultas em comparação com o modelo de dados normalizado do MongoDB.
+
+Este trabalho também busca analisar o desempenho do Banco de Dados NoSQL MongoDB considerando tempo de execução, consumo de CPU e Memória. Contudo, diferentemente dos trabalhos presentes na literatura até o momento, buscou-se identificar se a utilização de diferentes \emph{Drivers} do Banco de Dados NoSQL MongoDB pode influenciar no desempenho do mesmo, e caso exista essa influência qual dos~\emph{Drivers} possibilita um maior desempenho considerando operações CRUD.
 
 \section{Considerações Finais}
 \label{section:consideracoes}

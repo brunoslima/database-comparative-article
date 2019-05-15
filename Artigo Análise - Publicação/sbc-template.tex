@@ -307,9 +307,13 @@ Cabe ressaltar que se quaisquer recursos adicionais providos por uma das opçõe
 \section{Trabalhos Relacionados} 
 \label{section:relacionados}
 
-\cite{kanade2014study} did a study for NoSQL databases with both normalized and denormalized forms using a similar dataset, and have found that the embedded MongoDB
-data model provides a much better efficiency as compared to a normalized model. 
+Com a crescente utilização dos Bancos de Dados NoSQL, \cite{patil:2017} realizou uma análise quantitativa de desempenho entre o MongoDB e o Banco de Dados Relacional MySQL. Como resultados, foi constatado que o MongoDB apresentou melhor performance em operações de inserção e recuperação se comparado com o MySQL. Em um estudo análogo~\cite{jung:2015}, foi demonstrado que o MongoDB possui em geral desempenho superior ao Banco de Dados Relacional PostgreSQL, considerando operações CRUD, entretanto o desempenho do PostgreSQL é superior quando é utilizado um modelo de dados estruturado.
 
+Em outro estudo, \cite{ongo:2018} por meio de uma aplicação web compara o desempenho da utilização integralmente do MySQL e de um modelo híbrido de MySQL e MongoDB. Em seus resultados, é expresso que o banco de dados híbrido obteve desempenho mais alto em operações de leitura e gravação se comparado ao MySQL sozinho. Além disso, o modelo híbrido consome menos disco, contudo consome mais memória se comparado com a utilização integral do MySQL, o consumo de CPU não apresenta diferença significativa entre as duas abordagens. Um possível trabalho futuro poderia comparar o modelo Híbrido com a utilização integralmente do MongoDB e investigar o desempenho, consumo de Disco, Memória RAM e CPU.
+
+\cite{kanade2014study} verificaram a variação do desempenho do Banco de Dados NoSQL MongoDB na perspectiva de dois estilos de modelagem diferentes: incorporação de documentos e normalização em coleções. Os resultados demonstraram que o modelo de dados incorporado do MongoDB oferece um desempenho superior e muito mais consistente em todas as consultas em comparação com o modelo de dados normalizado do MongoDB.
+
+Este trabalho também busca analisar o desempenho do Banco de Dados NoSQL MongoDB considerando tempo de execução, consumo de CPU e Memória. Contudo, diferentemente dos trabalhos presentes na literatura até o momento, buscou-se identificar se a utilização de diferentes \emph{Drivers} do Banco de Dados NoSQL MongoDB pode influenciar no desempenho do mesmo, e caso exista essa influência qual dos~\emph{Drivers} possibilita um maior desempenho considerando operações CRUD.
 
 \section{Considerações Finais}
 \label{section:consideracoes}
