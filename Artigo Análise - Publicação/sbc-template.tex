@@ -71,7 +71,7 @@ Os bancos de dados NoSQL, foram desenvolvidos visando armazenar e processar gran
 
 O termo NoSQL é utilizado para se referir a uma ampla variedade de armazenamentos de dados, em que as restrições de transação ACID foram suavizadas permitindo melhor dimensionamento e desempenho horizontal~\cite{rafique:2018}, proporcionando esquemas menos estruturados, suporte a operações de junção, alta escalabilidade, modelagem de dados simples com linguagem de consulta simples~\cite{ramesh:2016}. Os bancos de dados NoSQL são categorizados em: armazenamento de documentos, famílias de colunas, chave/valor, grafos e multimodais~\cite{aparicio:2016}.
 
-Este trabalho tem como foco a categoria orientada a documentos, a qual possui modelagem de dados estreitamente relacionados a programação orientada a objetos, os quais possibilitam flexibilidade no armazenamento de registros  com atributos distintos, sendo útil na modelagem de dados não-estruturados e polimórficos. Essa categoria permite consultas robustas, em que qualquer combinação de campos no documento pode ser realizada visando consultar dados~\cite{patil:2017}. Os dados são organizados em coleções de documentos, as quais utilizam uma estrutura semelhante a JSON (\emph{JavaScript Object Notation}) ou XML (\emph{Extensible Markup Language}).
+Este trabalho tem como foco a categoria orientada a documentos, a qual possui modelagem de dados estreitamente relacionados a programação orientada a objetos, possibilitando flexibilidade no armazenamento de registros com atributos distintos, sendo útil na modelagem de dados não-estruturados e polimórficos. Permite consultas robustas, em que qualquer combinação de campos no documento pode ser realizada~\cite{patil:2017}. Os dados são organizados em coleções de documentos, as quais utilizam uma estrutura semelhante a JSON (\emph{JavaScript Object Notation}) ou XML (\emph{Extensible Markup Language}).
 
 \subsection{MongoDB}
 
@@ -84,18 +84,17 @@ O banco de dados não impõe um esquema prévio, entretanto, normalmente todos o
 \item \textbf{Modelo de dados normalizado:} Os dados possuem referências de documentos para registrar relacionamentos entre esses, mas a combinação de documentos deve ser feita diretamente no código-fonte da aplicação. %REFERENCIAR
 \end{itemize}
 
-O armazenamento dos dados ocorre através da serialização de objetos Javascript, também conhecidos como JSON, cuja implementação interna utiliza uma codificação binária chamada BSON\footnote{http://bsonspec.org/}. O banco de dados MongoDB disponibiliza diversos~\emph{Drivers} para linguagens de programação como Java, C++, C\#, PHP e Python~\cite{lutu2015big}, e também em Node.js.
+O armazenamento dos dados ocorre através da serialização de objetos \textit{Javascript}, também conhecidos como JSON, cuja implementação interna utiliza uma codificação binária chamada BSON\footnote{http://bsonspec.org/}. O banco de dados MongoDB disponibiliza diversos~\emph{Drivers} para linguagens de programação como Java, C++, C\#, PHP e Python~\cite{lutu2015big}, e também em Node.js.
 
-%O QUE SÃO DRIVERS PARA UM BD? QUAL CONTEXTO?
-Nesse contexto, dentre os~\emph{Drivers} existentes, tem-se como destaque o \textbf{\textit{MongoClient}}\footnote{https://mongodb.github.io/node-mongodb-native/index.html}, consiste na solução oficial e nativa provida organização, provendo um conjunto de funcionalidades que permite a manipulação dos dados e uso de recursos avançados do sistema. Essa solução é caracterizada pela modelagem documentos-objeto (\emph{ODM -- Object-Document Modeler}) de modo implícito ao banco de dados.
+Dentre os~\emph{Drivers} existentes para o MongoDB, tem-se como destaque o \textbf{\textit{MongoClient}}\footnote{https://mongodb.github.io/node-mongodb-native/index.html}, consiste na solução oficial e nativa provida organização, provendo um conjunto de funcionalidades que permite a manipulação dos dados e uso de recursos avançados do sistema. Essa solução é caracterizada pela modelagem documentos-objeto (\emph{ODM -- Object-Document Modeler}) de modo implícito ao banco de dados.
 
 Assim como o anterior, o \textbf{\textit{Mongoose}} consiste também em um \emph{Driver} para MongoDB, em que provê a modelagem de dados utilizando um mecanismo objeto-relacional (\emph{ORM -- Object Relational Mapping}) utilizado em banco de dados relacionais~\cite{mardan2014boosting}, executando diversas tarefas de verificação e validação dos dados, como nulidade ou tipagem, previamente definidos por meio da elaboração de um esquema.
 
 \subsection{Node.js}
 \label{subsection:nodejs}
 
-Node.js é uma plataforma construída sob o ambiente de execução para JavaScript do navegador Google Chrome, para criação facilitada de aplicações de internet rápidas e escaláveis, baseado em um mecanismo orientado a eventos de entrada e saída não-bloqueante, que viabiliza a interação do usuário enquanto demais tarefas executam em segundo-plano, resultando em aplicações leves e eficientes.
-Cada aplicação Node.js atua como processo comum em um computador, diferentemente da restrição de aplicações JavaScript voltadas para navegadores. A Figura~\ref{figure:memoria} apresenta a organização da memória em processos Node.js.
+Node.js é uma plataforma construída sob o ambiente de execução para \textit{JavaScript} do navegador Google Chrome, para criação facilitada de aplicações de internet rápidas e escaláveis, baseado em um mecanismo orientado a eventos de entrada e saída não-bloqueante, que viabiliza a interação do usuário enquanto demais tarefas executam em segundo-plano, resultando em aplicações leves e eficientes.
+Cada aplicação Node.js atua como processo comum em um computador, diferentemente da restrição de aplicações \textit{JavaScript} voltadas para navegadores. A Figura~\ref{figure:memoria} apresenta a organização da memória em processos Node.js.
 
 \begin{figure}[!h]
     \centering
@@ -164,7 +163,7 @@ O conjunto reduzido tem o intuito de comparar os dois \emph{Drivers} na manipula
 
 \subsection{Ambiente de Execução}
 
-O ambiente de execução foi composto por uma máquina com Ubuntu 18.04.2 OS, processador Intel i3 3217U e memória RAM de 4GB DDR3. 
+O ambiente de execução foi composto por uma máquina com Sistema Operacional Ubuntu 18.04.2 OS, processador Intel i3 3217U e memória RAM de 4GB DDR3. 
 Durante a execução dos testes, o ambiente de execução da aplicação Node.js foi definido o uso do~\emph{heap} de memória com limite máximo de 3GB, desse modo restringindo o máximo de operações de cada teste.
 
 Em cada cenário de execução, foram extraídos dados relativos ao tempo de execução, tempo de uso de CPU e uso de memória RAM. 
@@ -173,51 +172,48 @@ Foram analisados cenários com diferentes quantidades de operações CRUD, as qu
 \section{Resultados do Experimento}
 \label{section:resultados}
 
-Todos os resultados a seguir são apresentados sob a perspectiva que cada uma das operações CRUD, em que 100\% dos registros são atingidos em cada operação. 
-Cada resultado refere-se a uma operação específica, da combinação de um~\emph{Driver} com o  conjunto de dados grande (com todos atributos) ou conjunto de dados pequeno (com número reduzido de atributos) .
+A seguir os resultados são apresentados sob a perspectiva de cada uma das operações CRUD, em que 100\% dos registros são atingidos em cada operação. 
+Cada resultado refere-se a uma operação específica, da combinação de um~\emph{Driver} com o conjunto de dados grande (com todos atributos) ou conjunto de dados pequeno (com número reduzido de atributos).
 
 \begin{figure}[!ht]
 \centering
 \includegraphics[width=\textwidth]{images/time}
-\caption{Comparativo de operações em relação ao tempo de execução.}
+\caption{Contraste do uso dos \emph{Drivers} com a aplicação de operações CRUD em relação ao tempo de execução.}
 \label{fig:time}
 \end{figure}
 
-A Figura 3a apresenta, para operação de inserção, o tempo de execução do~\emph{Driver} Mongoose maior, para os dois conjuntos, de modo relevante, enquanto para o MongoClient, aparenta não haver diferenças significativas entre os conjuntos. 
-Como exceção, pode-se observar a execução do conjunto pequeno para o Mongoose, em que o tempo para 200 000 operações não mantém a proporcionalidade das demais execuções. Um possível fator que justifique esse comportamento consiste na ocorrência de divisão de conjuntos na operação de inserção quando a quantidade excede 100 000 itens, contudo, isso não ocorre para o conjunto de registros grandes.
+Na Figura~\ref{fig:time} é ilustrado graficamente o tempo de execução ao realizar operações CRUD contrastando a utilização de ambos os \emph{Drivers}. Considerando o tempo de execução para operações de inserção -- Figura 3a, foi identificado que o tempo de execução com o uso do~\emph{Driver} Mongoose foi maior, para os dois conjuntos, em comparação com o uso do MongoClient, no qual não demonstrou diferenças significativas entre os conjuntos. Pode-se observar também que ao manipular o conjunto de dados pequeno com o uso do Mongoose, ocorreu uma queda no tempo de execução a partir de 100.000 operações de inserção. Um possível fator que justifique esse comportamento consiste na ocorrência de divisão de conjuntos na operação de inserção, quando a quantidade excede 100 000 itens, conforme a documentação do MongoDB, contudo, isso não ocorre para o conjunto de dados grande.
 
-A Figura 3b também apresenta, para operação de busca, o tempo de execução inferior para ambos os conjuntos do MongoClient, em que ambos atuam de modo estritamente similar. 
-Quanto ao Mongoose, as execuções para conjunto reduzido e grande apresentam comportamento crescente e proporcional em detrimento a diferença de tamanho dos registros. 
-
-As Figuras 3c e 3d, para as operações de atualização e deleção de registros, ambos os~\emph{Drivers} para os conjuntos obtiveram tempos de execução estritamente similares e proporcionando a quantidade de operações, não apresentando diferenças significativas, nem mesmo quanto ao tamanho médio dos registros.
+Considerando o tempo de execução para operações de Busca -- Figura 3b, o uso do MongoClient resultou em um tempo de execução inferior, para ambos os conjuntos, se comparado a utilização do Mongoose. Ao utilizar o Mongoose neste caso, as execuções para ambos os conjuntos apresentam comportamento crescente e proporcional em detrimento a diferença de tamanho dos registros. Por fim, ainda na perspectiva de tempo de retrabalho, os resultados dos testes tanto para operações de atualização -- Figura 3c, quanto para operações de deleção -- Figura 3d, obtiveram comportamentos similares com o uso de ambos os \emph{Drivers}.
 
 \begin{figure}[!ht]
     \centering
     \includegraphics[width=\textwidth]{images/cpuusage}
-    \caption{Comparativo de operações em relação ao tempo de uso do processador.}
+%    \caption{Comparativo de operações CRUD em relação ao consumo de CPU.}
+	 \caption{Contraste do uso dos \emph{Drivers} com a aplicação de operações CRUD em relação ao consumo de CPU.}
     \label{fig:cpuusage}
 \end{figure}
 
-A próxima análise, na Figura~\ref{fig:cpuusage}, é referente aos resultados relacionados ao tempo de uso de processamento em cada operação.
-As Figuras 4a e 4b, assim como análise anterior, para as operações de inserção e busca, apresenta o MongoClient com tempo de execução médio significativamente inferior, em ambos os conjuntos, em detrimento do alto tempo apresentado pelo Mongoose.
-Para a inserção, também apresenta o caso de exceção para 200 000 operações, cuja possível justificativa é semelhante a análise anterior.
+Na Figura~\ref{fig:cpuusage} é ilustrado graficamente o consumo de CPU ao realizar operações CRUD contrastando a utilização de ambos os \emph{Drivers}.
+Analogamente a análise anterior, para as operações de inserção -- Figura 4a e busca -- Figura 4b, o uso MongoClient prove um tempo médio de consumo de CPU significativamente inferior, em ambos os conjuntos, em detrimento do alto tempo de consumo apresentado pelo Mongoose. Para a inserção, também apresenta o caso de exceção para 200 000 operações, cuja possível justificativa é semelhante a análise anterior.
 
-A Figura 4c, representa a operação de atualização, em que se pode-se observar somente o~\emph{Driver} Mongoose com conjunto de registros maiores apresentou maior tempo de uso de processamento, em detrimento dos demais, que foram semelhantes e com tempo menor, mesmo com oscilações. 
+Na Figura 4c é ilustrado o consumo de CPU ao realizar operações de atualização, em que pode-se observar que com o uso do~\emph{Driver} Mongoose com conjunto de registros maiores apresentou maior tempo de consumo da CPU, diferentemente dos demais, que foram semelhantes e com tempo menor, mesmo com oscilações. 
 É importante salientar que o tempo de processamento de todas as execuções foram inferiores a 250 ms.
-A Figura 4d, representa a operação de deleção, cada execução apresentou comportamento relativamente instável, tendo as execuções com~\emph{Driver} com tempo um pouco maior, contudo não há diferença significativa, porque todas as execuções obtiveram tempo de processamento inferior a 10 ms.
+Na Figura 4d, é ilustrado o consumo de CPU ao realizar operação de deleção, cada execução apresentou comportamento relativamente instável, nas quais o uso do~\emph{Driver} MongoClient apresentou um tempo mais elevado de consumo da CPU, entretanto não há diferença significativa, porque todas as execuções obtiveram tempo de processamento inferior a 10 ms.
 
 \begin{figure}[!ht]
     \centering
     \includegraphics[width=\textwidth]{images/memory}
-    \caption{Comparativo de operações em relação ao uso de memória.}
+%    \caption{Comparativo de operações em relação ao uso de memória.}
+	 \caption{Contraste do uso dos \emph{Drivers} com a aplicação de operações CRUD em relação ao consumo de memória.}
     \label{fig:memory}
 \end{figure}
 
-A última análise, apresentada na Figura~\ref{fig:memory}, refere-se a variação média do uso de memória RAM em cada operação.
-As Figuras 5a e 5b apresentam o uso de memória para as operações de inserção e busca, no qual não pode se identificar um padrão de uso de memória, contudo pode-se identificar que predominantemente o~\emph{Driver} Mongoose tem um consumo maior de memória na operação realizada, em ambos os conjuntos, em detrimento ao casos do~\emph{Driver} MongoClient.
+Na Figura~\ref{fig:memory} é ilustrado graficamente o consumo de Memória RAM ao realizar operações CRUD contrastando a utilização de ambos os \emph{Drivers}.
+Nas Figuras 5a e 5b são ilustrados respectivamente os consumos de memória para as operações de inserção e busca, no qual não pode se identificar um padrão de uso de memória, entretanto pode-se identificar que predominantemente o~\emph{Driver} Mongoose tem um consumo maior de memória nas operações realizadas, em ambos os conjuntos, com relação aos casos do~\emph{Driver} MongoClient.
 Para ambas operações, há um uso adicional de memória em torno de 30 a 40MB.
 
-Por fim, as Figuras 5c e 5d, respectivamente operações de atualização e deleção, também não apresentam padronização no consumo de memória para ambos os~\emph{Drivers} e conjuntos. 
+Por fim, nas Figuras 5c e 5d, respectivamente são ilustrados os consumos de memória ao realizar operações de atualização e deleção, também não apresentam padronização para ambos os~\emph{Drivers} e conjuntos. 
 Apesar de apresentar alguns pontos de instabilidade, é possível notar que tais operações consomem pouca memória adicional, aproximadamente 1MB ou menos, mesmo considerando os picos de oscilação.
 
 \section{Discussão}
