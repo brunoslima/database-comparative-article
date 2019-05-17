@@ -10,16 +10,16 @@
 \sloppy
 
 %\title{Análise Comparativa de Desempenho em~\emph{drivers} para MongoDB em Aplicações Node.js}
-\title{Comparação de Desempenho entre~\emph{Drivers} do MongoDB em Aplicações Node.js}
+\title{Análise de Desempenho do MongoDB Utilizando Diferentes \emph{Drivers} em um Ambiente de Aplicação Node.js}
 
 %\author{Leandro Ungari Cayres, Ronaldo Celso Messias Correia }
-\author{Leandro Ungari Cayres, Bruno Santos de Lima, Rogério Eduardo Garcia,\\ Ronaldo Celso Messias Correia}
+\author{Leandro Ungari Cayres~\inst{1}, Bruno Santos de Lima~\inst{1}, Rogério Eduardo Garcia~\inst{1},\\ Ronaldo Celso Messias Correia~\inst{1}}
 %\author{OMITIDO}
 
 \address{Faculdade de Ciências e Tecnologia -- Universidade Estadual Paulista (UNESP)\\
-  Presidente Prudente -- SP -- Brazil
+  Presidente Prudente -- SP -- Brasil
   %\email{\{leandro.ungari,ronaldo.correia\}@unesp.br}
-\email{\{leandro.ungari,bruno.s.lima,ronaldo.correia,rogerio.garcia\}@unesp.br}
+\email{\{leandro.ungari,bruno.s.lima,rogerio.garcia,ronaldo.correia\}@unesp.br}
 }
 
 %\address{OMITIDO\\
@@ -31,11 +31,11 @@
 \maketitle
 
 \begin{abstract}
-In recent years, the number of NoSQL database has grown significantly. Such databases do not have a common language for defining and manipulating data, so this role is assigned to APIs or Drivers. There are cases where, for the same database, there are several solutions, which makes it difficult to understand the impacts that the choice of each option has. In this paper, we present a comparative study between two MongoDB Drivers in Node.js applications, in which CRUD operations were performed for performance analysis based in metrics: runtime, CPU and memory consumption. The results demonstrate that, under quantative analysis, MongoClient performs better.
+In recent years, the number of NoSQL Database has grown significantly. Such databases do not have a common language for defining and manipulating data, so this role is assigned to APIs or Drivers. There are cases where, for the same database, there are several solutions, which makes it difficult to understand the impacts that the choice of a Driver may result. In this paper, we present a comparative study between two MongoDB Drivers in Node.js applications, in which CRUD operations were performed for performance analysis based on runtime metrics, CPU consumption and memory. The results demonstrate that, under quantitative analysis, the MongoClient Driver performs better.
 \end{abstract}
      
 \begin{resumo} 
-Nos últimos anos, o número de banco de dados NoSQL tem crescido significativamente. Tais bases não possuem uma linguagem comum para definição e manipulação dos dados, de modo que esse papel é atribuído a API's ou \emph{Drivers}. Há casos em que, para o mesmo banco de dados, existem diversas soluções, o que dificulta o entendimento dos impactos que a escolha de cada opção tem. Neste artigo, é apresentado um estudo comparativo entre dois \emph{Drivers} para MongoDB em aplicações Node.js, em que foram executadas operações CRUD para análise de desempenho com base em métricas de tempo de execução, consumo de CPU e memória. Os resultados demonstram que, sob análise quantitativa, o \emph{Driver} \emph{MongoClient} tem melhor desempenho.
+Nos últimos anos, o número de Banco de Dados NoSQL tem crescido significativamente. Tais bases não possuem uma linguagem comum para definição e manipulação dos dados, de modo que esse papel é atribuído a API's ou \emph{Drivers}. Há casos em que, para o mesmo Banco de Dados, existem diversas soluções, o que dificulta o entendimento dos impactos que a escolha de um \emph{Driver} poder resultar. Neste artigo, é apresentado um estudo comparativo entre dois \emph{Drivers} para MongoDB em aplicações Node.js, em que foram executadas operações CRUD para análise de desempenho com base em métricas de tempo de execução, consumo de CPU e memória. Os resultados demonstram que, sob análise quantitativa, o \emph{Driver} \emph{MongoClient} tem melhor desempenho.
 \end{resumo}
 
 
@@ -50,19 +50,19 @@ Diferentemente do modelo relacional, os Bancos de Dados \textit{NoSQL} não poss
 
 Em muitos casos, os~\emph{Drivers}, além de recentes, apresentam limitações em sua implementações, falhas de entendimento e efeitos colaterais no acesso aos dados~\cite{rafique:2018}. Em muitas situações, a decisão de qual combinação entre Banco de Dados \textit{NoSQL} e~\emph{Driver} a ser empregada pode ser um problema, devido ao desconhecimento dos pontos positivos e negativos de cada combinação.
 
-Neste artigo, por meio de um estudo comparativo de desempenho, busca-se avaliar as duas principais soluções de~\emph{Drivers} para o MongoDB~\footnote{https://www.mongodb.com/}, respectivamente MongoClient~\footnote{https://mongodb.github.io/node-mongodb-native/} e Mongoose~\footnote{https://mongoosejs.com/}, em ambientes de aplicação Node.js. 
+Neste artigo, por meio de um estudo comparativo de desempenho, busca-se avaliar as duas principais soluções de~\emph{Drivers} para o MongoDB~\footnote{https://www.mongodb.com/}, respectivamente \emph{MongoClient}~\footnote{https://mongodb.github.io/node-mongodb-native/} e \emph{Mongoose}~\footnote{https://mongoosejs.com/}, em ambientes de aplicação Node.js. 
 O principal fator considerado para a realização dessa análise consiste na definição prévia de esquema para a manipulação dos dados em operações de CRUD (\emph{create}-\emph{read}-\emph{update}-\emph{delete}). Conceitualmente, os Bancos de Dados~\textit{NoSQL} não requerem essa predefinição, proporcionando flexibilidade, entretanto, não existe nada que impeça sua utilização, principalmente quanto a respeito do desempenho; possibilitando algum impacto relevante.
 
 O Banco de Dados MongoDB foi escolhido devido a sua enorme popularidade recente, empregado em diversas aplicações e pesquisa~\cite{patil:2017,jung:2015,ongo:2018,kanade2014study}; e uma das principais opções de armazenamento orientada a documentos. Quanto ao Node.js, mesmo recente, alguns trabalhos apontam a sua viabilidade tecnológica no desenvolvimento de aplicações~\cite{chaniotis2015node}. Com essa escolha, tanto aplicação quanto banco de dados utilizam \textit{JavaScript}, uniformizando o sistema em termos de linguagem de programação.
 
 O restante desse artigo está organizado do seguinte modo: na Seção~\ref{section:fundamentacao} são apresentados conceitos de Banco de Dados NoSQL, MongoDB e seus \emph{Drivers}, além do ambiente de execução Node.js. 
 A Seção~\ref{section:experimento} é apresentada a estruturação do experimento. 
-Na Seção~\ref{section:resultados} são descritos os resultados quantitativos obtidos, cuja discussão está situada na Seção~\ref{section:discussao}. Na Seção~\ref{section:relacionados} relata os trabalhos relacionados. Por fim, a Seção~\ref{section:consideracoes} expressa as considerações finais e perspectivas de trabalhos futuros.
+Na Seção~\ref{section:resultados} são descritos os resultados quantitativos obtidos, cuja discussão está situada na Seção~\ref{section:discussao}. Na Seção~\ref{section:relacionados} relata os trabalhos relacionados. Por fim, a Seção~\ref{section:consideracoes} expressa as considerações finais.
 
 \section{Fundamentação Teórica}
 \label{section:fundamentacao}
 
-Nesta seção, são discutidos alguns conceitos fundamentais para o trabalho: Bancos de Dados NoSQL, as características do MongoDB e dos \emph{Drivers} MongoClient e Mongoose, organização de aplicações Node.js. 
+Nesta seção, são discutidos alguns conceitos fundamentais para o trabalho: Bancos de Dados NoSQL, as características do MongoDB e dos \emph{Drivers} \emph{MongoClient} e \emph{Mongoose}, organização de aplicações Node.js. 
 
 \subsection{Banco de Dados NoSQL}
 \label{subsection:nao-relacional}
@@ -108,7 +108,7 @@ A região principal é chamada~\emph{Resident Set}, a qual corresponde a toda me
 \section{Composição do Experimento}
 \label{section:experimento}
 
-Nesta seção é apresentado a composição do experimento comparando os~\emph{Drivers} MongoClient e Mongoose em integração com o MongoDB. 
+Nesta seção é apresentado a composição do experimento comparando os~\emph{Drivers} \emph{MongoClient} e \emph{Mongoose} em integração com o MongoDB. 
 Na Figura~\ref{figure:diagrama-banco} é ilustrado a esquematização do experimento. 
 
 \begin{figure}[!ht]
@@ -133,11 +133,11 @@ As métricas escolhidas para análises de cada um dos testes conduzidos foram:
 
 Por fim, foram formuladas as seguintes de questões de pesquisa que guiaram formalmente as análises executadas: 
 
-\textbf{QP1} --~\emph{A escolha do driver impacta no tempo de execução de cada uma das operações de CRUD?}
+\textbf{QP1} --~\emph{A escolha do driver impacta no desempenho do MongoDB considerando o tempo de execução de cada uma das operações CRUD?}
 
-\textbf{QP2} --~\emph{A escolha do driver pode influenciar no tempo de processamento (CPU) nas operações de CRUD?}
+\textbf{QP2} --~\emph{A escolha do driver pode influenciar no desempenho do MongoDB considerando o tempo de consumo da CPU ao executar operações CRUD?}
 
-\textbf{QP3} --~\emph{A escolha do driver impacta de modo relevante quanto ao uso de memória nas operações de CRUD?}
+\textbf{QP3} --~\emph{A escolha do driver impacta de modo relevante no desempenho do MongoDB quanto ao uso de memória RAM ao executar operações CRUD?}
 
 \subsection{Características dos Conjuntos de Dados}
 
@@ -177,40 +177,40 @@ Cada resultado refere-se a uma operação específica, da combinação de um~\em
 
 \begin{figure}[!ht]
 \centering
-\includegraphics[width=\textwidth]{images/time}
+\includegraphics[width=0.85\textwidth]{images/time}
 \caption{Contraste do uso dos \emph{Drivers} com a aplicação de operações CRUD em relação ao tempo de execução.}
 \label{fig:time}
 \end{figure}
 
-Na Figura~\ref{fig:time} é ilustrado graficamente o tempo de execução ao realizar operações CRUD contrastando a utilização de ambos os \emph{Drivers}. Considerando o tempo de execução para operações de inserção -- Figura 3a, foi identificado que o tempo de execução com o uso do~\emph{Driver} Mongoose foi maior, para os dois conjuntos, em comparação com o uso do MongoClient, no qual não demonstrou diferenças significativas entre os conjuntos. Pode-se observar também que ao manipular o conjunto de dados pequeno com o uso do Mongoose, ocorreu uma queda no tempo de execução a partir de 100.000 operações de inserção. Um possível fator que justifique esse comportamento consiste na ocorrência de divisão de conjuntos na operação de inserção, quando a quantidade excede 100 000 itens, conforme a documentação do MongoDB, contudo, isso não ocorre para o conjunto de dados grande.
+Na Figura~\ref{fig:time} é ilustrado graficamente o tempo de execução ao realizar operações CRUD contrastando a utilização de ambos os \emph{Drivers}. Considerando o tempo de execução para operações de inserção -- Figura 3a, foi identificado que o tempo de execução com o uso do~\emph{Driver} \emph{Mongoose} foi maior, para os dois conjuntos, em comparação com o uso do \emph{MongoClient}, no qual não demonstrou diferenças significativas entre os conjuntos. Pode-se observar também que ao manipular o conjunto de dados pequeno com o uso do \emph{Mongoose}, ocorreu uma queda no tempo de execução a partir de 100.000 operações de inserção. Um possível fator que justifique esse comportamento consiste na ocorrência de divisão de conjuntos na operação de inserção, quando a quantidade excede 100 000 itens, conforme a documentação do MongoDB, contudo, isso não ocorre para o conjunto de dados grande.
 
-Considerando o tempo de execução para operações de Busca -- Figura 3b, o uso do MongoClient resultou em um tempo de execução inferior, para ambos os conjuntos, se comparado a utilização do Mongoose. Ao utilizar o Mongoose neste caso, as execuções para ambos os conjuntos apresentam comportamento crescente e proporcional em detrimento a diferença de tamanho dos registros. Por fim, ainda na perspectiva de tempo de retrabalho, os resultados dos testes tanto para operações de atualização -- Figura 3c, quanto para operações de deleção -- Figura 3d, obtiveram comportamentos similares com o uso de ambos os \emph{Drivers}.
+Considerando o tempo de execução para operações de Busca -- Figura 3b, o uso do \emph{MongoClient} resultou em um tempo de execução inferior, para ambos os conjuntos, se comparado a utilização do \emph{Mongoose}. Ao utilizar o \emph{Mongoose} neste caso, as execuções para ambos os conjuntos apresentam comportamento crescente e proporcional em detrimento a diferença de tamanho dos registros. Por fim, ainda na perspectiva de tempo de retrabalho, os resultados dos testes tanto para operações de atualização -- Figura 3c, quanto para operações de deleção -- Figura 3d, obtiveram comportamentos similares com o uso de ambos os \emph{Drivers}.
 
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=\textwidth]{images/cpuusage}
+    \includegraphics[width=0.85\textwidth]{images/cpuusage}
 %    \caption{Comparativo de operações CRUD em relação ao consumo de CPU.}
 	 \caption{Contraste do uso dos \emph{Drivers} com a aplicação de operações CRUD em relação ao consumo de CPU.}
     \label{fig:cpuusage}
 \end{figure}
 
 Na Figura~\ref{fig:cpuusage} é ilustrado graficamente o consumo de CPU ao realizar operações CRUD contrastando a utilização de ambos os \emph{Drivers}.
-Analogamente a análise anterior, para as operações de inserção -- Figura 4a e busca -- Figura 4b, o uso MongoClient prove um tempo médio de consumo de CPU significativamente inferior, em ambos os conjuntos, em detrimento do alto tempo de consumo apresentado pelo Mongoose. Para a inserção, também apresenta o caso de exceção para 200 000 operações, cuja possível justificativa é semelhante a análise anterior.
+Analogamente a análise anterior, para as operações de inserção -- Figura 4a e busca -- Figura 4b, o uso \emph{MongoClient} prove um tempo médio de consumo de CPU significativamente inferior, em ambos os conjuntos, em detrimento do alto tempo de consumo apresentado pelo \emph{Mongoose}. Para a inserção, também apresenta o caso de exceção para 200 000 operações, cuja possível justificativa é semelhante a análise anterior.
 
-Na Figura 4c é ilustrado o consumo de CPU ao realizar operações de atualização, em que pode-se observar que com o uso do~\emph{Driver} Mongoose com conjunto de registros maiores apresentou maior tempo de consumo da CPU, diferentemente dos demais, que foram semelhantes e com tempo menor, mesmo com oscilações. 
+Na Figura 4c é ilustrado o consumo de CPU ao realizar operações de atualização, em que pode-se observar que com o uso do~\emph{Driver} \emph{Mongoose} com conjunto de registros maiores apresentou maior tempo de consumo da CPU, diferentemente dos demais, que foram semelhantes e com tempo menor, mesmo com oscilações. 
 É importante salientar que o tempo de processamento de todas as execuções foram inferiores a 250 ms.
-Na Figura 4d, é ilustrado o consumo de CPU ao realizar operação de deleção, cada execução apresentou comportamento relativamente instável, nas quais o uso do~\emph{Driver} MongoClient apresentou um tempo mais elevado de consumo da CPU, entretanto não há diferença significativa, porque todas as execuções obtiveram tempo de processamento inferior a 10 ms.
+Na Figura 4d, é ilustrado o consumo de CPU ao realizar operação de deleção, cada execução apresentou comportamento relativamente instável, nas quais o uso do~\emph{Driver} \emph{MongoClient} apresentou um tempo mais elevado de consumo da CPU, entretanto não há diferença significativa, porque todas as execuções obtiveram tempo de processamento inferior a 10 ms.
 
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=\textwidth]{images/memory}
+    \includegraphics[width=0.85\textwidth]{images/memory}
 %    \caption{Comparativo de operações em relação ao uso de memória.}
 	 \caption{Contraste do uso dos \emph{Drivers} com a aplicação de operações CRUD em relação ao consumo de memória.}
     \label{fig:memory}
 \end{figure}
 
 Na Figura~\ref{fig:memory} é ilustrado graficamente o consumo de Memória RAM ao realizar operações CRUD contrastando a utilização de ambos os \emph{Drivers}.
-Nas Figuras 5a e 5b são ilustrados respectivamente os consumos de memória para as operações de inserção e busca, no qual não pode se identificar um padrão de uso de memória, entretanto pode-se identificar que predominantemente o~\emph{Driver} Mongoose tem um consumo maior de memória nas operações realizadas, em ambos os conjuntos, com relação aos casos do~\emph{Driver} MongoClient.
+Nas Figuras 5a e 5b são ilustrados respectivamente os consumos de memória para as operações de inserção e busca, no qual não pode se identificar um padrão de uso de memória, entretanto pode-se identificar que predominantemente o~\emph{Driver} \emph{Mongoose} tem um consumo maior de memória nas operações realizadas, em ambos os conjuntos, com relação aos casos do~\emph{Driver} \emph{MongoClient}.
 Para ambas operações, há um uso adicional de memória em torno de 30 a 40MB.
 
 Por fim, nas Figuras 5c e 5d, respectivamente são ilustrados os consumos de memória ao realizar operações de atualização e deleção, também não apresentam padronização para ambos os~\emph{Drivers} e conjuntos. 
@@ -224,21 +224,21 @@ Nessa seção são apresentadas discussões a respeito dos resultados obtidos, o
 \subsection{Discussão -- QP1}
 \label{q1}
 
-Com relação a QP1, em linhas gerais, os testes executados utilizando o~\emph{Driver} Mongoose apresentaram tempo de execução superior se comparado com a utilização do MongoClient em duas operações, enquanto nas demais operações o desempenho foi semelhante.
-Desse modo, sob a perspectiva de tempo médio de execução de cada operação realizada no Banco de Dados MongoDB, temos que, a escolha do~\emph{Driver} pode impactar no desempenho, tendo o MongoClient como melhor opção para o MongoDB quando o tempo de execução for um fator critico.
+Com relação a QP1, em linhas gerais, os testes executados utilizando o~\emph{Driver} \emph{Mongoose} apresentaram tempo de execução superior se comparado com a utilização do \emph{MongoClient} em duas operações, enquanto nas demais operações o desempenho foi semelhante.
+Desse modo, sob a perspectiva de tempo médio de execução de cada operação realizada no Banco de Dados \emph{MongoDB}, temos que, a escolha do~\emph{Driver} pode impactar no desempenho, tendo o \emph{MongoClient} como melhor opção para o \emph{MongoDB} quando o tempo de execução for um fator critico.
 
 \subsection{Discussão -- QP2}
 \label{q2}
 
-Assim como na QP1, os testes executados utilizando o MongoClient obtiveram menor tempo de consumo da CPU em relação ao Mongoose, em ambos os conjuntos, principalmente para as operações de inserção e busca, enquanto nas demais operações (atualização e deleção), também foi registrado melhor desempenho, contudo em proporção menor.
-Em suma, em termos de tempo de processamento, a escolha do~\emph{Driver} pode influenciar no desempenho, também apresentando MongoClient como melhor opção.
+Assim como na QP1, os testes executados utilizando o \emph{MongoClient} obtiveram menor tempo de consumo da CPU em relação ao \emph{Mongoose}, em ambos os conjuntos, principalmente para as operações de inserção e busca, enquanto nas demais operações (atualização e deleção), também foi registrado melhor desempenho, contudo em proporção menor.
+Em suma, em termos de tempo de processamento, a escolha do~\emph{Driver} pode influenciar no desempenho, também apresentando \emph{MongoClient} como melhor opção.
 
 \subsection{Discussão -- QP3}
 \label{q3}
 
-A respeito da QP3, tem-se que para as operações de inserção e busca, na maioria dos casos de execução, o~\emph{Driver} Mongoose apresenta maior consumo de memória, enquanto para as operações de atualização e deleção não há diferenças significantes.
+A respeito da QP3, tem-se que para as operações de inserção e busca, na maioria dos casos de execução, o~\emph{Driver} \emph{Mongoose} apresenta maior consumo de memória, enquanto para as operações de atualização e deleção não há diferenças significantes.
 Contudo cabe ressaltar que em nenhuma das comparações houve comportamento estável.
-Desse modo, em termos de consumo de memória, temos que, a escolha do~\emph{Driver} não impacta de modo relevante para todas as operações, apesar do consumo inferior por parte do~\emph{Driver} MongoClient.
+Desse modo, em termos de consumo de memória, temos que, a escolha do~\emph{Driver} não impacta de modo relevante para todas as operações, apesar do consumo inferior por parte do~\emph{Driver} \emph{MongoClient}.
 
 \subsection{Discussão Geral}
 \label{qgeral}
@@ -247,9 +247,9 @@ De modo geral, os dados obtidos indicam que as operações de inserção e busca
 Sob a perspectiva de tempo de consumo da CPU também se vale a mesma análise, inclusive as operações indicam aproximada proporcionalidade em comparação ao tempo de execução total.
 Quanto ao uso de memória, ambas operações também apresentam maior custo, mesmo que não-linear, em níveis próximos de 30 a 40MB, em detrimento das demais operações com uso próximo ou inferior a 1MB.
 
-A respeito da diferença média de tamanho dos registros do conjunto de dados adotado, o~\emph{Driver} MongoClient apresentou-se de modo indiferente, não apresentando oscilações significativas, enquanto o Mongoose apresenta o desempenho diretamente proporcional ao tamanho do registro.
+A respeito da diferença média de tamanho dos registros do conjunto de dados adotado, o~\emph{Driver} \emph{MongoClient} apresentou-se de modo indiferente, não apresentando oscilações significativas, enquanto o \emph{Mongoose} apresenta o desempenho diretamente proporcional ao tamanho do registro.
 
-Em termos de comparação entre os~\emph{Drivers}, o MongoClient apresentou desempenho mais estável e de menor custo sob a perspectiva de todas as métricas adotadas, em detrimento ao Mongoose. Portanto, conclui-se que, sob o critério exclusivo de desempenho, o~\emph{MongoClient} apresenta-se como melhor opção com relação ao concorrente. Cabe ressaltar que se quaisquer recursos adicionais providos por uma das opções, como verificação de dados ou facilidade de implementação, consistirem em fatores relevantes, deve-se reavaliar a escolha, contudo, esse estudo tem caráter quantitativo e não visa mensurar a utilização de recursos adicionais que podem variar de contexto e aplicação utilizados.
+Em termos de comparação entre os~\emph{Drivers}, o \emph{MongoClient} apresentou desempenho mais estável e de menor custo sob a perspectiva de todas as métricas adotadas, em detrimento ao \emph{Mongoose}. Portanto, conclui-se que, sob o critério exclusivo de desempenho, o~\emph{MongoClient} apresenta-se como melhor opção com relação ao concorrente. Cabe ressaltar que se quaisquer recursos adicionais providos por uma das opções, como verificação de dados ou facilidade de implementação, consistirem em fatores relevantes, deve-se reavaliar a escolha, contudo, esse estudo tem caráter quantitativo e não visa mensurar a utilização de recursos adicionais que podem variar de contexto e aplicação utilizados.
 
 %\section{Ameaças à Validação}
 %\label{section:limitacoes}
@@ -273,10 +273,10 @@ Este trabalho também busca analisar o desempenho do Banco de Dados NoSQL MongoD
 \section{Considerações Finais}
 \label{section:consideracoes}
 
-Este artigo apresenta um estudo analisando o desempenho do Banco de Dados NoSQL MongoDB contrastando a utilização de dois~\emph{Drivers} distintos: MongoClient e Mongoose.
+Este artigo apresenta um estudo analisando o desempenho do Banco de Dados \emph{NoSQL} MongoDB contrastando a utilização de dois~\emph{Drivers} distintos: \emph{MongoClient} e \emph{Mongoose}.
 Na avaliação foram conduzidas análises quantitativas quanto a tempo de execução, tempo de consumo da CPU e uso de memória na execução de operações CRUD; além de comparar os impactos com variação do tamanho médio dos registros presentes no conjunto de dados.
 
-De modo geral, através dos resultados quantitativos, foi constatado que o desempenho do MongoDB ao utilizar o~\emph{Driver} MongoClient é em geral melhor se comparado com a utilização do \emph{Driver} Mongoose, principalmente sob as métricas de tempo de execução e consumo da CPU, e, de modo menos significativo, quanto ao consumo de memória RAM, considerando uma aplicação desenvolvida em ambiente Node.js.
+De modo geral, através dos resultados quantitativos, foi constatado que o desempenho do MongoDB ao utilizar o~\emph{Driver} \emph{MongoClient} é em geral melhor se comparado com a utilização do \emph{Driver} \emph{Mongoose}, principalmente sob as métricas de tempo de execução e consumo da CPU, e, de modo menos significativo, quanto ao consumo de memória RAM, considerando uma aplicação desenvolvida em ambiente Node.js.
 
 Além do proposito de investigação inicial deste trabalho, como contribuição adicional, tem-se a implementação e disponibilização da ferramenta de testes, de modo a viabilizar a execução de futuras análises em ambientes Node.js.
 
