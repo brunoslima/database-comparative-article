@@ -45,11 +45,11 @@ O~\textit{Big Data} se refere ao grande volume de dados gerados em diversos dom�
 A complexidade lógica existente na modelagem relacional somada ao alto volume de dados mostrou-se um problema, visto que pode propiciar \textit{deadlocks}, além de problemas de concorrência, lentidão na leitura e escrita dos dados~\cite{han2011survey}. 
 Como alternativa surgiram os Bancos de Dados \textit{NoSQL}, que atuam de modo mais eficiente com o armazenamento e manipulação de grande volume de dados, possibilitando escalar operações por diversos servidores, além de prover maior flexibilidade~\cite{ramesh:2016}.
 
-Neste contexto, o objetivo deste trabalho consiste analisar o potencial de escabilidade horizontal de um~\emph{cluster} executando o Banco de Dados~\emph{NoSQL} HBase.  Para isso, foram conduzidos testes em diferentes cenários de implementação do~\emph{cluster}, com o intuito de obter um cenário ideal, em que aplicações e serviços se mantenham eficientes e disponíveis independentemente da demanda de armazenamento e consultas, apenas pela adição de novos nós ao ambiente distribuído. Os testes foram conduzidos por meio de um~\emph{benchmarking} com operações~\emph{read},~\emph{write},~\emph{scan} e~\emph{read-modify-write} utilizando o \textit{framework}~\emph{Yahoo! Cloud Serving Benchmark} (YCSB) a partir da adição de novos nós ao ambiente e variação do volume de dados.
+Neste contexto, o objetivo do trabalho consiste analisar o potencial de escalabilidade horizontal de um~\emph{cluster} executando o Banco de Dados~\emph{NoSQL} HBase. Foram conduzidos testes em diferentes cenários de implementação do~\emph{cluster}, com o intuito de obter um cenário ideal, em que aplicações e serviços se mantenham eficientes e disponíveis independentemente da demanda de armazenamento e consultas, apenas pela adição de nós ao ambiente distribuído. Os testes foram conduzidos por meio de um~\emph{benchmarking} com operações~\emph{read},~\emph{write},~\emph{scan} e~\emph{read-modify-write} utilizando o \textit{framework}~\emph{Yahoo! Cloud Serving Benchmark} (YCSB) e variação do ambiente.
 
 %Neste contexto, o objetivo deste trabalho consiste em verificar o potencial desse novo paradigma de armazenamento e recuperação de dados utilizando computação distribuída, de modo a criar um cenário, em que aplicações e serviços se mantenham eficientes e disponíveis independentemente do tamanho da demanda de armazenamento e consultas, somente através da adição de novos nós ao ambiente distribuído. Desse modo, através de um experimento foi avaliada a escalabilidade horizontal do Banco de Dados Hbase, foi executado um~\emph{benchmarking} com operações~\emph{read},~\emph{write},~\emph{scan} e~\emph{read-modify-write} utilizando o \textit{framework}~\emph{Yahoo! Cloud Serving Benchmark} (YCSB) a partir da inserção de novos nós ao sistema e crescimento do conjunto de dados.
 
-O HBase está integrado a plataforma Hadoop, o qual também reúne o sistema de arquivos distribuídos~\emph{Hadoop Distributed File System} (HDFS) e o modelo de suporte a programação paralela MapReduce~\cite{hadoophbase}. O Hbase permite o processamento distribuído por meio de~\emph{clusters}, atuando sobre o HDFS de modo a prover recursos semelhantes ao BigTable~\cite{chang2008bigtable} e alta tolerância a falhas ao armazenar grandes quantidades de dados esparsos~\cite{hadoophbase}.
+O HBase está integrado a plataforma Hadoop, também composta por sistema de arquivos distribuídos~\emph{Hadoop Distributed File System} (HDFS) e o modelo de suporte a programação paralela MapReduce~\cite{hadoophbase}. O Hbase permite o processamento distribuído por meio de~\emph{clusters}, atuando sobre o HDFS de modo a prover recursos semelhantes ao BigTable~\cite{chang2008bigtable} e alta tolerância a falhas ao armazenar grandes quantidades de dados esparsos~\cite{hadoophbase}.
 
 Este trabalho está organizando do seguinte modo: Na Seção~\ref{sec:fundamentacao} são apresentados conceitos de escalabilidade em banco de dados e as ferramentas utilizadas; A Seção~\ref{sec:relacionados} expõe os trabalhos relacionados; Na Seção~\ref{sec:conf-experimento} é apresentada a configuração do experimento descrevendo os cenários de testes utilizados; A Seção~\ref{sec:resultados} exibe a análise dos resultados obtidos; Por fim, a Seção~\ref{sec:finais} apresenta as considerações finais.
 
@@ -59,14 +59,14 @@ Este trabalho está organizando do seguinte modo: Na Seção~\ref{sec:fundamenta
 \subsection{Escalabilidade em Banco de Dados}
 \label{subsec:escalabilidade}
 
-Escalabilidade é a capacidade de expandir os recursos (armazenamento e processamento) de um sistema~\cite{elmasri2010fundamentals}. Um Banco de Dados escalável possui a capacidade de manipular quantidades de dados cada vez maiores e garantir a disponibilidade do sistema. Existem duas abordagens para escalabilidade:~\emph{Vertical} e~\emph{Horizontal}.
+Escalabilidade é a capacidade de expandir os recursos (armazenamento e processamento) de um sistema~\cite{elmasri2010fundamentals}. Um Banco de Dados escalável possui a capacidade de manipular maior quantidade de dados e garantir a disponibilidade do sistema. Existem duas abordagens para escalabilidade:~\emph{Vertical} e~\emph{Horizontal}.
 
-A~\emph{Escalabilidade Vertical}, consiste em adicionar mais recursos ao servidor. Prove menor consumo de energia, implementação facilitada e menores problemas de arrefecimento. Contudo, possui custo extremamente superior a escalabilidade horizontal, além de possibilitar a interrupção do serviço por falha devido a um único servidor~\cite{hwang2014scale}. Em contraponto, na~\emph{Escalabilidade Horizontal}, os recursos são distribuidos em diferentes servidores, em geral máquinas simples, com o propósito de redução de custos. Existe garantia de recuperação em caso de falhas, devido a presença de redundância de dados e processos em diversos nós. Essa arquitetura é muito semelhante em diversos Banco de Dados~\textit{NoSQL}~\cite{hwang2014scale}.
+A~\emph{Escalabilidade Vertical} consiste em adicionar mais recursos ao servidor, a qual prove menor consumo de energia, implementação facilitada e menores problemas de arrefecimento. Contudo, possui custo extremamente superior a escalabilidade horizontal, além de possibilitar a interrupção do serviço por falha devido a um único servidor~\cite{hwang2014scale}. Em contraponto, na~\emph{Escalabilidade Horizontal}, os recursos são distribuídos em diferentes servidores, em geral máquinas simples, com o propósito de redução de custos. Existe garantia de recuperação em caso de falhas, devido a presença de redundância de dados e processos em diversos nós. Essa arquitetura é presente em diversos Banco de Dados~\textit{NoSQL}~\cite{hwang2014scale}.
 
 \subsection{Apache Hadoop}
 \label{subsection:hadoop}
 
-O Apache Hadoop consiste em um (\textit{framework}) para processamento distribuído de grande volume de dados em~\emph{clusters}. Utiliza o modelo~\emph{MapReduce}, projetado para escalonamento horizontal, oferecendo alta disponibilidade e recuperação de falhas~\cite{hadoophbase}. Um~\emph{cluster} Hadoop opera sob a arquitetura mestre/escravo -- Figura~\ref{figure:hadoop}. Existem cinco processos O~\emph{NameNode} e o~\emph{JobTraker} são processos executados pelo nó-mestre, enquanto~\emph{SecondaryNameNode} pelo nó-mestre alternativo, em caso de falha. O~\emph{DataNode} e~\emph{TaskTraker} atuam como processos escravos de múltiplas instâncias. %Os processos~\emph{NameNode},~\emph{SecondaryNameNode} e~\emph{DataNode} fazem parte da execução do sistema de arquivos HDFS, enquanto~\emph{JobTraker} e~\emph{TaskTraker} parte da execução MapReduce~\cite{goldman2012apache}.
+O Apache Hadoop consiste em um (\textit{framework}) para processamento distribuído de grande volume de dados em~\emph{clusters}. Utiliza o modelo~\emph{MapReduce}, projetado para escalonamento horizontal, oferecendo alta disponibilidade e recuperação de falhas~\cite{hadoophbase}. Um~\emph{cluster} Hadoop opera sob a arquitetura mestre/escravo -- Figura~\ref{figure:hadoop}. Existem cinco processos, o~\emph{NameNode} e o~\emph{JobTraker} são processos executados pelo nó-mestre, enquanto~\emph{SecondaryNameNode} pelo nó-mestre alternativo, em caso de falha. O~\emph{DataNode} e~\emph{TaskTraker} atuam como processos escravos de múltiplas instâncias. %Os processos~\emph{NameNode},~\emph{SecondaryNameNode} e~\emph{DataNode} fazem parte da execução do sistema de arquivos HDFS, enquanto~\emph{JobTraker} e~\emph{TaskTraker} parte da execução MapReduce~\cite{goldman2012apache}.
 
 \begin{figure}[!ht]
 \centering
@@ -85,14 +85,14 @@ O Apache Hadoop consiste em um (\textit{framework}) para processamento distribu�
 \subsection{HBase}
 \label{subsec:hbase}
 
-O Hbase é um banco de dados~\textit{NoSQL}, distribuído, tolerante a falhas, de código aberto e altamente escalável. Tem como foco aplicações que necessitam de leitura e escrita de acesso aleatório com tempo constante em grandes volumes de dados~\cite{hadoophbase}. O projeto foi inspirado no \textit{BigTable} da Google, ambos utilizam o modelo de dados orientado a colunas. Esse não possui nenhuma linguagem de consulta estruturada, porém fornece uma API Java que possibilita realizar operações básicas como~\emph{put},~\emph{get},~\emph{update} e~\emph{delete}. Possibilita também o uso da função~\emph{scan}, para selecionar quais as colunas a serem retornadas ou o número de versões de cada célula. Consultas mais complexas ficam a cargo de jobs do MapReduce.
+O Hbase é um banco de dados~\textit{NoSQL}, distribuído, tolerante a falhas de código aberto e altamente escalável, com foco em aplicações que necessitam de leitura e escrita de acesso aleatório com tempo constante~\cite{hadoophbase}. O projeto foi inspirado no \textit{BigTable} da Google, ambos utilizam o modelo de dados orientado a colunas. Esse não possui nenhuma linguagem de consulta estruturada, que fornece uma API Java que possibilita realizar operações básicas como~\emph{put},~\emph{get},~\emph{update} e~\emph{delete}, e também o uso da função~\emph{scan}, para selecionar quais as colunas retornadas ou o número de versões de cada célula, porém consultas mais complexas utilizam~\emph{jobs} do MapReduce.
 
-Os dados do HBase são armazenados como arquivos do HDFS, o qual consiste em um sistema de arquivos distribuídos tolerante a falhas, voltado para~\emph{hardwares} de baixo custo e aplicações com grande volume de dados. Dessa forma, os servidores escravos (~\emph{region servers}) são dispostos nos nós que executam os processos~\emph{DataNode} do HDFS provendo localidade nos dados que transitam de um para o outro.
+Os dados do HBase são armazenados como arquivos do HDFS, um sistema de arquivos distribuídos tolerante a falhas, voltado para~\emph{hardwares} de baixo custo e aplicações com grande volume de dados. Dessa forma, os servidores escravos (\emph{region servers}) são dispostos nos nós que executam os processos~\emph{DataNode} do HDFS provendo localidade nos dados que transitam de um para o outro.
 
 \subsection{Yahoo! Cloud Serving Benchmark}
 \label{subsec:ycsb}
 
-O YCSB (\emph{Yahoo!Cloud Serving Benchmark}) é um \textit{framework} de código-aberto para apoio a~\emph{benchmarking} de diferentes bancos de dados distribuídos, a qual permite a adição de novas implementações~\cite{cooper2010benchmarking}. 
+O YCSB (\emph{Yahoo!Cloud Serving Benchmark}) é um \textit{framework} de~\emph{benchmarking} para bancos de dados distribuídos, que permite a adição de novas implementações~\cite{cooper2010benchmarking}. 
 O YCSB possibilita a avaliação de duas camadas de~\textit{benchmark}: performance e escalabilidade. 
 Em performance, mede-se a latência (tempo de execução) das requisições, enquanto a escalabilidade é medido o impacto na performance quando o número de servidores do sistema cresce~\cite{cooper2010benchmarking}.
 
@@ -106,23 +106,23 @@ As~\emph{workloads} consistem de combinações de operações de leitura e escri
 
 %Em seu estudo, 
 \cite{jogi2016performance} realizam a comparação MySQL com Cassandra e Hbase em operações~\emph{heavy~\emph{write}}, utilizando uma aplicação~\emph{web} REST (\emph{Representacional State Transfer}) para recebimento dos dados e armazenamento no Banco de Dados. 
-Conclui-se que o Cassandra apresentou melhor desempenho quanto a velocidade de escrita, enquanto o Hbase foi duas vezes mais rápido que o MySQL, isso ocorre devido a incorporação de características do \emph{BigTable} do Google e do DynamoDB pelo Cassandra. 
-\cite{swaminathan2016quantitative} conduziram uma análise de escalabilidade nos Bancos de Dados: Hbase, Cassandra e MongoDB, utilizando o \textit{framework} YCSB com diferentes cargas de trabalho e conjunto de dados, no intuito de evidenciar as vantagens e desvantagens de cada ferramenta para um cenário específico.
+Conclui-se que o Cassandra apresentou melhor velocidade de escrita, enquanto o Hbase foi duas vezes mais rápido que o MySQL, isso ocorre devido a incorporação de características do \emph{BigTable} do Google e do DynamoDB pelo Cassandra. 
+\cite{swaminathan2016quantitative} analisaram a escalabilidade nos Bancos de Dados: Hbase, Cassandra e MongoDB, utilizando o \textit{framework} YCSB com diferentes cargas de trabalho e conjunto de dados, no intuito de evidenciar as vantagens e desvantagens de cada em cenários específicos.
 
 Segundo~\cite{waage2014benchmarking}, a confiabilidade para o armazenamento ``em nuvem'' é um dos pontos chaves para adoção de tecnologias não-relacionais. 
 Foi proposto que os dados sejam criptografados, assim ele avaliou o impacto da criptografia, foi realizado um estudo com os Bancos de Dados Cassandra e Hbase. 
 Para tal foi utilizado o \emph{framework} YCSB em que~\emph{workloads} foram aplicadas a dados não-encriptados e encriptados usando o algoritmo~\emph{Advanced Encryption Standard} (AES) com chaves de diferentes comprimentos. 
 Foi relatada uma redução no desempenho médio do~\emph{cluster}, o qual é independente do tamanho da chave de encriptação.
 
-Na apresentação do \textit{framework} YCSB,~\cite{cooper2010benchmarking} aplicaram~\emph{benchmarking} nos Banco de Dados: Cassandra, Hbase, Yahoo!’s PNUTS e o Sharded MySQL, para exemplificar o uso do \textit{framework} de maneira prática. 
-Foi observado que o Cassandra e Hbase apresentam maior latência para operações~\emph{read} e menor latência para operações~\emph{update} e~\emph{write} em relação ao PNUTS e MySQL, enquanto o PNUTS e Cassandra melhor escalabilidade, em detrimento ao HBase, quando o número de servidores no~\emph{cluster} aumenta proporcionalmente a carga de trabalhos.
+Na apresentação do  YCSB,~\cite{cooper2010benchmarking} aplicaram~\emph{benchmarking} para o Cassandra, Hbase, Yahoo!’s PNUTS e o Sharded MySQL, como exemplo de uso do \textit{framework}. 
+Observou-se que o Cassandra e Hbase apresentam maior latência para operações~\emph{read} e menor latência para~\emph{update} e~\emph{write} em relação ao PNUTS e MySQL, enquanto o PNUTS e Cassandra possuem melhor escalabilidade em detrimento ao HBase, quando o número de servidores aumenta proporcionalmente a carga de trabalho.
 
-Diferentemente dos estudos da literatura, este trabalho avalia o potencial do escalonamento horizontal de um~\emph{cluster} do Hbase, através de um \textit{benchmarking}, criando um cenário cujas aplicações e serviços se mantenham eficientes e disponíveis independentemente da demanda de armazenamento e consultas, verificando aspectos de eficiência e disponibilidade.
+Diferentemente da literatura, este trabalho avalia o potencial do escalonamento horizontal de um~\emph{cluster} Hbase, através de um \textit{benchmarking}, de modo a criar um cenário que aplicações e serviços se mantenham eficientes e disponíveis independentemente da demanda de armazenamento e consultas, em termos de eficiência e disponibilidade.
 
 \section{Configuração do Ambiente de Experimentação}
 \label{sec:conf-experimento}
 
-Os testes foram executados em um~\emph{cluster} composto por 7 computadores com Linux CentOS 6.6, sendo um deles o nó mestre denominado hpcdmc e os seis caracterizados como nós escravos denominados de n01 a n06. \textbf{Configuração do nó mestre (hpcdmc):} 2x Processador Intel Xeon E5-2620 2.0GHz 6 núcleos; 4x Memória Ram Kingston DDR3 8GB 1333MHz; 8x Sata3 de 2TB. \textbf{Configuração dos nós escravos e cliente (n01 a n06):} 2x Processador Intel Xeon E5-2690 2.90GHz 8 núcleos; 4x Memória Ram Kingston DDR3 8GB 1600MHz; 8x Sata3 de 500GB e 16MB de cache.
+Os testes foram executados em um~\emph{cluster} composto por 7 computadores com Linux CentOS 6.6, sendo um deles o nó mestre denominado hpcdmc e os seis caracterizados como nós escravos denominados de $n_1$ a $n_6$. \textbf{Configuração do nó mestre (hpcdmc):} 2x Processador Intel Xeon E5-2620 2.0GHz 6 núcleos; 4x Memória Ram Kingston DDR3 8GB 1333MHz; 8x Sata3 de 2TB. \textbf{Configuração dos nós escravos e cliente ($n_1$ a $n_6$):} 2x Processador Intel Xeon E5-2690 2.90GHz 8 núcleos; 4x Memória Ram Kingston DDR3 8GB 1600MHz; 8x Sata3 de 500GB e 16MB de cache.
 
 %Configuração do nó mestre (hpcdmc):
 %\begin{itemize}
@@ -131,16 +131,16 @@ Os testes foram executados em um~\emph{cluster} composto por 7 computadores com 
 %\item 4x Memória Ram Kingston DDR3 8GB 1333MHz
 %\item 8x Sata3 de 2TB
 %\end{itemize}
-%Configuração dos nós escravos e cliente (n01 a n06):
+%Configuração dos nós escravos e cliente ($n_1$ a $n_6$):
 %\begin{itemize}
 %\item Sistema Operacional Linux CentOS 6.6
 %\item 2x Processador Intel Xeon E5-2690 2.90GHz 8 núcleos
 %\item 4x Memória Ram Kingston DDR3 8GB 1600MHz
 %\item 8x Sata3 de 500GB e 16MB de cache
 %\end{itemize}
-A execução do experimento utilizou os softwares: Hadoop 2.7.3; HBase 1.2.4; ZooKeeper 3.4.10; YCSB 0.12.0, em que foi priorizada estabilidade na escolha das versões no momento do estudo.
+O experimento utilizou os softwares: Hadoop 2.7.3; HBase 1.2.4; ZooKeeper 3.4.10; YCSB 0.12.0, em que foi priorizada estabilidade na escolha das versões.
 
-Foram organizados cinco cenários, os quais foram executados os testes iniciais. 
+Para os testes iniciais foram organizados cinco cenários. 
 Com base nesses foi analisado a melhor alternativa para a implementação do~\emph{cluster} e avaliar sua escalabilidade, ou seja, como serão dispostos os processos cliente, mestre e escravo, e assim foi idealizado e avaliado o sexto cenário.
 
 Nos cinco primeiros cenários foram executados os testes em um ambiente pseudo distribuído, com duas~\emph{workloads}: 100\%~\emph{write} e 100\%~\emph{read} -- 100.000 registros, tendo cada registro 1KB e distribuição uniforme. Cada teste sobre uma~\emph{workload} foi executado 3 vezes para uma dada quantidade de~\emph{threads} do YCSB \textit{Client}, foi obtido a média da latência (tempo de execução em milissegundos) e do desempenho médio (operações/segundo) para obter o resultado final do teste.
@@ -198,22 +198,22 @@ Dessa forma, os processos mestre e escravo do Hadoop e HBase, os processos do Zo
 
 %\subsection{Cenário 2}
 \textbf{Cenário 2:} a execução de todos os processos mestre e escravo junto com o YCSB \emph{Client} pode comprometer a quantidade de requisições enviadas ao banco, alocou-se o YCSB em um nó separado para verificar essa hipótese. 
-Assim, os processos meste e escravo do Hadoop e HBase e os processos do ZooKeeper continuaram a ser executados no hpcdmc, mas o processo YCSB \emph{Client} foi executado no nó n01~--~Figura~~\ref{figura2b}.
+Assim, os processos meste e escravo do Hadoop e HBase e os processos do ZooKeeper continuaram a ser executados no hpcdmc, mas o processo YCSB \emph{Client} foi executado no nó $n_1$~--~Figura~~\ref{figura2b}.
 
 %\subsection{Cenário 3}
-\textbf{Cenário 3:} dada a limitação de~\emph{threads} do YCSB \emph{Client} que podem ser executadas no n01, pelo número de núcleos do processador, no cenário 3 a execução da~\emph{workload} foi dividida entre nós n01 e n02. 
+\textbf{Cenário 3:} dada a limitação de~\emph{threads} do YCSB \emph{Client}, que podem ser executadas no $n_1$, pelo número de núcleos do processador, no cenário 3 a execução da~\emph{workload} foi dividida entre nós $n_1$ e $n_2$. 
 Cada nó foi encarregado pela metade dos registros e metade do número de~\emph{threads} do YCSB \emph{Client} total do teste. 
 Exemplo: na execução da~\emph{workload} 100\%~\emph{read} e 64~\emph{threads}, cada nó gerou 50.000 requisições~\emph{read} com 32~\emph{threads} ativas no YCSB. 
-A saída de cada teste foi a soma do desempenho médio (operações/segundo) e a maior latência (tempo de execução em milissegundos). 
+A saída de cada foi a soma do desempenho médio (operações/segundo) e a maior latência (tempo de execução em milissegundos). 
 O hpcdmc permaneceu pseudo distribuído~--~Figura~\ref{figura2c}.
 
 %\subsection{Cenário 4}
 \textbf{Cenário 4:} consiste na aproximação de uma situação mais adequada quanto a configuração do~\emph{cluster}, em que os processos cliente, mestre e escravo estão completamente distribuídos. 
-O n01 é responsável pelo YCSB \textit{Client}, o hpcdmc pelos processos mestre do Hadoop, HBase e dos processos do ZooKeeper, enquanto o n02 executou os processos escravos do Hadoop e HBase~--~Figura~\ref{figura2d}.
+O $n_1$ é responsável pelo YCSB \textit{Client}, o hpcdmc pelos processos mestre do Hadoop, HBase e dos processos do ZooKeeper, enquanto o $n_2$ executou os processos escravos do Hadoop e HBase~--~Figura~\ref{figura2d}.
 
 %\subsection{Cenário 5}
 \textbf{Cenário 5:} analisou a necessidade de mais de um servidor gerando requisições na saturação do~\emph{cluster}. 
-Assim, o n01 e n02 dividiram a execução das~\emph{workloads}, o hpcdmc foi responsável pelos processos mestre do Hadoop, HBase e os processos do ZooKeeper e o n03 executou os processos escravos do Hadoop e HBase~--~Figura~\ref{figura2e}.
+Assim, o $n_1$ e $n_2$ dividiram a execução das~\emph{workloads}, o hpcdmc foi responsável pelos processos mestre do Hadoop, HBase e os processos do ZooKeeper e o $n_3$ executou os processos escravos do Hadoop e HBase~--~Figura~\ref{figura2e}.
 
 %\subsection{Cenário 6}
 \textbf{Cenário 6:} Os resultados dos testes anteriores apoiaram as decisões quanto a estrutura do cenário 6~--~Figura~\ref{figura2f}. Foram executadas as~\emph{workloads}:~\emph{write},~\emph{read} e~\emph{scan}, variando entre 1.000, 10.000, 100.000 e 1.000.000 registros de tamanho 1KB e com distribuição uniforme, variando o número de escravos de 1 a 5 e o número de~\emph{threads} do YCSB \textit{Client} fixo.
@@ -235,7 +235,7 @@ Observa-se queda na latência nos testes dos cenários 1 e 2 até as execuções
 
 Constata-se que o desempenho máximo do~\emph{cluster} nos dois primeiros cenários foi obtido nas execuções do YCSB \textit{Client} com o uso de 64~\emph{threads}, a partir do cenário 3 foram executados apenas os testes com o uso de 64 a 512~\emph{threads}, de modo a observar se esses resultados foram ótimos locais ou globais. Os testes do cenário 1, para 256 e 512~\emph{threads} não puderam ser executados por estouro da pilha de memória do nó hpcdmc ao executar o YCSB \textit{Client} já que, além do YCSB \textit{Client} o nó hpcdmc também estava executando os processos mestre e escravo do Hbase e Hadoop e os processos do ZooKeeper.
 
-A análise dos resultados obtidos pela execução dos testes com a~\emph{workload} 100\%~\emph{write} -- 100.000 registros, mostrou que o melhor desempenho médio foi alcançado pelo cenário 5 para as execuções com o uso de 64 e 128~\emph{threads}, sendo maior que os resultados dos cenários 4, 3, 2 e 1 aproximadamente 5,7\%, 19,4\%, 25,4\% e 50,3\% nas execuções com 64 \emph{threads} e, 8,2\%, 27,4\%, 28,6\% e 54\% nas execuções com 128~\emph{threads}, respectivamente. 
+A análise dos resultados dos testes com~\emph{workload} 100\%~\emph{write} -- 100.000 registros, mostrou que o melhor desempenho médio foi alcançado pelo cenário 5 para as execuções com o uso de 64 e 128~\emph{threads}, sendo maior que os resultados dos cenários 4, 3, 2 e 1 aproximadamente 5,7\%, 19,4\%, 25,4\% e 50,3\% nas execuções com 64 \emph{threads} e, 8,2\%, 27,4\%, 28,6\% e 54\% nas execuções com 128~\emph{threads}, respectivamente. 
 Nas execuções com o uso de 256 e 512~\emph{threads} o melhor desempenho médio foi obtido pelo cenário 4 sendo maior que os cenários 5, 3 e 2 em 0,8\%, 22,6\% e 35,6\% nas execuções com 256~\emph{threads} e, 58\%, 19,9\% e 21,2\% nas execuções com 512~\emph{threads} respectivamente.
 
 \begin{figure*}
@@ -273,13 +273,13 @@ Nas execuções com o uso de 256 e 512~\emph{threads} o melhor desempenho médio
     \caption{\emph{Workload} 100\%~\emph{read} 100.000 registros nos cenários de 1 a 5.}
 \end{figure*}
 
-O cenário 5 apresentou esse desempenho pois o~\emph{cluster} foi completamente distribuído, então os processos mestres e escravo do Hbase e Hadoop, processos do ZooKeeper e YCSB não concorreram por recursos de uma mesma máquina uns com os outros. O mesmo ocorreu no cenário 4, mas a divisão da execução das~\emph{workloads} entre o n01 e n02 apresentou uma pequena melhora no cenário 5 no desempenho do~\emph{cluster} executando o YCSB com 64 e 128~\emph{threads}, já nas execuções com o uso de 256 e 512~\emph{threads} tal divisão sobrecarregou demais o n03 fazendo com que o desempenho médio diminuísse e a latência aumentasse, tornando os resultados do cenário 4 melhores.
+O cenário 5 apresentou esse desempenho pois o~\emph{cluster} foi completamente distribuído, então os processos mestres e escravo do Hbase e Hadoop, processos do ZooKeeper e YCSB não concorreram por recursos de uma mesma máquina uns com os outros. O mesmo ocorreu no cenário 4, mas a divisão da execução das~\emph{workloads} entre o $n_1$ e $n_2$ apresentou uma pequena melhora no cenário 5 no desempenho do~\emph{cluster} executando o YCSB com 64 e 128~\emph{threads}, já nas execuções com o uso de 256 e 512~\emph{threads} tal divisão sobrecarregou demais o $n_3$ fazendo com que o desempenho médio diminuísse e a latência aumentasse, tornando os resultados do cenário 4 melhores.
 
 A partir dos testes com a~\emph{workload} 100\%~\emph{write} -- 100.000 registros, pode-se concluir que o cenário 5, para execuções com o uso de 64 e 128~\emph{threads} obteve uma execução mais rápida se comparado com os resultados obtidos com os testes dos cenários 4, 3, 2 e 1 aproximadamente 5,6\%, 19,7\%, 25,4\% e 50,2\% com o uso de 64~\emph{threads} e, 7,8\%, 27\%, 28,1\% e 53,7\% com 128~\emph{threads} respectivamente. Enquanto que as execuções com o uso de 256 e 512~\emph{threads} o cenário 4 apresentou resultados nos quais a execução foi mais rápida que os resultados obtidos com os testes dos cenários 5, 3 e 2 aproximadamente 2,4\%, 22,8\% e 35,8\% com o uso de 256 \emph{threads} e, 95,8\%, 20,3\% e 21,5\% com o uso de 512~\emph{threads} -- Figura~\ref{figura12}.
 
 Considerando a~\emph{workload} 100\%~\emph{read} -- 100.000 registros, para todos os números de~\emph{threads}, o cenário 5 apresentou resultados com o melhor desempenho médio sendo maior que os resultados dos cenários 4, 3, 2 e 1 aproximadamente 26,8\%, 22,2\%, 48,3\% e 62,6\% nas execuções com o uso de 64~\emph{threads} e, 26,9\%, 44,3\%, 45,7\% e 64,4\% nas execuções com o uso de 128~\emph{threads} respectivamente. E maior que os resultados dos cenários 4, 3 e 2 aproximadamente 28,4\%, 23\% e 50,4\% nas execuções com o uso de 256~\emph{threads} e, 26,5\%, 18,2\% e 47,3\% nas execuções com o uso de 512~\emph{threads} respectivamente.
 
-Para as operações de leitura na~\emph{workload} 100\%~\emph{read}, a divisão de requisições entre o n01 e n02 não sobrecarregou o n03 para execuções com o uso de 256 e 512 \emph{threads} como nos testes com a~\emph{workload} 100\%~\emph{write}, então o cenário 5 obteve os melhores resultados para cada execução entre 64 e 512~\emph{threads}. Os testes do cenário 3, que também dividiram as requisições entre o n01 e n02 obtiveram os segundos melhores resultados para cada execução entre 64 e 512~\emph{threads}. Portanto para operações de leitura, o~\emph{cluster} é mais eficiente, considerando o desempenho médio e a latência, se as requisições são realizadas de mais de um cliente -- Figura~\ref{figura13}.
+Para as operações de leitura na~\emph{workload} 100\%~\emph{read}, a divisão de requisições entre o $n_1$ e $n_2$ não sobrecarregou o $n_3$ para execuções com o uso de 256 e 512 \emph{threads} como nos testes com a~\emph{workload} 100\%~\emph{write}, então o cenário 5 obteve os melhores resultados para cada execução entre 64 e 512~\emph{threads}. Os testes do cenário 3, que também dividiram as requisições entre o $n_1$ e $n_2$ obtiveram os segundos melhores resultados para cada execução entre 64 e 512~\emph{threads}. Portanto para operações de leitura, o~\emph{cluster} é mais eficiente, considerando o desempenho médio e a latência, se as requisições são realizadas de mais de um cliente -- Figura~\ref{figura13}.
 
 Na~\emph{workload} 100\%~\emph{read} -- 100.000 registros -- Figura~\ref{figura14}, a latência obtida com os testes executados no cenário 5 foi menor que os cenários 4, 3, 2 e 1 aproximadamente 26,2\%, 22,8\%, 47,9\% e 62,3\% nas execuções com o uso de 64~\emph{threads} e, 26,6\%, 23,6\%, 45,6\% e 64,3\% nas execuções com o uso de 128~\emph{threads} respectivamente. E também, menor que os cenários 4, 3 e 2 aproximadamente 27,9\%, 22,8\% e 50\% nas execuções com o uso de 256~\emph{threads} e, 25,5\%, 17,3\% e 46.6\% nas execuções com o uso de 512~\emph{threads} respectivamente.
 
@@ -291,7 +291,7 @@ O cenário 4 obteve o segundo maior desempenho médio com a~\emph{workload} 100\
 \subsection{Cenário 6}
 \label{subsec:resultado-cenario-6}
 
-Inicialmente, a respeito do desempenho médio~--~Figura~\ref{figura15}, a escalabilidade horizontal foi mais evidenciada com 1.000.000 de registros, sendo o desempenho do~\emph{cluster} com 5~\emph{region servers} maior do que os testes executados com 4, 3, 2, e 1~\emph{region servers} em aproximadamente 5,1\%, 6,5\%, 17,1\% e 47\% respectivamente. A análise dos resultados dos testes para 100.000 registros também demonstraram certa escalabilidade, sendo o desempenho médio com 5~\emph{region servers} maior do que o desempenho médio dos testes executados com 4, 3, 2, e 1~\emph{region servers} em aproximadamente 9,9\%, 10,4\%, 15,7\% e 43,4\% respectivamente.
+Inicialmente, a respeito do desempenho médio (Figura~\ref{figura15}), a escalabilidade horizontal foi mais evidenciada com 1.000.000 de registros, sendo o desempenho do~\emph{cluster} com 5~\emph{region servers} maior do que os testes executados com 4, 3, 2, e 1~\emph{region servers} em aproximadamente 5,1\%, 6,5\%, 17,1\% e 47\% respectivamente. A análise dos resultados dos testes para 100.000 registros também demonstraram certa escalabilidade, sendo o desempenho médio com 5~\emph{region servers} maior do que o desempenho médio dos testes executados com 4, 3, 2, e 1~\emph{region servers} em aproximadamente 9,9\%, 10,4\%, 15,7\% e 43,4\% respectivamente.
 
 \begin{figure*}[!ht]
     \centering
@@ -330,15 +330,15 @@ Inicialmente, a respeito do desempenho médio~--~Figura~\ref{figura15}, a escala
 \end{figure*}
 
 A partir da análise dos resultados dos testes da~\emph{workload} 100\%~\emph{write}~--~Figura~\ref{figura16}, observa-se que com 1.000.000 registros a latência foi menor que os testes com 4, 3, 2 e 1 \emph{region server} em aproximadamente 5\%, 6,3\%, 17,1\% e 47\% respectivamente. 
-Analisando os resultados dos testes com 100.000 registros, a escalabilidade foi menos evidenciada, as latências tiveram poucas alterações comparados com os resultados dos testes com 4, 3, 2 e 1 \emph{region server}, sendo menor em aproximadamente 12,5\%, 11,7\%, 15,9\% e 43,4\% respectivamente.
+Com base nos testes com 100.000 registros, a escalabilidade foi menos evidenciada, as latências tiveram poucas alterações comparados com os resultados dos testes com 4, 3, 2 e 1 \emph{region server}, sendo menor em aproximadamente 12,5\%, 11,7\%, 15,9\% e 43,4\% respectivamente.
 
-Os testes em que os conjuntos de dados foram iguais a 1.000 e 10.000 registros não tiveram alterações tão significativas no desempenho médio com a adição de novos nós, sendo a variação mais expressiva para 1.000 registros de aproximadamente 4\% aumentando de 1 para 2~\emph{region servers}, aproximadamente 8\% para 10.000 aumentando de 1 para 2 \emph{region servers}, considerando o desempenho médio~--~Figura~\ref{figura17} e a latência~--~Figura~\ref{figura18}.
+Nos testes com conjunto de dados de 1.000 e 10.000 registros não houve alterações significativas no desempenho médio com a adição de nós, sendo a variação mais expressiva para 1.000 registros de aproximadamente 4\% aumentando de 1 para 2~\emph{region servers}, aproximadamente 8\% para 10.000 aumentando de 1 para 2 \emph{region servers}, considerando o desempenho médio~--~Figura~\ref{figura17} e a latência~--~Figura~\ref{figura18}.
 
 Para a~\emph{workload} 100\%~\emph{read}, assim como nos resultados acima, nota-se que a escalabilidade horizontal foi mais evidenciada quando o conjunto com 1.000.000 de registros. Porém nas execuções com 5 \emph{region servers} só existiu alteração significativa no desempenho médio quando comparadas com as execuções com 2 e 1 \emph{region servers}, sendo maior em aproximadamente 10,4\% e 39,1\% respectivamente. Para as execuções com 4 e 3~\emph{region servers} a variação foi de menos de 1,5\%~--~Figura~\ref{figura17}. Pelos resultados dos testes com 100.000 registros, nota-se o mesmo comportamento, sendo o desempenho médio das execuções com 5~\emph{region servers} maior que os testes com 2 e 1~\emph{region servers} aproximadamente 5,4\% e 29\% respectivamente. 
 Para as execuções com 4 e 3~\emph{region servers} a variação foi de menos de 2,4\%. Os testes em que os conjuntos de dados foram iguais a 1.000 e 10.000 registros não tiveram alterações significativas, sendo a variação mais expressiva para o conjunto de dados de 1.000 registros de menos de 1,5\% aumentando de 1 para 2~\emph{region servers} e para o conjunto de 10.000 registros de menos de 7,5\% também aumentando de 1 para 2~\emph{region servers}.
 
 A latência dos testes da~\emph{workload} 100\%~\emph{read}~--~Figura~\ref{figura18}, também não apresentou alterações significativas para os testes com 1.000.000 e 100.000 registros quando variados os~\emph{region servers} entre 3 e 5, sendo essa variação menor que 1,3\% para ambos. 
-Desta forma, os testes executados com 5~\emph{region servers} apresentaram uma latência menor que os testes com 2 e 1~\emph{region servers} em aproximadamente 10,5\% e 40,2\% com 1.000.000 de registros e, em aproximadamente 5,4\% e 29\% com 100.000 registros respectivamente. Para 1.000 e 10.000 registros não houve alterações significativas no desempenho médio, sendo a variação de 1 para 5 \emph{region servers} menor que 3,3\% para 1.000 registros e, de menos de 10,7\% para 10.000 registros.
+Desta forma, os testes executados com 5~\emph{region servers} apresentaram menor latência que os testes com 2 e 1~\emph{region servers} em aproximadamente 10,5\% e 40,2\% com 1.000.000 de registros e, em aproximadamente 5,4\% e 29\% com 100.000 registros respectivamente. Para 1.000 e 10.000 registros não houve alterações significativas no desempenho médio, sendo a variação de 1 para 5 \emph{region servers} menor que 3,3\% para 1.000 registros e, de menos de 10,7\% para 10.000 registros.
 
 \begin{figure*}[!ht]
     \centering
@@ -396,8 +396,8 @@ Os resultados obtidos mostram que o escalonamento horizontal é mais evidente, c
 
 Desta forma, a melhora no desempenho do~\emph{cluster} Hbase, considerando o desempenho médio e a latência das operações, é diretamente proporcional ao tamanho do conjunto de dados, de modo mais evidente.
 
-O ganho de desempenho varia de acordo com as operações realizadas. Por exemplo, o melhor aproveitamento do~\emph{cluster} para desempenho médio nas execuções com 5~\emph{region servers} foi alcançado pelos testes da~\emph{workload} 100\%~\emph{read}, sendo maior que os testes das~\emph{workloads} 100\%~\emph{write} e 100\%~\emph{read/modify/write} em aproximadamente 22\% e 28\% respectivamente. 
-Contudo, os testes da~\emph{workload} 100\%~\emph{scan} mostraram que não há melhora no desempenho para busca, independentemente do conjunto de dados, devido a implementação da busca linear implementada pela ferramenta Hbase.
+O ganho de desempenho varia de acordo com as operações. Por exemplo, o melhor aproveitamento do~\emph{cluster} para desempenho médio nas execuções com 5~\emph{region servers} foi alcançado pelos testes da~\emph{workload} 100\%~\emph{read}, sendo maior que os testes das~\emph{workloads} 100\%~\emph{write} e 100\%~\emph{read/modify/write} em aproximadamente 22\% e 28\% respectivamente. 
+Contudo, os testes da~\emph{workload} 100\%~\emph{scan} mostram que não há melhora no desempenho para busca, independentemente do conjunto de dados, devido a implementação da busca linear implementada pela ferramenta Hbase.
 
 %Os trabalhos futuros podem explorar o aumento do fator de replicação, não empregado neste trabalho, ao analisar o impacto que as operações adicionais de replicação podem causar à eficiência do~\emph{cluster}, considerando a inserção de novos nós.
 
