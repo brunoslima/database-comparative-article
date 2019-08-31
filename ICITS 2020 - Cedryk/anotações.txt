@@ -1,0 +1,29 @@
+c1 - Justificar a escolha do hbase
+c2 - Aumentar o tamanho do conjunto de dados (impossível)
+#c3 - Detalhar o conceito de big data (feito)
+c4 - os banco sql ou não, ambos tem limitação, melhorar a motivação do trabalho
+c5 - os testes de 1 a 5 somente continham operações de read e write,e não read/modify/write e scan, pq?.
+c6 - descrição dos resultados ficou cansativa
+c7 - modificar separação das análises
+c8 - no texto somente indicar os principais benefícios e criar tabela para a porcentagens
+c9 - pq os testes de 1 a 5 somente foram feitos com 100 000, isso é um grande volume?
+c10 - explicar a proporção das operações da workload na figura 7, em geral não é uniforme
+c11 - seção 2.4, padronizar os termos de operações.
+#c12 - substituir performance por desempenho (feito)
+c13 - revisar crases do texto
+c14 - revisar escrita
+
+d1 - descrever o estado da arte de benchmark seção 2.
+d2 - considerar bases de dados maiores (impossível)
+d3 - considerar carga e dados indexados (impossível)
+d4 - discussão em relação à degradação pelo aumento no número de threads.
+d5 - tradução do resumo incorreta
+
+e1 - muitas variáveis na análise de escalabilidade que deveriam ser controladas
+e2 - indicar para qual classe de aplicação as cargas empregadas podem ser úteis
+e3 - vários trabalhos que usam o ycsb não foram citados nos trab. relacionados.
+e4 - problemas nos resultados
+#e5 - consistência nos termos (feito)
+e6 - análise estatística de pior caso
+e7 - o número de repetições pode ser baixo
+c8 - problemas textuais
