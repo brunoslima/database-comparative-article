@@ -1,0 +1,90 @@
+%%%%%%%%%%%%%%%%%%%% author.tex %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% sample root file for your "contribution" to a proceedings volume
+%
+% Use this file as a template for your own input.
+%
+%%%%%%%%%%%%%%%% Springer %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\documentclass{svproc}
+%
+% RECOMMENDED %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+
+% to typeset URLs, URIs, and DOIs
+\usepackage{url}
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage{graphicx}
+\def\UrlFont{\rmfamily}
+
+\begin{document}
+\mainmatter              % start of a contribution
+%
+\title{Sistema de Recomendação Baseado em Conteúdo Textual em Páginas Web}
+%
+\titlerunning{Hamiltonian Mechanics}  % abbreviated title (for running head)
+%                                     also used for the TOC unless
+%                                     \toctitle is used
+%
+\author{OMMITED}
+%
+\authorrunning{OMMITED} % abbreviated author list (for running head)
+%
+%%%% list of authors for the TOC (use if author list has to be modified)
+\tocauthor{Ivar Ekeland, Roger Temam, Jeffrey Dean, David Grove,
+Craig Chambers, Kim B. Bruce, and Elisa Bertino}
+%
+\institute{OMMITED\\
+\email{OMMITED}
+}
+
+\maketitle              % typeset the title of the contribution
+
+\begin{abstract}
+Recommendation Systems has emerged to assist users against information overload in a environment where not all information is relevant or of interest to the user. Recommendation Systems came with the proposal of being an independent area in Computer Science, rather than filtering information, the focus is to recommend information based on preferences, tastes and interests surprising with new information and helping in the pursuit of the real need.
+In this paper we present a recommendation system, that is compose by an middleware and a framework, for web environment based on textual content and the sequence of processes to arrive at a recommendation for the user, from the construction of profile (user interest) to the recommendation. This article also presents the strategies, technologies and areas related to Computer Science at each stage of the recommendation process.
+% We would like to encourage you to list your keywords within
+% the abstract section using the \keywords{...} command.
+\keywords{recommendation system, tag cloud, profile user}
+\end{abstract}
+%
+\section{Introduction}
+
+
+
+\section{Sistemas de Recomendação}
+Os sistemas de recomendação atuam em diferentes áreas, desde de Ciências Cognitivas, Teoria da Aproximação até Recuperação da Informação, com o intuito de prover indicação de conteúdo não classificado, somente com base em preferências do usuário~\cite{resnick1997recommender}.
+
+Inicialmente, os sistemas de recomendação eram caracterizados como sistemas de filtragem colaborativa, em decorrência do primeiro sistema lançado, o~\emph{Tapestry}~\cite{goldberg1992using,resnick1994grouplens,medeiros2013estudo}. 
+No entanto, foi pelo trabalho de Resnick e Varian~\cite{resnick1997recommender} que foi proposto o termo mais genérico ``Sistema de Recomendação'', sendo adotado por
+não consistir em um produto de colaboração entre usuários, mas sim como foco na recomendação de informações~\cite{adomavicius2005toward,medeiros2013estudo}.
+
+Segundo Gediminas e Alexander~\cite{adomavicius2005toward}, o problema de recomendação pode ser simplificado ao
+problema da estimativa de classificação para as informações que ainda não foram
+visualizados pelo usuário.
+
+Desse modo, novamente, Gediminas e Alexander~\cite{adomavicius2005toward} definem um sistema de recomendação pela combinação dos conjuntos de todos os usuários~\emph{U}e de itens a serem recomendados~\emph{I}, mediados pela função~\emph{ü}, que mede quanto um item é relevante, cujo resultado da combinação~\emph{U x I} é ordenado em um conjunto~\emph{A}.
+Resumidamente: 
+$$u \in U, i'u = argmaxs \in Iu(\ddot u, i)$$
+
+Em geral, na maioria dos casos o conjunto de itens analisados é muito inferior ao total. 
+De modo análogo, a mesma relação pode ser mapeada como uma matriz esparsa, conforme apresentado na Figura~\ref{figure:esparsa}:
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=.7\textwidth]{images/esparsa.pdf}
+\caption{Conjunto esparso de recomendações.}
+\label{figure:esparsa}
+\end{figure}
+
+A Figura~\ref{figure:esparsa} representa uma matriz de n usuários e m itens e cada célula $A(u,i)$ corresponde à uma avaliação do usuário u ao item i. 
+O desafio é sempre superar a função~\emph{ü} para todo o conjunto~\emph{U x I} para que o usuário u tenha novas experiências e conhecimento de todo o conteúdo em que ele está inserido~\cite{adomavicius2005toward}.
+
+% ---- Bibliography ----
+%
+\bibliographystyle{splncs_srt}
+\bibliography{references}
+%
+\end{document}
