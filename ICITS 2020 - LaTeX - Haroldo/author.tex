@@ -74,7 +74,7 @@ De modo análogo, a mesma relação pode ser mapeada como uma matriz esparsa, co
 
 \begin{figure}[!ht]
 \centering
-\includegraphics[width=.7\textwidth]{images/esparsa.pdf}
+\includegraphics[width=.6\textwidth]{images/esparsa.pdf}
 \caption{Conjunto esparso de recomendações.}
 \label{figure:esparsa}
 \end{figure}
@@ -82,6 +82,43 @@ De modo análogo, a mesma relação pode ser mapeada como uma matriz esparsa, co
 A Figura~\ref{figure:esparsa} representa uma matriz de n usuários e m itens e cada célula $A(u,i)$ corresponde à uma avaliação do usuário u ao item i. 
 O desafio é sempre superar a função~\emph{ü} para todo o conjunto~\emph{U x I} para que o usuário u tenha novas experiências e conhecimento de todo o conteúdo em que ele está inserido~\cite{adomavicius2005toward}.
 
+De modo geral, os sistemas de recomendação atuam com base em um conjunto de atividades que iniciam na coleta de dados até a recomendação de itens, em que cada etapa é descrita brevemente nas Seções~\ref{section:coleta} a~\ref{section:tarefa}.
+
+\subsection{Coleta de Dados}
+\label{section:coleta}
+A etapa inicial consiste na obtenção dos dados brutos, os quais atuam como base no processo de recomendação.
+Essa atividade pode impactar diretamente no restante do processo, pois quanto específico ou gerais esses forem, consequentemente os resultados atuam de modo semelhante, os quais podem ocorrer em imprecisões ou erros de classificação.
+
+A atividade pode ser executada de modos distintos, seja explícita ou implícita ao usuário, dentre as possíveis estratégias tem-se o monitoramento de atividades, solicitação de cadastros, navegação em páginas com~\emph{cookies} e a exibição de exemplos~\cite{cazella2010ciencia,reategui2006personalizaccao}.
+A partir disso, a cada usuário é definido um perfil com base nas interações conduzidas.
+
+%\subsection{Abordagem de Recomendação}
+%\label{section:abordagem}
+
+\subsection{Obtenção de Informação}
+\label{section:obtencao}
+Como segunda etapa, a partir dos dados brutos é necessário conduzir duas principais análises, sob perspectivos gerais e específicas de seu conteúdo.
+
+Em uma análise geral, o processo de identificação de que tipo de informação e contexto que os dados são oriundos. 
+Uma abordagem comum é a aplicação de técnicas de visualização de informação, como exemplo, a utilização de~\emph{Tag Clouds}, a qual permite a identificação dos principais conceitos relacionados ao conteúdo analisado com base na frequência dos termos~\cite{luis2017analise}.
+
+Posteriormente, uma análise mais específica deve ser conduzia, de modo a identificar a relevância do elemento analisado, para isso são utilizados modelos baseados em Recuperação de Informação, permitindo a inter-conexão entre o provedor de informação e o consumidor~\cite{souza2006sistemas}.
+
+Diferentes estratégias possuem base em Inteligência Artificial, as quais utilizam análise dos dados (utilização de palavras-chave indexadas), modelos lógicos (aplicação de regras booleanas ou lógica~\textit{fuzzy}), vetorais (frequência da ocorrência de elementos ou aplicação de redes neurais)~\cite{souza2006sistemas} ou probabilísticos (métodos de inferência ou predição)~\cite{khan2010review,silva2016}.
+Esses modelos possuem em comum a utilização do perfil do usuário como base na realização da consulta~\cite{baeza1999modern,souza2006sistemas}.
+
+
+\subsection{Tarefa de Recomendação}
+\label{section:tarefa}
+Por fim, cabe-se ao sistema de recomendação a condução na tomada de decisão pelo usuário. Nesse contexto, Silva~\cite{silva2016} aponta alguns objetivos e tarefas que devem ser cumpridos:
+\begin{itemize}
+    \item Anotações de Contexto: sugestão de opções que deveriam ser selecionadas.
+    \item Seleção de Melhores Elementos: capacidade de identificar um conjunto limitado de potenciais elementos.
+    \item Todos Elementos: recuperação de todos os elementos relacionados.
+    \item Recomendação Sequencial: prover adequação nas sugestões com base nos passo a passo conduzido.
+    \item Recomendação Quantitativa: fornecer recomendação para uma análise exploratória.
+    \item Recomendação Confiável: estabelecer graus de confiança com base na qualidade das recomendações.
+\end{itemize}
 % ---- Bibliography ----
 %
 \bibliographystyle{splncs_srt}
