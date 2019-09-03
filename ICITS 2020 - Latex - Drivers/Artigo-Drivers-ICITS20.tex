@@ -1,0 +1,363 @@
+%%%%%%%%%%%%%%%%%%%% author.tex %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% sample root file for your "contribution" to a proceedings volume
+%
+% Use this file as a template for your own input.
+%
+%%%%%%%%%%%%%%%% Springer %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\documentclass{svproc}
+%
+% RECOMMENDED %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+
+% to typeset URLs, URIs, and DOIs
+\usepackage{url}
+\usepackage{graphicx,url}
+\def\UrlFont{\rmfamily}
+
+\begin{document}
+\mainmatter              % start of a contribution
+%
+%\title{Análise de Desempenho do MongoDB Utilizando Diferentes \emph{Drivers} em um Ambiente de Aplicação Node.js}
+\title{Análise de Desempenho dos Drivers do MongoDB em um Ambiente de Aplicação Node.js}
+%
+\titlerunning{Análise de Desempenho dos Drivers do MongoDB em um Ambiente de Aplicação Node.js}  % abbreviated title (for running head)
+%                                     also used for the TOC unless
+%                                     \toctitle is used
+%
+\author{Leandro Ungari Cayres\inst{1} \and Bruno Santos de Lima\inst{1} Rogério Eduardo Garcia\inst{1} \and Ronaldo Celso Messias Correia\inst{1}}
+%
+\authorrunning{Cayres et al.} % abbreviated author list (for running head)
+%
+%%%% list of authors for the TOC (use if author list has to be modified)
+\tocauthor{Bruno Santos de Lima, Rogério Eduardo Garcia, and Ronaldo Celso Messias Correia}
+%
+\institute{Faculdade de Ciências e Tecnologia -- Universidade Estadual Paulista (UNESP), Presidente Prudente -- SP, Brazil,\\
+\email{\{leandro.ungari,bruno.s.lima,rogerio.garcia,ronaldo.correia\}@unesp.br}}
+
+\maketitle              % typeset the title of the contribution
+
+\begin{abstract}
+Nos últimos anos, o número de Banco de Dados NoSQL tem crescido significativamente. Drivers tem sido desenvolvidos visando flexibilizar e apoiar execução das operações pertences aos bancos de dados. Há casos em que, para o mesmo Banco de Dados, existem diversas soluções, o que dificulta o entendimento dos impactos que a escolha de um Driver pode resultar no desempenho da aplicação. Neste artigo, é apresentado um estudo comparativo entre dois Drivers para MongoDB em aplicações Node.js, em que foram executadas operações CRUD para analisar o possível impacto no desempenho da aplicação com base em métricas de tempo de execução, consumo de CPU e memória. Os resultados demonstram que, sob análise quantitativa, o Driver MongoClient demonstrou possuir melhor desempenho em comparação ao Driver Mongoose, considerando as métricas empregadas, podendo ser uma melhor escolha a ser utilizada ao desenvolver uma aplicação Node.js.
+\keywords{Análise de Desempenho, Aplicação Node.js, MongoDB, Drivers, Data Base}
+\end{abstract}
+%
+
+\section{Introdução}
+\label{sec:introducao}
+
+Nos últimos anos, o crescimento no volume de dados mudou a utilização desses por empresas e organizações. Inicialmente como agentes passivos, relacionados às regras de negócio empresarial; os dados se tornaram potenciais oportunidades de lucro e obtenção de conhecimento através de processos de análise de dados.
+
+O advento do~\emph{Big Data} não implicou somente em maior espaço de armazenamento, mas em uma mudança de organização, considerando características como volume, variedade, velocidade e valores~\cite{ward2013undefined}. 
+A arquitetura dos tradicionais Bancos de Dados Relacionais são baseadas em propriedades ACID (\textit{Atomicity},~\textit{Consistency},~\textit{Isolation} e~\textit{Durability}), contudo, em ambientes de~\emph{Big Data} a alta consistência provida afeta diretamente os aspectos de disponibilidade e eficiência, que são primordiais, devido ao alto volume, variedade e velocidade~\cite{aparicio:2016}. 
+Nesse cenário, os Banco de Dados \textit{NoSQL} (\emph{Not only SQL}) proporcionam maior flexibilidade estrutural, escalabilidade, suporte a replicação e consistência eventual, desse modo, surgem como alternativas de destaque~\cite{han2011survey}. 
+  
+Neste contexto, para os diferentes ambientes de desenvolvimento e linguagens de programação,~\emph{Drivers} tem sido desenvolvidos de modo a viabilizar e apoiar execução de operações pertences aos bancos de dados. Entretanto, em muitos casos, além de recentes, os~\emph{Drivers} apresentam limitações em sua implementações, falhas de entendimento e efeitos colaterais no acesso aos dados~\cite{rafique:2018}. 
+Assim, a decisão de qual combinação entre Banco de Dados \textit{NoSQL} e~\emph{Driver} a ser empregada pode ser um problema, devido ao desconhecimento dos pontos positivos e negativos.
+
+Neste artigo, por meio de um experimento comparativo de desempenho, é realizado a avaliação das duas principais soluções de~\emph{Drivers} para o MongoDB~\footnote{https://www.mongodb.com/}, respectivamente \emph{MongoClient}~\footnote{https://mongodb.github.io/node-mongodb-native/} e \emph{Mongoose}~\footnote{https://mongoosejs.com/}, em ambientes de aplicação Node.js. 
+O principal fator considerado para a realização dessa análise consiste na definição prévia de esquema para a manipulação dos dados em operações de CRUD (\emph{create}-\emph{read}-\emph{update}-\emph{delete}). Conceitualmente, os Bancos de Dados~\textit{NoSQL} não requerem essa predefinição, proporcionando flexibilidade, entretanto, não existe nada que impeça sua utilização, principalmente quanto a respeito do desempenho; possibilitando algum impacto relevante.
+
+A escolha do MongoDB ocorreu devido a sua crescente investigação por parte da comunidade cientifica em diversas pesquisas~\cite{patil:2017,jung:2015,ongo:2018,kanade2014study}; além de ser uma das principais opções de armazenamento orientada a documentos. Quanto ao Node.js, mesmo recente, alguns trabalhos apontam a sua viabilidade tecnológica no desenvolvimento de aplicações~\cite{chaniotis2015node}. Com essa escolha, tanto aplicação quanto Banco de Dados utilizam \textit{JavaScript}, uniformizando o sistema em termos de linguagem de programação.
+
+%Este trabalho busca analisar o impacto causado no desempenho de uma aplicação Node.js que faz uso do Banco de Dados~\emph{NoSQL} MongoDB, ao utilizar os dois diferentes drivers disponíveis para o Banco de Dados em questão. 
+Este trabalho está situado como único presente na literatura com investigação na perspectiva de avaliar a influência de diferentes Drivers do MongoDB no desempenho de uma aplicação Node.js, uma vez que, os demais trabalhos investigam outros aspectos relacionados ao MongoDB como por exemplo: comparação de desempenho com outros Bancos de Dados~\cite{jung:2015,patil:2017,ongo:2018} e influência na performance do Banco de Dados ao utilizar diferentes modelagens de dados~\cite{kanade2014study}.
+
+Este artigo está organizado do seguinte modo: na Seção~\ref{section:fundamentacao} são apresentados conceitos de Banco de Dados~\emph{NoSQL}, MongoDB e seus \emph{Drivers}.
+A Seção~\ref{section:experimento} é apresentada a estruturação do experimento. 
+Na Seção~\ref{section:resultados} são descritos os resultados quantitativos obtidos, cuja a análise está situada na Seção~\ref{section:discussao}. Por fim, a Seção~\ref{section:consideracoes} expressa as considerações finais.
+
+\section{Fundamentação Teórica}
+\label{section:fundamentacao}
+
+Nesta seção, são discutidos alguns conceitos fundamentais para o trabalho: Bancos de Dados~\emph{NoSQL}, as características do MongoDB e dos \emph{Drivers} \emph{MongoClient} e \emph{Mongoose}. 
+
+\subsection{Banco de Dados~\emph{NoSQL}}
+\label{subsection:nao-relacional}
+
+Os Bancos de Dados~\emph{NoSQL} foram desenvolvidos visando armazenar e processar grandes volumes de dados. 
+Em linhas gerais os bancos de dados~\emph{NoSQL} são livres de esquematizações e mais propícios a lidar com dados não estruturados como e-mails, documentos e mídias sociais de maneira eficiente~\cite{mohamed:2014,ramesh:2016}.
+
+O termo~\emph{NoSQL} é utilizado para se referir a uma ampla variedade de armazenamentos de dados, em que as restrições de transação ACID foram suavizadas permitindo melhor dimensionamento e desempenho horizontal~\cite{rafique:2018}, proporcionando esquemas menos estruturados, suporte a operações de junção, alta escalabilidade, modelagem de dados simples com linguagem de consulta simples~\cite{ramesh:2016}. 
+Os bancos de dados~\emph{NoSQL} são categorizados em: armazenamento de documentos, famílias de colunas, chave/valor, grafos e multimodais~\cite{aparicio:2016}.
+
+Este trabalho tem como foco a categoria orientada a documentos, a qual possui modelagem de dados estreitamente relacionados a programação orientada a objetos, possibilitando flexibilidade no armazenamento de registros com atributos distintos, sendo útil na modelagem de dados não-estruturados e polimórficos. Permite consultas robustas, em que qualquer combinação de campos no documento pode ser realizada~\cite{patil:2017}. Os dados são organizados em coleções de documentos, as quais utilizam uma estrutura semelhante a JSON (\emph{JavaScript Object Notation}) ou XML (\emph{Extensible Markup Language}).
+
+\subsection{MongoDB}
+
+O MongoDB é um Banco de Dados orientado a documentos que possui código-aberto, o qual provê funcionalidades como ordenação, indexação secundária e consultas de intervalo~\cite{membrey2011definitive}.
+ 
+O banco de dados não impõe um esquema prévio, entretanto, normalmente todos os documentos em uma coleção são de propósito semelhante ou relacionado~\cite{kanade2014study,lutu2015big}. Há duas abordagens para modelagem de documentos:
+
+\begin{itemize}
+\item \textbf{Modelo de dados incorporado:} Os dados relacionados são incorporados em uma única estrutura ou documento. Esses esquemas são geralmente conhecidos como modelos sem normalização. %REFERENCIAR
+\item \textbf{Modelo de dados normalizado:} Os dados possuem referências de documentos para registrar relacionamentos entre esses, mas a combinação de documentos deve ser feita diretamente no código-fonte da aplicação. %REFERENCIAR
+\end{itemize}
+
+O armazenamento dos dados ocorre através da serialização de objetos \textit{Javascript}, também conhecidos como JSON, cuja implementação interna utiliza uma codificação binária chamada BSON\footnote{http://bsonspec.org/}. O banco de dados MongoDB disponibiliza diversos~\emph{Drivers} para linguagens de programação como Java, C++, C\#, PHP e Python~\cite{lutu2015big}, e também em Node.js.
+
+Dentre os~\emph{Drivers} existentes para o MongoDB, tem-se como destaque o \textbf{\textit{MongoClient}}\footnote{https://mongodb.github.io/node-mongodb-native/index.html}, consiste na solução oficial e nativa provida organização, provendo um conjunto de funcionalidades que permite a manipulação dos dados e uso de recursos avançados do sistema. Essa solução é caracterizada pela modelagem documentos-objeto (\emph{ODM -- Object-Document Modeler}) de modo implícito ao banco de dados.
+
+Assim como o anterior, o \textbf{\textit{Mongoose}} consiste também em um \emph{Driver} para MongoDB, em que provê a modelagem de dados utilizando um mecanismo objeto-relacional (\emph{ORM -- Object Relational Mapping}) utilizado em banco de dados relacionais~\cite{mardan2014boosting}, executando diversas tarefas de verificação e validação dos dados, como nulidade ou tipagem, previamente definidos por meio da elaboração de um esquema.
+
+%\subsection{Node.js}
+%\label{subsection:nodejs}
+
+%Node.js é uma plataforma construída sob o ambiente de execução para \textit{JavaScript} do navegador Google Chrome, para criação facilitada de aplicações de internet rápidas e escaláveis, baseado em um mecanismo orientado a eventos de entrada e saída não-bloqueante, que viabiliza a interação do usuário enquanto demais tarefas executam em segundo-plano, resultando em aplicações leves e eficientes.
+%Cada aplicação Node.js atua como processo comum em um computador, diferentemente da restrição de aplicações \textit{JavaScript} voltadas para navegadores. 
+
+%A Figura~\ref{figure:memoria} apresenta a organização da memória em processos Node.js.
+
+%\begin{figure}[!h]
+%    \centering
+%    \includegraphics[width=0.35\textwidth]{images/set}
+%    \caption{Organização de memória de um processo Node.js -- Adaptado de~\cite{nodememory}.}
+%    \label{figure:memoria}
+%\end{figure} 
+
+%A região principal é chamada~\emph{Resident Set}, a qual corresponde a toda memória utilizada no processo. Em seguida, tem-se a região~\emph{Code Segment}, a qual armazena todas as instruções definidas para o programa. A próxima região~\emph{Stack} armazena todas as variáveis e estruturas de dados utilizadas durante o tempo de vida dessas. 
+%Por fim, tem-se a região~\emph{Heap}, a qual armazena dados específicos como objetos,~\emph{strings} e~\emph{closures}; em geral, cada processo aloca esse região com um tamanho predefinido, contudo essa pode ser utilizada apenas parcialmente ou em sua totalidade~\cite{nodememory}. 
+
+\section{Composição do Experimento}
+\label{section:experimento}
+
+Nesta seção é apresentado a composição do experimento comparando os~\emph{Drivers} \emph{MongoClient} e \emph{Mongoose} em integração com o MongoDB. 
+Na Figura~\ref{figure:diagrama-banco} é ilustrado a esquematização do experimento. 
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=\textwidth]{images/esquema-experimento.png}
+    \caption{Experimento: Comparação entre os \emph{Drivers} do MongoDB.}
+    \label{figure:diagrama-banco}
+\end{figure}
+ 
+As análises conduzidas visaram identificar qual dupla (MongoDB e \emph{Drive}) possui melhor desempenho em uma aplicação Node.js, ou seja, causa menor impacto no desempenho da aplicação. 
+Além disso, foi investigado se o tamanho médio de cada registro presente no conjunto de dados pode influenciar nesse desempenho e qual a proporção desse impacto.
+
+Para isso, uma aplicação Node.js foi implementada para a condução dos testes. Essa aplicação é responsável por realizar a conexão com o Banco de Dados MongoDB e executar operações CRUD. A ferramenta de testes implementada em Node.js está disponível para a comunidade científica em: [OMITIDO], podendo ser utilizada em outras pesquisas.%~\footnote{https://github.com/leandroungari/database-driver}.
+
+As métricas escolhidas para as análises de cada um dos testes conduzidos foram:
+
+\begin{itemize}
+\item \textbf{Tempo médio de Execução:} Consiste tempo médio total de execução de cada operação específica.
+\item \textbf{Consumo médio de CPU:} Consiste no tempo médio de uso do processador durante a execução de cada operação específica.
+\item \textbf{Consumo médio de Memória:} Consiste na variação média de uso de memória RAM durante a execução de cada operação específica, sendo expressa em kilobytes (KB).
+\end{itemize}
+
+Por fim, foram formuladas as seguintes de questões de pesquisa que guiaram formalmente as análises executadas: 
+
+\textbf{QP1} --~\emph{A escolha do Driver impacta no desempenho da aplicação Node.js que utiliza o MongoDB, considerando o tempo de execução de cada uma das operações CRUD?}
+
+\textbf{QP2} --~\emph{A escolha do Driver pode influenciar no desempenho da aplicação Node.js que utiliza o MongoDB, considerando o tempo de consumo da CPU ao executar operações CRUD?}
+
+\textbf{QP3} --~\emph{A escolha do Driver impacta de modo relevante no desempenho da aplicação Node.js que utiliza o MongoDB, considerando o consumo médio de memória RAM ao executar operações CRUD?}
+
+\subsection{Características dos Conjuntos de Dados}
+
+A condução do experimento utilizou um conjunto de dados com cerca 18 mil instâncias.%\footnote{https://www.kaggle.com/karangadiya/fifa19}. 
+Originalmente, todos os registros presentes são compostos por 89 atributos, predominantemente textuais, obtendo um tamanho médio de 1,37KB. 
+A partir do conjunto original, foi construído um conjunto reduzido em número de atributos (6 atributos), com o mesmo total de instâncias, porém com tamanho médio de 0,13KB. 
+
+Deste modo, dois conjuntos de dados foram utilizados para a experimentação, observe suas características descritas na Tabela~\ref{tab:conjunto-dados}. 
+O conjunto reduzido tem o intuito de comparar a influência dos dois \emph{Drivers} na manipulação de registros com diferentes quantidade de atributos.
+
+\begin{table}[ht]
+\centering
+\caption{Características dos Conjuntos de Dados utilizado no Experimento}
+\label{tab:conjunto-dados}
+\begin{tabular}{c|c|c|}
+\cline{2-3}
+                         & \textbf{Conjunto de Dados 1} & \textbf{Conjunto de Dados 2} \\ \hline
+\multicolumn{1}{|l|}{Quantidade de instâncias} & 18 mil   		 			& 18 mil            \\ \hline
+\multicolumn{1}{|l|}{Quantidade de atributos}  & 89        		 			& 6                  \\ \hline
+\multicolumn{1}{|l|}{Tamanho de um registro}   & 1,37 KB        				& 0,13 KB                    \\ \hline
+\end{tabular}
+\end{table}
+
+\subsection{Ambiente de Execução}
+
+O ambiente de execução foi composto por uma máquina com Sistema Operacional Ubuntu 18.04.2, processador Intel i3 3217U e memória RAM de 4GB DDR3. 
+Durante a execução dos testes, o ambiente de execução da aplicação Node.js foi definido o uso do~\emph{heap} de tamanho máximo 3GB, desse modo restringindo o máximo de operações de cada teste.
+
+Em cada cenário de execução, foram extraídos dados relativos ao tempo de execução, tempo de uso de CPU e uso de memória RAM. 
+Foram analisados cenários com diferentes quantidades de operações CRUD, as quais variaram de 1000, 10000, 100000 e 200000; cada qual repetido 10 vezes e registrada a média das execuções. A obtenção das métricas de desempenho foi realizada através da biblioteca JSMeter~\footnote{https://github.com/wahengchang/js-meter}. 
+
+\section{Resultados do Experimento}
+\label{section:resultados}
+
+A seguir os resultados são apresentados sob a perspectiva de cada uma das operações CRUD, em que 100\% dos registros são atingidos em cada operação. 
+Cada resultado refere-se a uma operação específica, da combinação de um~\emph{Driver} com o MongoDB em uma aplicação manipulando o conjunto de dados grande (com todos atributos) ou conjunto de dados pequeno (com número reduzido de atributos).
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=0.85\textwidth]{images/time}
+\caption{Contraste do uso dos \emph{Drivers} com a aplicação de operações CRUD em relação ao tempo de execução.}
+\label{fig:time}
+\end{figure}
+
+Na Figura~\ref{fig:time} é ilustrado graficamente o tempo de execução ao realizar operações CRUD contrastando a utilização de ambos os \emph{Drivers}. Considerando o tempo de execução para operações de inserção -- Figura 3a, foi identificado que o tempo de execução com o uso do~\emph{Driver} \emph{Mongoose} foi maior, para os dois conjuntos, em comparação com o uso do \emph{MongoClient}, no qual não demonstrou diferenças significativas entre os conjuntos. Pode-se observar também que ao manipular o conjunto de dados pequeno com o uso do \emph{Mongoose}, ocorreu uma queda no tempo de execução a partir de 100.000 operações de inserção. Um possível fator que justifique esse comportamento consiste na ocorrência de divisão de conjuntos na operação de inserção, quando a quantidade excede 100 000 itens, conforme a documentação do MongoDB, contudo, isso não ocorre para o conjunto de dados grande.
+
+Considerando o tempo de execução para operações de Busca -- Figura 3b, o uso do \emph{MongoClient} resultou em um tempo de execução inferior, para ambos os conjuntos, se comparado a utilização do \emph{Mongoose}. Ao utilizar o \emph{Mongoose} neste caso, as execuções para ambos os conjuntos apresentam comportamento crescente e proporcional em detrimento a diferença de tamanho dos registros. Por fim, ainda na perspectiva de tempo de retrabalho, ao analisar os resultados dos testes tanto para operações de atualização -- Figura 3c, quanto para operações de deleção -- Figura 3d, observou-se comportamentos similares com o uso de ambos os \emph{Drivers}.
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=0.85\textwidth]{images/cpuusage}
+%    \caption{Comparativo de operações CRUD em relação ao consumo de CPU.}
+	 \caption{Contraste do uso dos \emph{Drivers} com a aplicação de operações CRUD em relação ao consumo de CPU.}
+    \label{fig:cpuusage}
+\end{figure}
+
+Na Figura~\ref{fig:cpuusage} é ilustrado graficamente o consumo de CPU ao realizar operações CRUD contrastando a utilização de ambos os \emph{Drivers}.
+Analogamente a análise anterior, para as operações de inserção -- Figura 4a e busca -- Figura 4b, o uso \emph{MongoClient} prove um tempo médio de consumo de CPU significativamente inferior, em ambos os conjuntos, em detrimento do alto tempo de consumo apresentado pelo \emph{Mongoose}. Para a inserção, também apresenta o caso de exceção para 200 000 operações, cuja possível justificativa é semelhante a análise anterior.
+
+Na Figura 4c é ilustrado o consumo de CPU ao realizar operações de atualização, em que pode-se observar que com o uso do~\emph{Driver} \emph{Mongoose} com conjunto de registros maiores apresentou maior tempo de consumo da CPU, diferentemente dos demais, que foram semelhantes e com tempo menor, mesmo com oscilações. 
+É importante salientar que o tempo de processamento de todas as execuções foram inferiores a 250 ms.
+Na Figura 4d, é ilustrado o consumo de CPU ao realizar operação de deleção, cada execução apresentou comportamento relativamente instável, nas quais o uso do~\emph{Driver} \emph{MongoClient} apresentou um tempo mais elevado de consumo da CPU, entretanto não há diferença significativa, porque todas as execuções obtiveram tempo de processamento inferior a 10 ms.
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=0.85\textwidth]{images/memory}
+%    \caption{Comparativo de operações em relação ao uso de memória.}
+	 \caption{Contraste do uso dos \emph{Drivers} com a aplicação de operações CRUD em relação ao consumo de memória.}
+    \label{fig:memory}
+\end{figure}
+
+Na Figura~\ref{fig:memory} é ilustrado graficamente o consumo de Memória RAM ao realizar operações CRUD contrastando a utilização de ambos os \emph{Drivers}.
+Nas Figuras 5a e 5b são ilustrados respectivamente os consumos de memória para as operações de inserção e busca, no qual não pode se identificar um padrão de uso de memória, entretanto pode-se identificar que predominantemente o~\emph{Driver} \emph{Mongoose} tem um consumo maior de memória nas operações realizadas, em ambos os conjuntos, com relação aos casos do~\emph{Driver} \emph{MongoClient}.
+Para ambas operações, há um uso adicional de memória em torno de 30 a 40MB.
+
+Por fim, nas Figuras 5c e 5d, respectivamente são ilustrados os consumos de memória ao realizar operações de atualização e deleção, também não apresentam padronização para ambos os~\emph{Drivers} e conjuntos. 
+Apesar de apresentar alguns pontos de instabilidade, é possível notar que tais operações consomem pouca memória adicional, aproximadamente 1MB ou menos, mesmo considerando os picos de oscilação.
+
+\section{Análise}
+\label{section:discussao}
+
+Nessa seção são apresentadas as análises a respeito dos resultados obtidos, as quais são descritas sob a perspectiva das questões de pesquisa descristas na Seção~\ref{section:experimento}.
+
+\subsection{~\emph{QP1 -- A escolha do Driver impacta no desempenho da aplicação Node.js que utiliza o MongoDB, considerando o tempo de execução de cada uma das operações CRUD?}}
+%\subsection{Análise -- QP1}
+\label{q1}
+
+Com relação a QP1, em linhas gerais, os testes executados utilizando o~\emph{Driver} \emph{Mongoose} apresentaram tempo de execução superior se comparado com a utilização do \emph{MongoClient} em duas operações, enquanto nas demais operações o desempenho foi semelhante.
+Desse modo, sob a perspectiva de tempo médio de execução de cada operação realizada no Banco de Dados \emph{MongoDB}, temos que, a escolha do~\emph{Driver} pode impactar no desempenho, tendo o \emph{MongoClient} como melhor opção para uma aplicação Node.js que faz uso do \emph{MongoDB} quando o tempo de execução for um fator crítico para essa aplicação.
+
+\subsection{~\emph{QP2 -- A escolha do Driver pode influenciar no desempenho da aplicação Node.js que utiliza o MongoDB, considerando o tempo de consumo da CPU ao executar operações CRUD?}}
+%\subsection{Análise -- QP2}
+\label{q2}
+
+Assim como na QP1, os testes executados utilizando o \emph{MongoClient} obtiveram menor tempo de consumo da CPU em relação ao \emph{Mongoose}, em ambos os conjuntos, principalmente para as operações de inserção e busca, enquanto nas demais operações (atualização e deleção), também foi registrado melhor desempenho, contudo em proporção menor.
+Em suma, em termos de tempo de processamento, a escolha do~\emph{Driver} pode influenciar no desempenho, também apresentando \emph{MongoClient} como melhor opção para uma aplicação Node.js que faz uso do MongoDB.
+
+\subsection{~\emph{QP3 -- A escolha do Driver impacta de modo relevante no desempenho da aplicação Node.js que utiliza o MongoDB, considerando o consumo médio de memória RAM ao executar operações CRUD?}}
+%\subsection{Análise -- QP3}
+\label{q3}
+
+A respeito da QP3, tem-se que para as operações de inserção e busca, na maioria dos casos de execução, o~\emph{Driver} \emph{Mongoose} apresenta maior consumo de memória, enquanto para as operações de atualização e deleção não há diferenças significantes.
+Contudo cabe ressaltar que em nenhuma das comparações houve comportamento estável.
+Desse modo, em termos de consumo de memória, temos que, a escolha do~\emph{Driver} não impacta de modo relevante para todas as operações, apesar do consumo inferior por parte do~\emph{Driver} \emph{MongoClient}.
+
+\subsection{Análise Geral}
+\label{qgeral}
+
+De modo geral, os dados obtidos indicam que as operações de inserção e busca são as mais custosas quanto ao tempo de execução, para os piores casos, aproximadamente 70 000 a 80 000 ms, enquanto as demais são inferiores a 5 000 ms.
+Sob a perspectiva de tempo de consumo da CPU também se vale a mesma análise, inclusive as operações indicam aproximada proporcionalidade em comparação ao tempo de execução total.
+Quanto ao uso de memória, ambas operações também apresentam maior custo, mesmo que não-linear, em níveis próximos de 30 a 40MB, em detrimento das demais operações com uso próximo ou inferior a 1MB.
+
+A respeito da diferença média de tamanho dos registros do conjunto de dados adotado, o~\emph{Driver} \emph{MongoClient} apresentou-se de modo indiferente, não apresentando oscilações significativas, enquanto o \emph{Mongoose} apresenta o desempenho diretamente proporcional ao tamanho do registro.
+
+Em termos de comparação entre os~\emph{Drivers}, o \emph{MongoClient} apresentou desempenho mais estável e de menor custo sob a perspectiva de todas as métricas adotadas, em detrimento ao \emph{Mongoose}. Portanto, conclui-se que, sob o critério exclusivo de desempenho, o~\emph{MongoClient} apresenta-se como melhor opção com relação ao concorrente. Cabe ressaltar que se quaisquer recursos adicionais providos por uma das opções, como verificação de dados ou facilidade de implementação, consistirem em fatores relevantes, deve-se reavaliar a escolha, contudo, esse estudo tem caráter quantitativo e não visa mensurar a utilização de recursos adicionais que podem variar de contexto e aplicação utilizados.
+
+%\section{Ameaças à Validação}
+%\label{section:limitacoes}
+
+%Esta seção apresenta as possíveis ameaças que podem comprometer os resultados desse estudo comparativo.
+%Como ameaça à validação interna desse estudo tem a etapa da obtenção dos dados quantitativos quanto às análises conduzidas, desse modo, durante a execução dos testes, todos esses foram conduzidos repetidamente e de modo subsequente para que nenhuma interferência pudesse ser adicionada.
+
+%Como ameaça à validação externa, tem-se o conjunto de dados selecionado, o qual está diretamente atrelado aos resultados numéricos obtidos, porém análise é baseado na comparação relativa dos resultados, além a aplicação de teste foi projetada de modo aceitar um conjunto de dados genérico.
+
+%\section{Trabalhos Relacionados} 
+%\label{section:relacionados}
+
+%Este trabalho busca analisar o impacto causado no desempenho de uma aplicação Node.js que faz uso do Banco de Dados~\emph{NoSQL} MongoDB, ao utilizar os dois diferentes drivers disponíveis para o Banco de Dados em questão. Nosso trabalho está situado como único presente na literatura com investigação nessa perspectiva, uma vez que os demais trabalhos investigam outros aspectos relacionados ao MongoDB como por exemplo: comparação de desempenho com outros bancos de dados e influência na performance do banco de dados ao utilizar diferentes modelagens de dados. A seguir são descritos alguns desses trabalhos.
+
+%Uma análise quantitativa do desempenho entre o MongoDB e o Banco de Dados Relacional MySQL~\cite{patil:2017}. Como resultados, foi constatado que o MongoDB apresentou melhor performance em operações de inserção e recuperação se comparado com o MySQL. 
+%Em um estudo análogo~\cite{jung:2015}, foi demonstrado que o MongoDB possui em geral desempenho superior ao Banco de Dados Relacional PostgreSQL, considerando operações CRUD, entretanto o desempenho do PostgreSQL é superior quando é utilizado um modelo de dados estruturado.
+
+%Em outro estudo, por meio de uma aplicação web é comparado o desempenho da utilização integral do MySQL e de um modelo híbrido de MySQL e MongoDB~\cite{ongo:2018}. 
+%Em seus resultados, é expresso que o banco de dados híbrido obteve desempenho mais alto em operações de leitura e gravação se comparado ao MySQL de modo isolado. 
+%Além disso, o modelo híbrido consome menos disco, contudo consome mais memória se comparado com a utilização integral do MySQL, o consumo de CPU não apresenta diferença significativa entre as duas abordagens. 
+%Um possível trabalho futuro poderia comparar o modelo Híbrido com a utilização integralmente do MongoDB e investigar o desempenho, consumo de Disco, Memória RAM e CPU.
+
+%Além disso, foi verificado a variação do desempenho do Banco de Dados~\emph{NoSQL} MongoDB na perspectiva de dois estilos de modelagem diferentes: incorporação de documentos e normalização em coleções. Os resultados demonstraram que o modelo de dados incorporado do MongoDB oferece um desempenho superior e muito mais consistente em todas as consultas em comparação com o modelo de dados normalizado do MongoDB~\cite{kanade2014study}.
+
+\section{Considerações Finais}
+\label{section:consideracoes}
+
+Este artigo apresenta um estudo que analisa a influência do uso de Drives, contrastando a utilização de dois Drivers distintos: \emph{MongoClient} e \emph{Mongoose}, no desempenho de uma aplicação Node.js que faz uso do Banco de Dados \emph{NoSQL} MongoDB.%Este artigo apresenta um estudo analisando o desempenho de uma aplicação Node.js que faz uso do Banco de Dados \emph{NoSQL} MongoDB contrastando a utilização de dois~\emph{Drivers} distintos: \emph{MongoClient} e \emph{Mongoose}.
+Na avaliação foram conduzidas análises quantitativas quanto a tempo de execução, tempo de consumo da CPU e uso de memória RAM na execução de operações CRUD; além de comparar os impactos com variação do tamanho médio dos registros presentes no conjunto de dados.
+
+De modo geral, através dos resultados quantitativos, foi constatado que o desempenho de uma aplicação Node.js integrada com o MongoDB ao utilizar o~\emph{Driver} \emph{MongoClient} é em geral melhor se comparado com a utilização do \emph{Driver} \emph{Mongoose}, principalmente sob as métricas de tempo de execução e consumo da CPU, e, de modo menos significativo, quanto ao consumo de memória RAM, considerando uma aplicação desenvolvida em ambiente Node.js.
+
+Como contribuição adicional, tem-se a implementação e disponibilização da ferramenta de testes, de modo a viabilizar a execução de futuras análises em ambientes Node.js.
+
+%\begin{table}
+%\caption{This is the example table taken out of {\it The
+%\TeX{}book,} p.\,246}
+%\begin{center}
+%\begin{tabular}{r@{\quad}rl}
+%\hline
+%\multicolumn{1}{l}{\rule{0pt}{12pt}
+%                   Year}&\multicolumn{2}{l}{World population}\\[2pt]
+%\hline\rule{0pt}{12pt}
+%8000 B.C.  &     5,000,000& \\
+%  50 A.D.  &   200,000,000& \\
+%1650 A.D.  &   500,000,000& \\
+%1945 A.D.  & 2,300,000,000& \\
+%1980 A.D.  & 4,400,000,000& \\[2pt]
+%\hline
+%\end{tabular}
+%\end{center}
+%\end{table}
+%
+%
+% ---- Bibliography ----
+%
+%\begin{thebibliography}{6}
+%
+
+%\bibitem {smit:wat}
+%Smith, T.F., Waterman, M.S.: Identification of common molecular subsequences.
+%J. Mol. Biol. 147, 195?197 (1981). \url{doi:10.1016/0022-2836(81)90087-5}
+
+%\bibitem {may:ehr:stein}
+%May, P., Ehrlich, H.-C., Steinke, T.: ZIB structure prediction pipeline:
+%composing a complex biological workflow through web services.
+%In: Nagel, W.E., Walter, W.V., Lehner, W. (eds.) Euro-Par 2006.
+%LNCS, vol. 4128, pp. 1148?1158. Springer, Heidelberg (2006).
+%\url{doi:10.1007/11823285_121}
+
+%\bibitem {fost:kes}
+%Foster, I., Kesselman, C.: The Grid: Blueprint for a New Computing Infrastructure.
+%Morgan Kaufmann, San Francisco (1999)
+
+%\bibitem {czaj:fitz}
+%Czajkowski, K., Fitzgerald, S., Foster, I., Kesselman, C.: Grid information services
+%for distributed resource sharing. In: 10th IEEE International Symposium
+%on High Performance Distributed Computing, pp. 181?184. IEEE Press, New York (2001).
+%\url{doi: 10.1109/HPDC.2001.945188}
+
+%\bibitem {fo:kes:nic:tue}
+%Foster, I., Kesselman, C., Nick, J., Tuecke, S.: The physiology of the grid: an open grid services architecture for distributed systems integration. Technical report, Global Grid
+%Forum (2002)
+
+%\bibitem {onlyurl}
+%National Center for Biotechnology Information. \url{http://www.ncbi.nlm.nih.gov}
+
+%\end{thebibliography}
+
+\bibliographystyle{bibtex/splncs03_unsrt}
+\bibliography{sbc-template}
+
+\end{document}

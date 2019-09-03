@@ -1,0 +1,12 @@
+MUDANÇAS e PEDIDOS DE MELHORIAS:
+
+- Mudança no título (CONSEGUE MELHORAR???): Análise de Desempenho dos Drivers do MongoDB em um Ambiente de Aplicação Node.js
+- Mudança nas questões de pesquisa(FOI FEITO!): Agora é o impacto do driver no desempenho de uma aplicação Node que utiliza o Mongo.
+- Trabalhos relacionados (FOI FEITO!): a seção foi comentada (retirada) foi adicionado um paragrafo na introdução explicando os relacionados.
+- Melhorar resumo a seguinte frase, essa frase também está na introdução (CONSEGUE MELHORAR): "Drivers tem sido desenvolvidos visando flexibilizar e apoiar execução das operações pertences aos bancos de dados"
+- Foi mudado a seção (FOI FEITO!): composição dos esperimentos bem como as questões de pesquisa
+- TRADUZIR AS IMAGENS SE POSSÍVEL GERA-LAS NOVAMENTE EM INGLÊS E COM QUALIDADE MELHOR
+- A seção de resultados e análise geral foi modificada para fazer sentido (mudou de desempenho do mongo para desempenho da aplicação) (FOI FEITO!)
+- Seção de resultados (VERIFICAR O PARAGRÁFO 3), é tempo de retrabalho mesmo?
+- Verificar o primeiro paragráfo da seção: Considerações finais (MELHORAR???)
+- Após tradução, se sobrar espaço colocar limitações do trabalho (ameças) como um paragráfo nas considerações finais.
