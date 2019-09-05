@@ -15,15 +15,20 @@
 % to typeset URLs, URIs, and DOIs
 \usepackage{url}
 \usepackage{graphicx,url}
+\usepackage[utf8]{inputenc}
 \def\UrlFont{\rmfamily}
 
 \begin{document}
 \mainmatter              % start of a contribution
 %
 %\title{Análise de Desempenho do MongoDB Utilizando Diferentes \emph{Drivers} em um Ambiente de Aplicação Node.js}
-\title{Análise de Desempenho dos Drivers do MongoDB em um Ambiente de Aplicação Node.js}
+%\title{Análise de Desempenho dos Drivers do MongoDB em um Ambiente de Aplicação Node.js}
+%\title{Análise de Desempenho de Aplicação Node.js utilizando Drivers do MongoDB}
+\title{Analysis of Node.js Application Performance using MongoDB Drivers}
 %
-\titlerunning{Análise de Desempenho dos Drivers do MongoDB em um Ambiente de Aplicação Node.js}  % abbreviated title (for running head)
+%\titlerunning{Análise de Desempenho dos Drivers do MongoDB em um Ambiente de Aplicação Node.js}  % abbreviated title (for running head)
+%\titlerunning{Análise de Desempenho de Aplicação Node.js}
+\titlerunning{Analysis of Node.js Application Performance}
 %                                     also used for the TOC unless
 %                                     \toctitle is used
 %
@@ -37,7 +42,7 @@
 \institute{Faculdade de Ciências e Tecnologia -- Universidade Estadual Paulista (UNESP), Presidente Prudente -- SP, Brazil,\\
 \email{\{leandro.ungari,bruno.s.lima,rogerio.garcia,ronaldo.correia\}@unesp.br}}
 
-\maketitle              % typeset the title of the contribution
+\maketitle % typeset the title of the contribution
 
 \begin{abstract}
 Nos últimos anos, o número de Banco de Dados NoSQL tem crescido significativamente. Drivers tem sido desenvolvidos visando flexibilizar e apoiar execução das operações pertences aos bancos de dados. Há casos em que, para o mesmo Banco de Dados, existem diversas soluções, o que dificulta o entendimento dos impactos que a escolha de um Driver pode resultar no desempenho da aplicação. Neste artigo, é apresentado um estudo comparativo entre dois Drivers para MongoDB em aplicações Node.js, em que foram executadas operações CRUD para analisar o possível impacto no desempenho da aplicação com base em métricas de tempo de execução, consumo de CPU e memória. Os resultados demonstram que, sob análise quantitativa, o Driver MongoClient demonstrou possuir melhor desempenho em comparação ao Driver Mongoose, considerando as métricas empregadas, podendo ser uma melhor escolha a ser utilizada ao desenvolver uma aplicação Node.js.
@@ -48,7 +53,8 @@ Nos últimos anos, o número de Banco de Dados NoSQL tem crescido significativam
 \section{Introdução}
 \label{sec:introducao}
 
-Nos últimos anos, o crescimento no volume de dados mudou a utilização desses por empresas e organizações. Inicialmente como agentes passivos, relacionados às regras de negócio empresarial; os dados se tornaram potenciais oportunidades de lucro e obtenção de conhecimento através de processos de análise de dados.
+%Nos últimos anos, o crescimento no volume de dados mudou a utilização desses por empresas e organizações. Inicialmente como agentes passivos, relacionados às regras de negócio empresarial; os dados se tornaram potenciais oportunidades de lucro e obtenção de conhecimento através de processos de análise de dados.
+
 
 O advento do~\emph{Big Data} não implicou somente em maior espaço de armazenamento, mas em uma mudança de organização, considerando características como volume, variedade, velocidade e valores~\cite{ward2013undefined}. 
 A arquitetura dos tradicionais Bancos de Dados Relacionais são baseadas em propriedades ACID (\textit{Atomicity},~\textit{Consistency},~\textit{Isolation} e~\textit{Durability}), contudo, em ambientes de~\emph{Big Data} a alta consistência provida afeta diretamente os aspectos de disponibilidade e eficiência, que são primordiais, devido ao alto volume, variedade e velocidade~\cite{aparicio:2016}. 
@@ -199,9 +205,9 @@ Cada resultado refere-se a uma operação específica, da combinação de um~\em
 
 Na Figura~\ref{fig:time} é ilustrado graficamente o tempo de execução ao realizar operações CRUD contrastando a utilização de ambos os \emph{Drivers}. Considerando o tempo de execução para operações de inserção -- Figura 3a, foi identificado que o tempo de execução com o uso do~\emph{Driver} \emph{Mongoose} foi maior, para os dois conjuntos, em comparação com o uso do \emph{MongoClient}, no qual não demonstrou diferenças significativas entre os conjuntos. Pode-se observar também que ao manipular o conjunto de dados pequeno com o uso do \emph{Mongoose}, ocorreu uma queda no tempo de execução a partir de 100.000 operações de inserção. Um possível fator que justifique esse comportamento consiste na ocorrência de divisão de conjuntos na operação de inserção, quando a quantidade excede 100 000 itens, conforme a documentação do MongoDB, contudo, isso não ocorre para o conjunto de dados grande.
 
-Considerando o tempo de execução para operações de Busca -- Figura 3b, o uso do \emph{MongoClient} resultou em um tempo de execução inferior, para ambos os conjuntos, se comparado a utilização do \emph{Mongoose}. Ao utilizar o \emph{Mongoose} neste caso, as execuções para ambos os conjuntos apresentam comportamento crescente e proporcional em detrimento a diferença de tamanho dos registros. Por fim, ainda na perspectiva de tempo de retrabalho, ao analisar os resultados dos testes tanto para operações de atualização -- Figura 3c, quanto para operações de deleção -- Figura 3d, observou-se comportamentos similares com o uso de ambos os \emph{Drivers}.
+Considerando o tempo de execução para operações de Busca -- Figura 3b, o uso do \emph{MongoClient} resultou em um tempo de execução inferior, para ambos os conjuntos, se comparado a utilização do \emph{Mongoose}. Ao utilizar o \emph{Mongoose} neste caso, as execuções para ambos os conjuntos apresentam comportamento crescente e proporcional em detrimento a diferença de tamanho dos registros. Por fim, ainda na perspectiva de tempo de processamento, ao analisar os resultados dos testes tanto para operações de atualização -- Figura 3c, quanto para operações de deleção -- Figura 3d, observou-se comportamentos similares com o uso de ambos os \emph{Drivers}.
 
-\begin{figure}[!ht]
+\begin{figure}[ht]
     \centering
     \includegraphics[width=0.85\textwidth]{images/cpuusage}
 %    \caption{Comparativo de operações CRUD em relação ao consumo de CPU.}
@@ -296,7 +302,7 @@ Em termos de comparação entre os~\emph{Drivers}, o \emph{MongoClient} apresent
 \label{section:consideracoes}
 
 Este artigo apresenta um estudo que analisa a influência do uso de Drives, contrastando a utilização de dois Drivers distintos: \emph{MongoClient} e \emph{Mongoose}, no desempenho de uma aplicação Node.js que faz uso do Banco de Dados \emph{NoSQL} MongoDB.%Este artigo apresenta um estudo analisando o desempenho de uma aplicação Node.js que faz uso do Banco de Dados \emph{NoSQL} MongoDB contrastando a utilização de dois~\emph{Drivers} distintos: \emph{MongoClient} e \emph{Mongoose}.
-Na avaliação foram conduzidas análises quantitativas quanto a tempo de execução, tempo de consumo da CPU e uso de memória RAM na execução de operações CRUD; além de comparar os impactos com variação do tamanho médio dos registros presentes no conjunto de dados.
+Um estudo de análise de desempenho foi conduzido verificando aspectos quanto a tempo de execução, tempo de consumo da CPU e uso de memória RAM na execução de operações CRUD; além de comparar os impactos com variação do tamanho médio dos registros presentes no conjunto de dados.
 
 De modo geral, através dos resultados quantitativos, foi constatado que o desempenho de uma aplicação Node.js integrada com o MongoDB ao utilizar o~\emph{Driver} \emph{MongoClient} é em geral melhor se comparado com a utilização do \emph{Driver} \emph{Mongoose}, principalmente sob as métricas de tempo de execução e consumo da CPU, e, de modo menos significativo, quanto ao consumo de memória RAM, considerando uma aplicação desenvolvida em ambiente Node.js.
 
