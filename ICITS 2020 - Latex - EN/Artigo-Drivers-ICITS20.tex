@@ -45,68 +45,105 @@
 \maketitle % typeset the title of the contribution
 
 \begin{abstract}
-Nos últimos anos, o número de Banco de Dados NoSQL tem crescido significativamente. Drivers tem sido desenvolvidos visando flexibilizar e apoiar execução das operações pertences aos bancos de dados. Há casos em que, para o mesmo Banco de Dados, existem diversas soluções, o que dificulta o entendimento dos impactos que a escolha de um Driver pode resultar no desempenho da aplicação. Neste artigo, é apresentado um estudo comparativo entre dois Drivers para MongoDB em aplicações Node.js, em que foram executadas operações CRUD para analisar o possível impacto no desempenho da aplicação com base em métricas de tempo de execução, consumo de CPU e memória. Os resultados demonstram que, sob análise quantitativa, o Driver MongoClient demonstrou possuir melhor desempenho em comparação ao Driver Mongoose, considerando as métricas empregadas, podendo ser uma melhor escolha a ser utilizada ao desenvolver uma aplicação Node.js.
-\keywords{Análise de Desempenho, Aplicação Node.js, MongoDB, Drivers, Data Base}
+At the last few years, the usage of NoSQL databases has increased, and consequently, the need for integrating with different programming languages. In that way, database drivers provide an API to perform database operations, which may impact on the performance of applications. In this article, we present a comparative study between two main drivers solutions to MongoDB in Node.js, through the evaluation of CRUD tests based on quantitative metrics (time execution, memory consumption, and CPU usage). Our results show which, under quantitative analysis, the MongoClient driver has presented a better performance than Mongoose driver in the considered scenarios, which may imply as the best alternative in the development of Node.js applications.
+\keywords{Performance, Node.js application, MongoDB, Drivers, NoSQL databases}
 \end{abstract}
 %
 
-\section{Introdução}
+\section{Introduction}
 \label{sec:introducao}
 
-Nos últimos anos, o crescimento no volume de dados mudou a utilização desses por empresas e organizações. Inicialmente como agentes passivos, relacionados às regras de negócio empresarial; os dados se tornaram potenciais oportunidades de lucro e obtenção de conhecimento através de processos de análise de dados.
+%Nos últimos anos, o crescimento no volume de dados mudou a utilização desses por empresas e organizações. Inicialmente como agentes passivos, relacionados às regras de negócio empresarial; os dados se tornaram potenciais oportunidades de lucro e obtenção de conhecimento através de processos de análise de dados.
+At the last few years, the growth of data volume has changed the perspective of how organizations behavior, from simple data recording to potential advantage in competitive markets.
 
-
-O advento do~\emph{Big Data} não implicou somente em maior espaço de armazenamento, mas em uma mudança de organização, considerando características como volume, variedade, velocidade e valores~\cite{ward2013undefined}. 
-A arquitetura dos tradicionais Bancos de Dados Relacionais são baseadas em propriedades ACID (\textit{Atomicity},~\textit{Consistency},~\textit{Isolation} e~\textit{Durability}), contudo, em ambientes de~\emph{Big Data} a alta consistência provida afeta diretamente os aspectos de disponibilidade e eficiência, que são primordiais, devido ao alto volume, variedade e velocidade~\cite{aparicio:2016}. 
-Nesse cenário, os Banco de Dados \textit{NoSQL} (\emph{Not only SQL}) proporcionam maior flexibilidade estrutural, escalabilidade, suporte a replicação e consistência eventual, desse modo, surgem como alternativas de destaque~\cite{han2011survey}. 
+%O advento do~\emph{Big Data} não implicou somente em maior espaço de armazenamento, mas em uma mudança de organização, considerando características como volume, variedade, velocidade e valores~\cite{ward2013undefined}. 
+%A arquitetura dos tradicionais Bancos de Dados Relacionais são baseadas em propriedades ACID (\textit{Atomicity},~\textit{Consistency},~\textit{Isolation} e~\textit{Durability}), contudo, em ambientes de~\emph{Big Data} a alta consistência provida afeta diretamente os aspectos de disponibilidade e eficiência, que são primordiais, devido ao alto volume, variedade e velocidade~\cite{aparicio:2016}. 
+%Nesse cenário, os Banco de Dados \textit{NoSQL} (\emph{Not only SQL}) proporcionam maior flexibilidade estrutural, escalabilidade, suporte a replicação e consistência eventual, desse modo, surgem como alternativas de destaque~\cite{han2011survey}. 
+This event, known as Big Data, not only implies in large storage but also perspectives related to variety, velocity, and value~\cite{ward2013undefined}. The traditional architecture of relational databases based on ACID (atomicity, consistency, isolation, and durability) properties, which affect the aspects related to availability and efficiency directly in Big Data environments~\cite{aparicio:2016}. 
+The non-relational databases (NoSQL) have been proposed oo solve the side-effects, and allowing more structural flexibility, scalability, and support to replication and eventual consistency~\cite{han2011survey}.
   
-Neste contexto, para os diferentes ambientes de desenvolvimento e linguagens de programação,~\emph{Drivers} tem sido desenvolvidos de modo a viabilizar e apoiar execução de operações pertences aos bancos de dados. Entretanto, em muitos casos, além de recentes, os~\emph{Drivers} apresentam limitações em sua implementações, falhas de entendimento e efeitos colaterais no acesso aos dados~\cite{rafique:2018}. 
-Assim, a decisão de qual combinação entre Banco de Dados \textit{NoSQL} e~\emph{Driver} a ser empregada pode ser um problema, devido ao desconhecimento dos pontos positivos e negativos.
+%Neste contexto, para os diferentes ambientes de desenvolvimento e linguagens de programação,~\emph{Drivers} tem sido desenvolvidos de modo a viabilizar e apoiar execução de operações pertences aos bancos de dados. Entretanto, em muitos casos, além de recentes, os~\emph{Drivers} apresentam limitações em sua implementações, falhas de entendimento e efeitos colaterais no acesso aos dados~\cite{rafique:2018}. 
+%Assim, a decisão de qual combinação entre Banco de Dados \textit{NoSQL} e~\emph{Driver} a ser empregada pode ser um problema, devido ao desconhecimento dos pontos positivos e negativos.
+In this context of development environments and programming languages, a variety of database drivers aim to support the execution of the internal database operations.
+However, in many cases, the development of these drivers are very recent and may present defects or limitations, which results in side-effects to the access and manipulation of data~\cite{rafique:2018}.
+Thus, the usage decision of which NoSQL database and driver may impact on the performance, due to unknown factors previously.
 
-Neste artigo, por meio de um experimento comparativo de desempenho, é realizado a avaliação das duas principais soluções de~\emph{Drivers} para o MongoDB~\footnote{https://www.mongodb.com/}, respectivamente \emph{MongoClient}~\footnote{https://mongodb.github.io/node-mongodb-native/} e \emph{Mongoose}~\footnote{https://mongoosejs.com/}, em ambientes de aplicação Node.js. 
-O principal fator considerado para a realização dessa análise consiste na definição prévia de esquema para a manipulação dos dados em operações de CRUD (\emph{create}-\emph{read}-\emph{update}-\emph{delete}). Conceitualmente, os Bancos de Dados~\textit{NoSQL} não requerem essa predefinição, proporcionando flexibilidade, entretanto, não existe nada que impeça sua utilização, principalmente quanto a respeito do desempenho; possibilitando algum impacto relevante.
 
-A escolha do MongoDB ocorreu devido a sua crescente investigação por parte da comunidade cientifica em diversas pesquisas~\cite{patil:2017,jung:2015,ongo:2018,kanade2014study}; além de ser uma das principais opções de armazenamento orientada a documentos. Quanto ao Node.js, mesmo recente, alguns trabalhos apontam a sua viabilidade tecnológica no desenvolvimento de aplicações~\cite{chaniotis2015node}. Com essa escolha, tanto aplicação quanto Banco de Dados utilizam \textit{JavaScript}, uniformizando o sistema em termos de linguagem de programação.
+%Neste artigo, por meio de um experimento comparativo de desempenho, é realizado a avaliação das duas principais soluções de~\emph{Drivers} para o MongoDB~\footnote{https://www.mongodb.com/}, respectivamente \emph{MongoClient}~\footnote{https://mongodb.github.io/node-mongodb-native/} e \emph{Mongoose}~\footnote{https://mongoosejs.com/}, em ambientes de aplicação Node.js. 
+%O principal fator considerado para a realização dessa análise consiste na definição prévia de esquema para a manipulação dos dados em operações de CRUD (\emph{create}-\emph{read}-\emph{update}-\emph{delete}). Conceitualmente, os Bancos de Dados~\textit{NoSQL} não requerem essa predefinição, proporcionando flexibilidade, entretanto, não existe nada que impeça sua utilização, principalmente quanto a respeito do desempenho; possibilitando algum impacto relevante.
+In this work, we conduct a comparative study of performance between MongoClient~\footnote{https://mongodb.github.io/node-mongodb-native/} and Mongoose~\footnote{https://mongoosejs.com/}, both solutions of database drivers to MongoDB~\footnote{https://www.mongodb.com/} in Node.js applications.
+The main difference between them is the predefinition of schema, a factor which is not mandatory in the majority of NoSQL databases, and MongoDB too; but in one of these drivers is required.
+In that way, this experimental study analyses the impact of each driver at CRUD (create, read, update, and delete) operations. 
+
+%A escolha do MongoDB ocorreu devido a sua crescente investigação por parte da comunidade cientifica em diversas pesquisas~\cite{patil:2017,jung:2015,ongo:2018,kanade2014study}; além de ser uma das principais opções de armazenamento orientada a documentos. Quanto ao Node.js, mesmo recente, alguns trabalhos apontam a sua viabilidade tecnológica no desenvolvimento de aplicações~\cite{chaniotis2015node}. Com essa escolha, tanto aplicação quanto Banco de Dados utilizam \textit{JavaScript}, uniformizando o sistema em termos de linguagem de programação.
+
+The choose of MongoDB based on a crescent number of studies in the research community, and also it is the main option of the document-oriented database.
+In about Node.js, despite recent development, it presents technical viability to implement robust applications.
+Also, the database system and application lead to uniformization, because both are implemented in JavaScript.
 
 %Este trabalho busca analisar o impacto causado no desempenho de uma aplicação Node.js que faz uso do Banco de Dados~\emph{NoSQL} MongoDB, ao utilizar os dois diferentes drivers disponíveis para o Banco de Dados em questão. 
-Este trabalho está situado como único presente na literatura com investigação na perspectiva de avaliar a influência de diferentes Drivers do MongoDB no desempenho de uma aplicação Node.js, uma vez que, os demais trabalhos investigam outros aspectos relacionados ao MongoDB como por exemplo: comparação de desempenho com outros Bancos de Dados~\cite{jung:2015,patil:2017,ongo:2018} e influência na performance do Banco de Dados ao utilizar diferentes modelagens de dados~\cite{kanade2014study}.
+%Este trabalho está situado como único presente na literatura com investigação na perspectiva de avaliar a influência de diferentes Drivers do MongoDB no desempenho de uma aplicação Node.js, uma vez que, os demais trabalhos investigam outros aspectos relacionados ao MongoDB como por exemplo: comparação de desempenho com outros Bancos de Dados~\cite{jung:2015,patil:2017,ongo:2018} e influência na performance do Banco de Dados ao utilizar diferentes modelagens de dados~\cite{kanade2014study}.
+This study is unique in the investigation of effects of performance in different database drivers in Node.js application since the other works have analyzed performance between database~\cite{jung:2015,patil:2017,ongo:2018} or the modeling impact on the performance in databases~\cite{kanade2014study}.
 
-Este artigo está organizado do seguinte modo: na Seção~\ref{section:fundamentacao} são apresentados conceitos de Banco de Dados~\emph{NoSQL}, MongoDB e seus \emph{Drivers}.
-A Seção~\ref{section:experimento} é apresentada a estruturação do experimento. 
-Na Seção~\ref{section:resultados} são descritos os resultados quantitativos obtidos, cuja a análise está situada na Seção~\ref{section:discussao}. Por fim, a Seção~\ref{section:consideracoes} expressa as considerações finais.
+%Este artigo está organizado do seguinte modo: na Seção~\ref{section:fundamentacao} são apresentados conceitos de Banco de Dados~\emph{NoSQL}, MongoDB e seus \emph{Drivers}.
+%A Seção~\ref{section:experimento} é apresentada a estruturação do experimento. 
+%Na Seção~\ref{section:resultados} são descritos os resultados quantitativos obtidos, cuja a análise está situada na Seção~\ref{section:discussao}. Por fim, a Seção~\ref{section:consideracoes} expressa as considerações finais.
+The remaining of this article as follows: Section 2 presents relevant topics related to NoSQL databases and MongoDB. Section 3 presents the conception of an experimental project. Section 4 describes the obtained results, which analysis is in Section 5. Finally, Section 6 presents the final remarks of the presented study.
 
-\section{Fundamentação Teórica}
+\section{Background}
 \label{section:fundamentacao}
 
-Nesta seção, são discutidos alguns conceitos fundamentais para o trabalho: Bancos de Dados~\emph{NoSQL}, as características do MongoDB e dos \emph{Drivers} \emph{MongoClient} e \emph{Mongoose}. 
+%Nesta seção, são discutidos alguns conceitos fundamentais para o trabalho: Bancos de Dados~\emph{NoSQL}, as características do MongoDB e dos \emph{Drivers} \emph{MongoClient} e \emph{Mongoose}. 
 
-\subsection{Banco de Dados~\emph{NoSQL}}
+\subsection{Non-Relational Databases}
 \label{subsection:nao-relacional}
 
-Os Bancos de Dados~\emph{NoSQL} foram desenvolvidos visando armazenar e processar grandes volumes de dados. 
-Em linhas gerais os bancos de dados~\emph{NoSQL} são livres de esquematizações e mais propícios a lidar com dados não estruturados como e-mails, documentos e mídias sociais de maneira eficiente~\cite{mohamed:2014,ramesh:2016}.
+%Os Bancos de Dados~\emph{NoSQL} foram desenvolvidos visando armazenar e processar grandes volumes de dados. 
+%Em linhas gerais os bancos de dados~\emph{NoSQL} são livres de esquematizações e mais propícios a lidar com dados não estruturados como e-mails, documentos e mídias sociais de maneira eficiente~\cite{mohamed:2014,ramesh:2016}.
 
-O termo~\emph{NoSQL} é utilizado para se referir a uma ampla variedade de armazenamentos de dados, em que as restrições de transação ACID foram suavizadas permitindo melhor dimensionamento e desempenho horizontal~\cite{rafique:2018}, proporcionando esquemas menos estruturados, suporte a operações de junção, alta escalabilidade, modelagem de dados simples com linguagem de consulta simples~\cite{ramesh:2016}. 
-Os bancos de dados~\emph{NoSQL} são categorizados em: armazenamento de documentos, famílias de colunas, chave/valor, grafos e multimodais~\cite{aparicio:2016}.
+NoSQL databases were developed to fulfill storage requirements in big data environments. In that way, their schemaless data structure provides more flexibility to many applications, such as e-mails, documents, and social media content~\cite{mohamed:2014,ramesh:2016}.
 
-Este trabalho tem como foco a categoria orientada a documentos, a qual possui modelagem de dados estreitamente relacionados a programação orientada a objetos, possibilitando flexibilidade no armazenamento de registros com atributos distintos, sendo útil na modelagem de dados não-estruturados e polimórficos. Permite consultas robustas, em que qualquer combinação de campos no documento pode ser realizada~\cite{patil:2017}. Os dados são organizados em coleções de documentos, as quais utilizam uma estrutura semelhante a JSON (\emph{JavaScript Object Notation}) ou XML (\emph{Extensible Markup Language}).
+%O termo~\emph{NoSQL} é utilizado para se referir a uma ampla variedade de armazenamentos de dados, em que as restrições de transação ACID foram suavizadas permitindo melhor dimensionamento e desempenho horizontal~\cite{rafique:2018}, proporcionando esquemas menos estruturados, suporte a operações de junção, alta escalabilidade, modelagem de dados simples com linguagem de consulta simples~\cite{ramesh:2016}. 
+%Os bancos de dados~\emph{NoSQL} são categorizados em: armazenamento de documentos, famílias de colunas, chave/valor, grafos e multimodais~\cite{aparicio:2016}.
+The NoSQL term refers to wide variety of storage systems, which are non-strict ruled by ACID properties, to allow better data structure and horizontal performance~\cite{rafique:2018}, join operations, high scalability, and data modeling by simplified queries~\cite{ramesh:2016}.
+The relational databases are divided into four categories: document-oriented, column-oriented, key/value-oriented, graph-oriented, and multimodal.
+
+%Este trabalho tem como foco a categoria orientada a documentos, a qual possui modelagem de dados estreitamente relacionados a programação orientada a objetos, possibilitando flexibilidade no armazenamento de registros com atributos distintos, sendo útil na modelagem de dados não-estruturados e polimórficos. Permite consultas robustas, em que qualquer combinação de campos no documento pode ser realizada~\cite{patil:2017}. Os dados são organizados em coleções de documentos, as quais utilizam uma estrutura semelhante a JSON (\emph{JavaScript Object Notation}) ou XML (\emph{Extensible Markup Language}).
+
+This work focus on oriented-documents databases, which modeling is similar to object-oriented data definition using registers with fields and complex operations~\cite{patil:2017}. 
+Each database contains collections, each collection defines similar content groups, and each item corresponds to a document structured as JSON (JavaScript Object Notation) or XML (Extensible Markup Language).
 
 \subsection{MongoDB}
 
-O MongoDB é um Banco de Dados orientado a documentos que possui código-aberto, o qual provê funcionalidades como ordenação, indexação secundária e consultas de intervalo~\cite{membrey2011definitive}.
- 
-O banco de dados não impõe um esquema prévio, entretanto, normalmente todos os documentos em uma coleção são de propósito semelhante ou relacionado~\cite{kanade2014study,lutu2015big}. Há duas abordagens para modelagem de documentos:
+%O MongoDB é um Banco de Dados orientado a documentos que possui código-aberto, o qual provê funcionalidades como ordenação, indexação secundária e consultas de intervalo~\cite{membrey2011definitive}.
+
+%O banco de dados não impõe um esquema prévio, entretanto, normalmente todos os documentos em uma coleção são de propósito semelhante ou relacionado~\cite{kanade2014study,lutu2015big}. Há duas abordagens para modelagem de documentos:
+
+MongoDB is an open-source document-oriented database, which provides besides storage functionalities such as data sorting, secondary indexing, and interval queries~\cite{membrey2011definitive}.
+It does not require a defined schema, despite the similarity of elements into a collection~\cite{kanade2014study,lutu2015big}. There are two main approaches to document modeling:
+
+%\begin{itemize}
+%\item \textbf{Modelo de dados incorporado:} Os dados relacionados são incorporados em uma única estrutura ou documento. Esses esquemas são geralmente conhecidos como modelos sem normalização. %REFERENCIAR
+%\item \textbf{Modelo de dados normalizado:} Os dados possuem referências de documentos para registrar relacionamentos entre esses, mas a combinação de documentos deve ser feita diretamente no código-fonte da aplicação. %REFERENCIAR
+%\end{itemize}
 
 \begin{itemize}
-\item \textbf{Modelo de dados incorporado:} Os dados relacionados são incorporados em uma única estrutura ou documento. Esses esquemas são geralmente conhecidos como modelos sem normalização. %REFERENCIAR
-\item \textbf{Modelo de dados normalizado:} Os dados possuem referências de documentos para registrar relacionamentos entre esses, mas a combinação de documentos deve ser feita diretamente no código-fonte da aplicação. %REFERENCIAR
+\item~\textbf{Embedded data modeling:} the data are defined in a unique data structure or document, which results in a high concentration of data.
+\item~\textbf{Normalized data modeling:} the data have references among documents to represents relationships.     
 \end{itemize}
 
-O armazenamento dos dados ocorre através da serialização de objetos \textit{Javascript}, também conhecidos como JSON, cuja implementação interna utiliza uma codificação binária chamada BSON\footnote{http://bsonspec.org/}. O banco de dados MongoDB disponibiliza diversos~\emph{Drivers} para linguagens de programação como Java, C++, C\#, PHP e Python~\cite{lutu2015big}, e também em Node.js.
+%O armazenamento dos dados ocorre através da serialização de objetos \textit{Javascript}, também conhecidos como JSON, cuja implementação interna utiliza uma codificação binária chamada BSON\footnote{http://bsonspec.org/}. O banco de dados MongoDB disponibiliza diversos~\emph{Drivers} para linguagens de programação como Java, C++, C\#, PHP e Python~\cite{lutu2015big}, e também em Node.js.
 
-Dentre os~\emph{Drivers} existentes para o MongoDB, tem-se como destaque o \textbf{\textit{MongoClient}}\footnote{https://mongodb.github.io/node-mongodb-native/index.html}, consiste na solução oficial e nativa provida organização, provendo um conjunto de funcionalidades que permite a manipulação dos dados e uso de recursos avançados do sistema. Essa solução é caracterizada pela modelagem documentos-objeto (\emph{ODM -- Object-Document Modeler}) de modo implícito ao banco de dados.
+The adopted format is JSON, which passes through a codification to binary format BSON~\footnote{http://bsonspec.org/}
+. About the integration to programming languages, several drivers are available to Java, C++, C\#, PHP and Python~\cite{lutu2015big}, and Node.js too.
 
-Assim como o anterior, o \textbf{\textit{Mongoose}} consiste também em um \emph{Driver} para MongoDB, em que provê a modelagem de dados utilizando um mecanismo objeto-relacional (\emph{ORM -- Object Relational Mapping}) utilizado em banco de dados relacionais~\cite{mardan2014boosting}, executando diversas tarefas de verificação e validação dos dados, como nulidade ou tipagem, previamente definidos por meio da elaboração de um esquema.
+%Dentre os~\emph{Drivers} existentes para o MongoDB, tem-se como destaque o \textbf{\textit{MongoClient}}\footnote{https://mongodb.github.io/node-mongodb-native/index.html}, consiste na solução oficial e nativa provida organização, provendo um conjunto de funcionalidades que permite a manipulação dos dados e uso de recursos avançados do sistema. Essa solução é caracterizada pela modelagem documentos-objeto (\emph{ODM -- Object-Document Modeler}) de modo implícito ao banco de dados.
+
+Concerning to Node.js drivers to MongoDB, the first is the MongoClient~\footnote{https://mongodb.github.io/node-mongodb-native/index.html}, the official distributed solution, which provides an API to manipulation of data. The main feature is the implicit document-object modeling, which discards any need for data description.
+
+%Assim como o anterior, o \textbf{\textit{Mongoose}} consiste também em um \emph{Driver} para MongoDB, em que provê a modelagem de dados utilizando um mecanismo objeto-relacional (\emph{ORM -- Object Relational Mapping}) utilizado em banco de dados relacionais~\cite{mardan2014boosting}, executando diversas tarefas de verificação e validação dos dados, como nulidade ou tipagem, previamente definidos por meio da elaboração de um esquema.
+
+The second option is the Mongoose~\footnote{https://mongoosejs.com/}, a database driver that provides data modeling based on the object-relational model. It implies that all data elements must describe the definition of attributes, which allows verification of types and validation, nullity checking by a defined schema.
 
 %\subsection{Node.js}
 %\label{subsection:nodejs}
@@ -126,59 +163,88 @@ Assim como o anterior, o \textbf{\textit{Mongoose}} consiste também em um \emph
 %A região principal é chamada~\emph{Resident Set}, a qual corresponde a toda memória utilizada no processo. Em seguida, tem-se a região~\emph{Code Segment}, a qual armazena todas as instruções definidas para o programa. A próxima região~\emph{Stack} armazena todas as variáveis e estruturas de dados utilizadas durante o tempo de vida dessas. 
 %Por fim, tem-se a região~\emph{Heap}, a qual armazena dados específicos como objetos,~\emph{strings} e~\emph{closures}; em geral, cada processo aloca esse região com um tamanho predefinido, contudo essa pode ser utilizada apenas parcialmente ou em sua totalidade~\cite{nodememory}. 
 
-\section{Composição do Experimento}
+\section{Experimental Setup}
 \label{section:experimento}
 
-Nesta seção é apresentado a composição do experimento comparando os~\emph{Drivers} \emph{MongoClient} e \emph{Mongoose} em integração com o MongoDB. 
-Na Figura~\ref{figure:diagrama-banco} é ilustrado a esquematização do experimento. 
+%Nesta seção é apresentado a composição do experimento comparando os~\emph{Drivers} \emph{MongoClient} e \emph{Mongoose} em integração com o MongoDB. 
+In this section, we present the definitions of the experimental project which intents to compare the performance of each driver with MongoDB.
+Figure~\ref{figure:diagrama-banco} presents the structure of experiment.
+%Na Figura~\ref{figure:diagrama-banco} é ilustrado a esquematização do experimento. 
 
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=\textwidth]{images/esquema-experimento.png}
-    \caption{Experimento: Comparação entre os \emph{Drivers} do MongoDB.}
+    \includegraphics[width=\textwidth]{images/esquema-experimento.pdf}
+    \caption{Comparison between MongoDB drivers.}
     \label{figure:diagrama-banco}
 \end{figure}
  
-As análises conduzidas visaram identificar qual dupla (MongoDB e \emph{Drive}) possui melhor desempenho em uma aplicação Node.js, ou seja, causa menor impacto no desempenho da aplicação. 
-Além disso, foi investigado se o tamanho médio de cada registro presente no conjunto de dados pode influenciar nesse desempenho e qual a proporção desse impacto.
+%As análises conduzidas visaram identificar qual dupla (MongoDB e \emph{Drive}) possui melhor desempenho em uma aplicação Node.js, ou seja, causa menor impacto no desempenho da aplicação. 
+%Além disso, foi investigado se o tamanho médio de cada registro presente no conjunto de dados pode influenciar nesse desempenho e qual a proporção desse impacto.
 
-Para isso, uma aplicação Node.js foi implementada para a condução dos testes. Essa aplicação é responsável por realizar a conexão com o Banco de Dados MongoDB e executar operações CRUD. A ferramenta de testes implementada em Node.js está disponível para a comunidade científica em: [OMITIDO], podendo ser utilizada em outras pesquisas.%~\footnote{https://github.com/leandroungari/database-driver}.
+%Para isso, uma aplicação Node.js foi implementada para a condução dos testes. Essa aplicação é responsável por realizar a conexão com o Banco de Dados MongoDB e executar operações CRUD. A ferramenta de testes implementada em Node.js está disponível para a comunidade científica em: [OMITIDO], podendo ser utilizada em outras pesquisas.%~\footnote{https://github.com/leandroungari/database-driver}.
 
-As métricas escolhidas para as análises de cada um dos testes conduzidos foram:
+%As métricas escolhidas para as análises de cada um dos testes conduzidos foram:
+
+The analysis aimed to identify which couple (driver-database) presents better performance in a Node.js application based on quantitative parameters.
+
+We developed a tool to run the test with each driver. In that way, to perform the comparison, the execution flow of application receives a set of parameters, such as driver and number of elements, in follow the database connection is performed and the respective operations. During the tests, we extracted some metrics related to CPU (Central Processing Unit) and memory usage. 
+The tool is available in the following open-source repository: OMITTED.
+
+We also defined the performance metrics to evaluate the conducted tests:
+
+%\begin{itemize}
+%\item \textbf{Tempo médio de Execução:} Consiste tempo médio total de execução de cada operação específica.
+%\item \textbf{Consumo médio de CPU:} Consiste no tempo médio de uso do processador durante a execução de cada operação específica.
+%\item \textbf{Consumo médio de Memória:} Consiste na variação média de uso de memória RAM durante a execução de cada operação específica, sendo expressa em kilobytes (KB).
+%\end{itemize}
+
+%Por fim, foram formuladas as seguintes de questões de pesquisa que guiaram formalmente as análises executadas: 
+
+%\textbf{QP1} --~\emph{A escolha do Driver impacta no desempenho da aplicação Node.js que utiliza o MongoDB, considerando o tempo de execução de cada uma das operações CRUD?}
+
+%\textbf{QP2} --~\emph{A escolha do Driver pode influenciar no desempenho da aplicação Node.js que utiliza o MongoDB, considerando o tempo de consumo da CPU ao executar operações CRUD?}
+
+%\textbf{QP3} --~\emph{A escolha do Driver impacta de modo relevante no desempenho da aplicação Node.js que utiliza o MongoDB, considerando o consumo médio de memória RAM ao executar operações CRUD?}
 
 \begin{itemize}
-\item \textbf{Tempo médio de Execução:} Consiste tempo médio total de execução de cada operação específica.
-\item \textbf{Consumo médio de CPU:} Consiste no tempo médio de uso do processador durante a execução de cada operação específica.
-\item \textbf{Consumo médio de Memória:} Consiste na variação média de uso de memória RAM durante a execução de cada operação específica, sendo expressa em kilobytes (KB).
+\item~\textbf{Average Execution Time:} it defines the average time (in milliseconds) in each operation.
+\item~\textbf{Average CPU Usage:} it defines the average time (in milliseconds) usage of CPU during each operation.
+\item~\textbf{Average Memory Usage:} it defines the average variation of RAM memory usage (in kilobytes) in each operation.
 \end{itemize}
 
-Por fim, foram formuladas as seguintes de questões de pesquisa que guiaram formalmente as análises executadas: 
+Finally, we formulate a set of research questions to lead the analysis of the results:
 
-\textbf{QP1} --~\emph{A escolha do Driver impacta no desempenho da aplicação Node.js que utiliza o MongoDB, considerando o tempo de execução de cada uma das operações CRUD?}
+\begin{itemize}
+\item~\textbf{RQ1} --~\emph{Does the driver selection impact on application performance under time execution?}
+\item~\textbf{RQ2} --~\emph{Does the driver selection affect application performance under CPU usage?}
+\item~\textbf{RQ3} --~\emph{Does the driver selection impact application performance under RAM memory consumption?}
+\end{itemize}
 
-\textbf{QP2} --~\emph{A escolha do Driver pode influenciar no desempenho da aplicação Node.js que utiliza o MongoDB, considerando o tempo de consumo da CPU ao executar operações CRUD?}
+\subsection{Dataset}
 
-\textbf{QP3} --~\emph{A escolha do Driver impacta de modo relevante no desempenho da aplicação Node.js que utiliza o MongoDB, considerando o consumo médio de memória RAM ao executar operações CRUD?}
+%A condução do experimento utilizou um conjunto de dados com cerca 18 mil instâncias.%\footnote{https://www.kaggle.com/karangadiya/fifa19}. 
+%Originalmente, todos os registros presentes são compostos por 89 atributos, predominantemente textuais, obtendo um tamanho médio de 1,37KB. 
+%A partir do conjunto original, foi construído um conjunto reduzido em número de atributos (6 atributos), com o mesmo total de instâncias, porém com tamanho médio de 0,13KB. 
 
-\subsection{Características dos Conjuntos de Dados}
+%Deste modo, dois conjuntos de dados foram utilizados para a experimentação, observe suas características descritas na Tabela~\ref{tab:conjunto-dados}. 
+%O conjunto reduzido tem o intuito de comparar a influência dos dois \emph{Drivers} na manipulação de registros com diferentes quantidade de atributos.
 
-A condução do experimento utilizou um conjunto de dados com cerca 18 mil instâncias.%\footnote{https://www.kaggle.com/karangadiya/fifa19}. 
-Originalmente, todos os registros presentes são compostos por 89 atributos, predominantemente textuais, obtendo um tamanho médio de 1,37KB. 
-A partir do conjunto original, foi construído um conjunto reduzido em número de atributos (6 atributos), com o mesmo total de instâncias, porém com tamanho médio de 0,13KB. 
+We used a dataset of 18 thousands of instances in the conducting of the experiment. Initially, all registers have 89 attributes (mainly textual) with an average size of 1.37 KB.
+From the original dataset, we also built a second dataset with reduced instances (only six attributes) using the same instances, which resulted in an average size of 0.13 KB.
 
-Deste modo, dois conjuntos de dados foram utilizados para a experimentação, observe suas características descritas na Tabela~\ref{tab:conjunto-dados}. 
-O conjunto reduzido tem o intuito de comparar a influência dos dois \emph{Drivers} na manipulação de registros com diferentes quantidade de atributos.
+We applied both datasets in the experimental process, in which reduce dataset intent to compare the drivers about the relation between the number of attributes and data modeling impact.
+In Table 1, we summarize the main characteristics of datasets:
 
 \begin{table}[ht]
 \centering
-\caption{Características dos Conjuntos de Dados utilizado no Experimento}
+\caption{Description of experimental datasets.}
 \label{tab:conjunto-dados}
 \begin{tabular}{c|c|c|}
 \cline{2-3}
-                         & \textbf{Conjunto de Dados 1} & \textbf{Conjunto de Dados 2} \\ \hline
-\multicolumn{1}{|l|}{Quantidade de instâncias} & 18 mil   		 			& 18 mil            \\ \hline
-\multicolumn{1}{|l|}{Quantidade de atributos}  & 89        		 			& 6                  \\ \hline
-\multicolumn{1}{|l|}{Tamanho de um registro}   & 1,37 KB        				& 0,13 KB                    \\ \hline
+                         & \textbf{Dataset I} & \textbf{Dataset II} \\ \hline
+\multicolumn{1}{|l|}{Number of instances} & 18,000 		 			& 18,000            \\ \hline
+\multicolumn{1}{|l|}{Number of attributes}  & 89        		 			& 6                  \\ \hline
+\multicolumn{1}{|l|}{Average size of instance}   & 1.37 KB        				& 0.13 KB                    \\ \hline
 \end{tabular}
 \end{table}
 
