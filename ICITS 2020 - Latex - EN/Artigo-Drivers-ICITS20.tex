@@ -16,17 +16,18 @@
 \usepackage{url}
 \usepackage{graphicx,url}
 \usepackage[utf8]{inputenc}
+\usepackage{subfig}
 \def\UrlFont{\rmfamily}
 
 \begin{document}
 \mainmatter              % start of a contribution
 %
-%\title{Análise de Desempenho do MongoDB Utilizando Diferentes \emph{Drivers} em um Ambiente de Aplicação Node.js}
-%\title{Análise de Desempenho dos Drivers do MongoDB em um Ambiente de Aplicação Node.js}
-%\title{Análise de Desempenho de Aplicação Node.js utilizando Drivers do MongoDB}
-\title{Analysis of Node.js Application Performance using MongoDB Drivers}
+%\title{Análise de Desempenho do MongoDB Utilizando Diferentes \emph{drivers} em um Ambiente de Aplicação Node.js}
+%\title{Análise de Desempenho dos drivers do MongoDB em um Ambiente de Aplicação Node.js}
+%\title{Análise de Desempenho de Aplicação Node.js utilizando drivers do MongoDB}
+\title{Analysis of Node.js Application Performance using MongoDB drivers}
 %
-%\titlerunning{Análise de Desempenho dos Drivers do MongoDB em um Ambiente de Aplicação Node.js}  % abbreviated title (for running head)
+%\titlerunning{Análise de Desempenho dos drivers do MongoDB em um Ambiente de Aplicação Node.js}  % abbreviated title (for running head)
 %\titlerunning{Análise de Desempenho de Aplicação Node.js}
 \titlerunning{Analysis of Node.js Application Performance}
 %                                     also used for the TOC unless
@@ -46,7 +47,7 @@
 
 \begin{abstract}
 At the last few years, the usage of NoSQL databases has increased, and consequently, the need for integrating with different programming languages. In that way, database drivers provide an API to perform database operations, which may impact on the performance of applications. In this article, we present a comparative study between two main drivers solutions to MongoDB in Node.js, through the evaluation of CRUD tests based on quantitative metrics (time execution, memory consumption, and CPU usage). Our results show which, under quantitative analysis, the MongoClient driver has presented a better performance than Mongoose driver in the considered scenarios, which may imply as the best alternative in the development of Node.js applications.
-\keywords{Performance, Node.js application, MongoDB, Drivers, NoSQL databases}
+\keywords{Performance, Node.js application, MongoDB, drivers, NoSQL databases}
 \end{abstract}
 %
 
@@ -62,14 +63,14 @@ At the last few years, the growth of data volume has changed the perspective of 
 This event, known as Big Data, not only implies in large storage but also perspectives related to variety, velocity, and value~\cite{ward2013undefined}. The traditional architecture of relational databases based on ACID (atomicity, consistency, isolation, and durability) properties, which affect the aspects related to availability and efficiency directly in Big Data environments~\cite{aparicio:2016}. 
 The non-relational databases (NoSQL) have been proposed oo solve the side-effects, and allowing more structural flexibility, scalability, and support to replication and eventual consistency~\cite{han2011survey}.
   
-%Neste contexto, para os diferentes ambientes de desenvolvimento e linguagens de programação,~\emph{Drivers} tem sido desenvolvidos de modo a viabilizar e apoiar execução de operações pertences aos bancos de dados. Entretanto, em muitos casos, além de recentes, os~\emph{Drivers} apresentam limitações em sua implementações, falhas de entendimento e efeitos colaterais no acesso aos dados~\cite{rafique:2018}. 
-%Assim, a decisão de qual combinação entre Banco de Dados \textit{NoSQL} e~\emph{Driver} a ser empregada pode ser um problema, devido ao desconhecimento dos pontos positivos e negativos.
+%Neste contexto, para os diferentes ambientes de desenvolvimento e linguagens de programação,~\emph{drivers} tem sido desenvolvidos de modo a viabilizar e apoiar execução de operações pertences aos bancos de dados. Entretanto, em muitos casos, além de recentes, os~\emph{drivers} apresentam limitações em sua implementações, falhas de entendimento e efeitos colaterais no acesso aos dados~\cite{rafique:2018}. 
+%Assim, a decisão de qual combinação entre Banco de Dados \textit{NoSQL} e~\emph{driver} a ser empregada pode ser um problema, devido ao desconhecimento dos pontos positivos e negativos.
 In this context of development environments and programming languages, a variety of database drivers aim to support the execution of the internal database operations.
 However, in many cases, the development of these drivers are very recent and may present defects or limitations, which results in side-effects to the access and manipulation of data~\cite{rafique:2018}.
 Thus, the usage decision of which NoSQL database and driver may impact on the performance, due to unknown factors previously.
 
 
-%Neste artigo, por meio de um experimento comparativo de desempenho, é realizado a avaliação das duas principais soluções de~\emph{Drivers} para o MongoDB~\footnote{https://www.mongodb.com/}, respectivamente \emph{MongoClient}~\footnote{https://mongodb.github.io/node-mongodb-native/} e \emph{Mongoose}~\footnote{https://mongoosejs.com/}, em ambientes de aplicação Node.js. 
+%Neste artigo, por meio de um experimento comparativo de desempenho, é realizado a avaliação das duas principais soluções de~\emph{drivers} para o MongoDB~\footnote{https://www.mongodb.com/}, respectivamente \emph{MongoClient}~\footnote{https://mongodb.github.io/node-mongodb-native/} e \emph{Mongoose}~\footnote{https://mongoosejs.com/}, em ambientes de aplicação Node.js. 
 %O principal fator considerado para a realização dessa análise consiste na definição prévia de esquema para a manipulação dos dados em operações de CRUD (\emph{create}-\emph{read}-\emph{update}-\emph{delete}). Conceitualmente, os Bancos de Dados~\textit{NoSQL} não requerem essa predefinição, proporcionando flexibilidade, entretanto, não existe nada que impeça sua utilização, principalmente quanto a respeito do desempenho; possibilitando algum impacto relevante.
 In this work, we conduct a comparative study of performance between MongoClient~\footnote{https://mongodb.github.io/node-mongodb-native/} and Mongoose~\footnote{https://mongoosejs.com/}, both solutions of database drivers to MongoDB~\footnote{https://www.mongodb.com/} in Node.js applications.
 The main difference between them is the predefinition of schema, a factor which is not mandatory in the majority of NoSQL databases, and MongoDB too; but in one of these drivers is required.
@@ -82,10 +83,10 @@ In about Node.js, despite recent development, it presents technical viability to
 Also, the database system and application lead to uniformization, because both are implemented in JavaScript.
 
 %Este trabalho busca analisar o impacto causado no desempenho de uma aplicação Node.js que faz uso do Banco de Dados~\emph{NoSQL} MongoDB, ao utilizar os dois diferentes drivers disponíveis para o Banco de Dados em questão. 
-%Este trabalho está situado como único presente na literatura com investigação na perspectiva de avaliar a influência de diferentes Drivers do MongoDB no desempenho de uma aplicação Node.js, uma vez que, os demais trabalhos investigam outros aspectos relacionados ao MongoDB como por exemplo: comparação de desempenho com outros Bancos de Dados~\cite{jung:2015,patil:2017,ongo:2018} e influência na performance do Banco de Dados ao utilizar diferentes modelagens de dados~\cite{kanade2014study}.
+%Este trabalho está situado como único presente na literatura com investigação na perspectiva de avaliar a influência de diferentes drivers do MongoDB no desempenho de uma aplicação Node.js, uma vez que, os demais trabalhos investigam outros aspectos relacionados ao MongoDB como por exemplo: comparação de desempenho com outros Bancos de Dados~\cite{jung:2015,patil:2017,ongo:2018} e influência na performance do Banco de Dados ao utilizar diferentes modelagens de dados~\cite{kanade2014study}.
 This study is unique in the investigation of effects of performance in different database drivers in Node.js application since the other works have analyzed performance between database~\cite{jung:2015,patil:2017,ongo:2018} or the modeling impact on the performance in databases~\cite{kanade2014study}.
 
-%Este artigo está organizado do seguinte modo: na Seção~\ref{section:fundamentacao} são apresentados conceitos de Banco de Dados~\emph{NoSQL}, MongoDB e seus \emph{Drivers}.
+%Este artigo está organizado do seguinte modo: na Seção~\ref{section:fundamentacao} são apresentados conceitos de Banco de Dados~\emph{NoSQL}, MongoDB e seus \emph{drivers}.
 %A Seção~\ref{section:experimento} é apresentada a estruturação do experimento. 
 %Na Seção~\ref{section:resultados} são descritos os resultados quantitativos obtidos, cuja a análise está situada na Seção~\ref{section:discussao}. Por fim, a Seção~\ref{section:consideracoes} expressa as considerações finais.
 The remaining of this article as follows: Section 2 presents relevant topics related to NoSQL databases and MongoDB. Section 3 presents the conception of an experimental project. Section 4 describes the obtained results, which analysis is in Section 5. Finally, Section 6 presents the final remarks of the presented study.
@@ -93,9 +94,9 @@ The remaining of this article as follows: Section 2 presents relevant topics rel
 \section{Background}
 \label{section:fundamentacao}
 
-%Nesta seção, são discutidos alguns conceitos fundamentais para o trabalho: Bancos de Dados~\emph{NoSQL}, as características do MongoDB e dos \emph{Drivers} \emph{MongoClient} e \emph{Mongoose}. 
+%Nesta seção, são discutidos alguns conceitos fundamentais para o trabalho: Bancos de Dados~\emph{NoSQL}, as características do MongoDB e dos \emph{drivers} \emph{MongoClient} e \emph{Mongoose}. 
 
-\subsection{Non-Relational Databases}
+\subsection{NoSQL Databases}
 \label{subsection:nao-relacional}
 
 %Os Bancos de Dados~\emph{NoSQL} foram desenvolvidos visando armazenar e processar grandes volumes de dados. 
@@ -132,16 +133,16 @@ It does not require a defined schema, despite the similarity of elements into a 
 \item~\textbf{Normalized data modeling:} the data have references among documents to represents relationships.     
 \end{itemize}
 
-%O armazenamento dos dados ocorre através da serialização de objetos \textit{Javascript}, também conhecidos como JSON, cuja implementação interna utiliza uma codificação binária chamada BSON\footnote{http://bsonspec.org/}. O banco de dados MongoDB disponibiliza diversos~\emph{Drivers} para linguagens de programação como Java, C++, C\#, PHP e Python~\cite{lutu2015big}, e também em Node.js.
+%O armazenamento dos dados ocorre através da serialização de objetos \textit{Javascript}, também conhecidos como JSON, cuja implementação interna utiliza uma codificação binária chamada BSON\footnote{http://bsonspec.org/}. O banco de dados MongoDB disponibiliza diversos~\emph{drivers} para linguagens de programação como Java, C++, C\#, PHP e Python~\cite{lutu2015big}, e também em Node.js.
 
 The adopted format is JSON, which passes through a codification to binary format BSON~\footnote{http://bsonspec.org/}
 . About the integration to programming languages, several drivers are available to Java, C++, C\#, PHP and Python~\cite{lutu2015big}, and Node.js too.
 
-%Dentre os~\emph{Drivers} existentes para o MongoDB, tem-se como destaque o \textbf{\textit{MongoClient}}\footnote{https://mongodb.github.io/node-mongodb-native/index.html}, consiste na solução oficial e nativa provida organização, provendo um conjunto de funcionalidades que permite a manipulação dos dados e uso de recursos avançados do sistema. Essa solução é caracterizada pela modelagem documentos-objeto (\emph{ODM -- Object-Document Modeler}) de modo implícito ao banco de dados.
+%Dentre os~\emph{drivers} existentes para o MongoDB, tem-se como destaque o \textbf{\textit{MongoClient}}\footnote{https://mongodb.github.io/node-mongodb-native/index.html}, consiste na solução oficial e nativa provida organização, provendo um conjunto de funcionalidades que permite a manipulação dos dados e uso de recursos avançados do sistema. Essa solução é caracterizada pela modelagem documentos-objeto (\emph{ODM -- Object-Document Modeler}) de modo implícito ao banco de dados.
 
 Concerning to Node.js drivers to MongoDB, the first is the MongoClient~\footnote{https://mongodb.github.io/node-mongodb-native/index.html}, the official distributed solution, which provides an API to manipulation of data. The main feature is the implicit document-object modeling, which discards any need for data description.
 
-%Assim como o anterior, o \textbf{\textit{Mongoose}} consiste também em um \emph{Driver} para MongoDB, em que provê a modelagem de dados utilizando um mecanismo objeto-relacional (\emph{ORM -- Object Relational Mapping}) utilizado em banco de dados relacionais~\cite{mardan2014boosting}, executando diversas tarefas de verificação e validação dos dados, como nulidade ou tipagem, previamente definidos por meio da elaboração de um esquema.
+%Assim como o anterior, o \textbf{\textit{Mongoose}} consiste também em um \emph{driver} para MongoDB, em que provê a modelagem de dados utilizando um mecanismo objeto-relacional (\emph{ORM -- Object Relational Mapping}) utilizado em banco de dados relacionais~\cite{mardan2014boosting}, executando diversas tarefas de verificação e validação dos dados, como nulidade ou tipagem, previamente definidos por meio da elaboração de um esquema.
 
 The second option is the Mongoose~\footnote{https://mongoosejs.com/}, a database driver that provides data modeling based on the object-relational model. It implies that all data elements must describe the definition of attributes, which allows verification of types and validation, nullity checking by a defined schema.
 
@@ -166,7 +167,7 @@ The second option is the Mongoose~\footnote{https://mongoosejs.com/}, a database
 \section{Experimental Setup}
 \label{section:experimento}
 
-%Nesta seção é apresentado a composição do experimento comparando os~\emph{Drivers} \emph{MongoClient} e \emph{Mongoose} em integração com o MongoDB. 
+%Nesta seção é apresentado a composição do experimento comparando os~\emph{drivers} \emph{MongoClient} e \emph{Mongoose} em integração com o MongoDB. 
 In this section, we present the definitions of the experimental project which intents to compare the performance of each driver with MongoDB.
 Figure~\ref{figure:diagrama-banco} presents the structure of experiment.
 %Na Figura~\ref{figure:diagrama-banco} é ilustrado a esquematização do experimento. 
@@ -200,11 +201,11 @@ We also defined the performance metrics to evaluate the conducted tests:
 
 %Por fim, foram formuladas as seguintes de questões de pesquisa que guiaram formalmente as análises executadas: 
 
-%\textbf{QP1} --~\emph{A escolha do Driver impacta no desempenho da aplicação Node.js que utiliza o MongoDB, considerando o tempo de execução de cada uma das operações CRUD?}
+%\textbf{QP1} --~\emph{A escolha do driver impacta no desempenho da aplicação Node.js que utiliza o MongoDB, considerando o tempo de execução de cada uma das operações CRUD?}
 
-%\textbf{QP2} --~\emph{A escolha do Driver pode influenciar no desempenho da aplicação Node.js que utiliza o MongoDB, considerando o tempo de consumo da CPU ao executar operações CRUD?}
+%\textbf{QP2} --~\emph{A escolha do driver pode influenciar no desempenho da aplicação Node.js que utiliza o MongoDB, considerando o tempo de consumo da CPU ao executar operações CRUD?}
 
-%\textbf{QP3} --~\emph{A escolha do Driver impacta de modo relevante no desempenho da aplicação Node.js que utiliza o MongoDB, considerando o consumo médio de memória RAM ao executar operações CRUD?}
+%\textbf{QP3} --~\emph{A escolha do driver impacta de modo relevante no desempenho da aplicação Node.js que utiliza o MongoDB, considerando o consumo médio de memória RAM ao executar operações CRUD?}
 
 \begin{itemize}
 \item~\textbf{Average Execution Time:} it defines the average time (in milliseconds) in each operation.
@@ -227,13 +228,13 @@ Finally, we formulate a set of research questions to lead the analysis of the re
 %A partir do conjunto original, foi construído um conjunto reduzido em número de atributos (6 atributos), com o mesmo total de instâncias, porém com tamanho médio de 0,13KB. 
 
 %Deste modo, dois conjuntos de dados foram utilizados para a experimentação, observe suas características descritas na Tabela~\ref{tab:conjunto-dados}. 
-%O conjunto reduzido tem o intuito de comparar a influência dos dois \emph{Drivers} na manipulação de registros com diferentes quantidade de atributos.
+%O conjunto reduzido tem o intuito de comparar a influência dos dois \emph{drivers} na manipulação de registros com diferentes quantidade de atributos.
 
 We used a dataset of 18 thousands of instances in the conducting of the experiment. Initially, all registers have 89 attributes (mainly textual) with an average size of 1.37 KB.
 From the original dataset, we also built a second dataset with reduced instances (only six attributes) using the same instances, which resulted in an average size of 0.13 KB.
 
 We applied both datasets in the experimental process, in which reduce dataset intent to compare the drivers about the relation between the number of attributes and data modeling impact.
-In Table 1, we summarize the main characteristics of datasets:
+In Table~\ref{tab:conjunto-dados}, we summarize the main characteristics of datasets:
 
 \begin{table}[ht]
 \centering
@@ -254,53 +255,167 @@ The execution environment consisted of a machine running Ubuntu 18.04.2 Operatin
 During the execution of the tests, the Node.js application execution environment was set to use the maximum size 3GB heap, thereby restricting the maximum operations of each test.
 
 In each execution scenario, data regarding the runtime, CPU usage time, and RAM usage were extracted.
-Scenarios with different quantities of CRUD operations were analyzed, ranging from 1000, 10000, 100000 and 200000; each repeated 10 times and recorded the average of the executions. Performance metrics were obtained through the JSMeter library.~\footnote{https://github.com/wahengchang/js-meter}. 
+Scenarios with different quantities of CRUD operations were analyzed, ranging from 1,000, 10,000, 100,000, and 200,000; each repeated 10 times and recorded the average of the executions. Performance metrics were obtained through the JSMeter library.~\footnote{https://github.com/wahengchang/js-meter}. 
 
 \section{Experiment Results}
 \label{section:resultados}
 
 The results are presented from the perspective of each of the CRUD operations, where 100\% of the records are reached in each operation.
-Each result refers to a specific operation of combining a Driver with MongoDB in an application manipulating the large data set (with all attributes) or small data set (with a reduced number of attributes).
+Each result refers to a specific operation of combining a driver with MongoDB in an application manipulating the large data set (with all attributes) or small data set (with a reduced number of attributes).
+
+%\begin{figure}[!ht]
+%\centering
+%\includegraphics[width=0.85\textwidth]{images/time}
+%\caption{Comparison of the use of drivers with the application of CRUD operations in relation to the runtime.}
+%\label{fig:time}
+%\end{figure}
 
 \begin{figure}[!ht]
-\centering
-\includegraphics[width=0.85\textwidth]{images/time}
-\caption{Comparison of the use of Drivers with the application of CRUD operations in relation to the runtime.}
-\label{fig:time}
+    \centering
+    \subfloat[] {
+        \begin{minipage}[1\width]{0.4\textwidth}
+            \centering
+            \includegraphics[width=1\textwidth]{images/difftime-create.pdf}
+            \label{fig:time-a}
+        \end{minipage}
+    }
+    \subfloat[] {
+        \begin{minipage}[1\width]{0.4\textwidth}
+            \centering
+            \includegraphics[width=1\textwidth]{images/difftime-read.pdf}
+            \label{fig:time-b}
+        \end{minipage}}
+    \newline
+    \subfloat[] {
+        \begin{minipage}[1\width]{0.4\textwidth}
+            \centering
+            \includegraphics[width=1\textwidth]{images/difftime-update.pdf}
+            \label{fig:time-c}
+        \end{minipage}}   
+    \subfloat[] {
+        \begin{minipage}[1\width]{0.4\textwidth}
+            \centering
+            \includegraphics[width=1\textwidth]{images/difftime-delete.pdf}
+            \label{fig:time-d}
+        \end{minipage}} 
+        \newline
+    \subfloat {
+        \begin{minipage}[1\width]{0.15\textwidth}
+            \centering
+            \includegraphics[width=1\textwidth]{images/legend.pdf}
+        \end{minipage}} 
+    \caption{Comparison of the use of drivers with the application of CRUD operations in relation to the runtime.}
+    \label{fig:time}
 \end{figure}
 
-Figure~\ref{fig:time} graphically illustrates the execution time when performing CRUD operations contrasting the use of both Drivers. Considering the execution time for insert operations - Figure 2a, it was identified that the execution time with the use of Driver Mongoose was longer for both sets, compared to the use of MongoClient, which showed no significant differences between the sets. It can also be noted that when manipulating the small dataset using Mongoose, there was a drop in execution time from 100,000 insert operations. A possible factor that justifies this behavior is the occurrence of set splitting in the insert operation when the quantity exceeds 100,000 items, according to MongoDB documentation, however, this does not occur for the large data set.
+Figure~\ref{fig:time} graphically illustrates the execution time when performing CRUD operations contrasting the use of both drivers. Considering the execution time for insert operations - Figure~\ref{fig:time-a}, it was identified that the execution time with the use of driver Mongoose was longer for both sets, compared to the use of MongoClient, which showed no significant differences between the sets. It can also be noted that when manipulating the small dataset using Mongoose, there was a drop in execution time from 100,000 insert operations. A possible factor that justifies this behavior is the occurrence of set splitting in the insert operation when the quantity exceeds 100,000 items, according to MongoDB documentation, however, this does not occur for the large data set.
 
-Considering the execution time for Search operations - Figure 2b, using MongoClient resulted in lower execution time for both sets compared to using Mongoose. Using Mongoose in this case, the executions for both sets exhibit increasing and proportional behavior to the detriment of the record size difference. Finally, from a processing time perspective, when analyzing test results for both update operations - Figure 2c and deletion operations - Figure 2d, similar behaviors were observed with the use of both Drivers.
+Considering the execution time for Search operations - Figure~\ref{fig:time-b}, using MongoClient resulted in lower execution time for both sets compared to using Mongoose. Using Mongoose in this case, the executions for both sets exhibit increasing and proportional behavior to the detriment of the record size difference. Finally, from a processing time perspective, when analyzing test results for both update operations - Figure~\ref{fig:time-c} and deletion operations - Figure~\ref{fig:time-d}, similar behaviors were observed with the use of both drivers.
 
-\begin{figure}[ht]
-    \centering
-    \includegraphics[width=0.85\textwidth]{images/cpuusage}
+%\begin{figure}[ht]
+%    \centering
+%    \includegraphics[width=0.85\textwidth]{images/cpuusage}
 %    \caption{Comparativo de operações CRUD em relação ao consumo de CPU.}
-	 \caption{Comparison of the use of Drivers with the application of CRUD operations in relation to the CPU consumption.}
+%	 \caption{Comparison of the use of drivers with the application of CRUD operations in relation to the CPU consumption.}
+%    \label{fig:cpuusage}
+%\end{figure}
+
+\begin{figure}[!ht]
+    \centering
+    \subfloat[] {
+        \begin{minipage}[1\width]{0.4\textwidth}
+            \centering
+            \includegraphics[width=1\textwidth]{images/cpuusage-create.pdf}
+            \label{fig:cpu-a}
+        \end{minipage}
+    }
+    \subfloat[] {
+        \begin{minipage}[1\width]{0.4\textwidth}
+            \centering
+            \includegraphics[width=1\textwidth]{images/cpuusage-read.pdf}
+            \label{fig:cpu-b}
+        \end{minipage}}
+    \newline
+    \subfloat[] {
+        \begin{minipage}[1\width]{0.4\textwidth}
+            \centering
+            \includegraphics[width=1\textwidth]{images/cpuusage-update.pdf}
+            \label{fig:cpu-c}
+        \end{minipage}}   
+    \subfloat[] {
+        \begin{minipage}[1\width]{0.4\textwidth}
+            \centering
+            \includegraphics[width=1\textwidth]{images/cpuusage-delete.pdf}
+            \label{fig:cpu-d}
+        \end{minipage}} 
+    \newline
+    \subfloat {
+        \begin{minipage}[1\width]{0.15\textwidth}
+            \centering
+            \includegraphics[width=1\textwidth]{images/legend.pdf}
+        \end{minipage}} 
+    \caption{Comparison of the use of drivers with the application of CRUD operations in relation to the CPU consumption.}
     \label{fig:cpuusage}
 \end{figure}
 
-Figure~\ref{fig:cpuusage} graphically illustrates CPU consumption when performing CRUD operations by contrasting the use of both Drivers.
-Similarly to the previous analysis, for insert operations - Figure 3a and fetch - Figure 3b, MongoClient usage provides significantly lower average CPU consumption time in both sets, to the detriment of the high consumption time presented by Mongoose. For insertion, it also presents the exception case for 200 000 operations, whose possible justification is similar to the previous analysis.
+Figure~\ref{fig:cpuusage} graphically illustrates CPU consumption when performing CRUD operations by contrasting the use of both drivers.
+Similarly to the previous analysis, for insert operations - Figure~\ref{fig:cpu-a} and fetch - Figure~\ref{fig:cpu-b}, MongoClient usage provides significantly lower average CPU consumption time in both sets, to the detriment of the high consumption time presented by Mongoose. For insertion, it also presents the exception case for 200,000 operations, whose possible justification is similar to the previous analysis.
 
-Figure 3c illustrates the CPU consumption when performing update operations, where it can be observed that using the Mongoose Driver with a larger record set had a longer CPU consumption time, unlike the others, which were similar and with a shorter time, even with oscillations.
+Figure~\ref{fig:cpu-c} illustrates the CPU consumption when performing update operations, where it can be observed that using the Mongoose driver with a larger record set had a longer CPU consumption time, unlike the others, which were similar and with a shorter time, even with oscillations.
 Importantly, the processing time of all runs was less than 250 ms.
-In Figure 3d, CPU consumption is shown when performing deletion operation, each execution presented relatively unstable behavior, in which the use of Driver MongoClient had a higher CPU consumption time, however, there is no significant difference because all executions obtained processing time of less than 10 ms.
+In Figure~\ref{fig:cpu-d}, CPU consumption is shown when performing deletion operation, each execution presented relatively unstable behavior, in which the use of driver MongoClient had a higher CPU consumption time, however, there is no significant difference because all executions obtained processing time of less than 10 ms.
+
+%\begin{figure}[!ht]
+%    \centering
+%    \includegraphics[width=0.85\textwidth]{images/memory}
+%    \caption{Comparativo de operações em relação ao uso de memória.}
+%	 \caption{Comparison of the use of drivers with the application of CRUD operations in relation to the Memory consumption.}
+%    \label{fig:memory}
+%\end{figure}
 
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=0.85\textwidth]{images/memory}
-%    \caption{Comparativo de operações em relação ao uso de memória.}
-	 \caption{Comparison of the use of Drivers with the application of CRUD operations in relation to the Memory consumption.}
+    \subfloat[] {
+        \begin{minipage}[1\width]{0.4\textwidth}
+            \centering
+            \includegraphics[width=1\textwidth]{images/memory-create.pdf}
+            \label{fig:memory-a}
+        \end{minipage}
+    }
+    \subfloat[] {
+        \begin{minipage}[1\width]{0.4\textwidth}
+            \centering
+            \includegraphics[width=1\textwidth]{images/memory-read.pdf}
+            \label{fig:memory-b}
+        \end{minipage}}
+    \newline
+    \subfloat[] {
+        \begin{minipage}[1\width]{0.4\textwidth}
+            \centering
+            \includegraphics[width=1\textwidth]{images/memory-update.pdf}
+            \label{fig:memory-c}
+        \end{minipage}}   
+    \subfloat[] {
+        \begin{minipage}[1\width]{0.4\textwidth}
+            \centering
+            \includegraphics[width=1\textwidth]{images/memory-delete.pdf}
+            \label{fig:memory-d}
+        \end{minipage}} 
+    \newline
+    \subfloat {
+        \begin{minipage}[1\width]{0.15\textwidth}
+            \centering
+            \includegraphics[width=1\textwidth]{images/legend.pdf}
+        \end{minipage}} 
+    \caption{Comparison of the use of drivers with the application of CRUD operations in relation to the Memory consumption.}
     \label{fig:memory}
 \end{figure}
 
-Figure~\ref{fig:memory} graphically illustrates RAM consumption when performing CRUD operations contrasting the use of both Drivers.
-Figures 4a and 4b respectively show the memory consumptions for insert and search operations, in which a pattern of memory usage cannot be identified, however it can be identified that predominantly Driver Mongoose has a higher memory consumption in operations performed on both sets to the Driver MongoClient cases.
+Figure~\ref{fig:memory} graphically illustrates RAM consumption when performing CRUD operations contrasting the use of both drivers.
+Figures~\ref{fig:memory-a} and~\ref{fig:memory-b} respectively show the memory consumptions for insert and search operations, in which a pattern of memory usage cannot be identified, however it can be identified that predominantly driver Mongoose has a higher memory consumption in operations performed on both sets to the driver MongoClient cases.
 For both operations, there is additional memory usage of around 30 to 40MB.
 
-Finally, Figures 4c and 4d respectively show the memory consumptions when performing an update and delete operations, do not show standardization for both Drivers and sets. 
+Finally, Figures~\ref{fig:memory-c} and~\ref{fig:memory-d} respectively show the memory consumption when performing an update and delete operations, do not show standardization for both drivers and sets. 
 Despite having some points of instability, it is possible to notice that such operations consume little additional memory, approximately 1MB or less, even considering the oscillation peaks.
 
 \section{Analysis}
@@ -312,8 +427,8 @@ This section presents the analysis of the results obtained, which are described 
 %\subsection{Análise -- QP1}
 \label{q1}
 
-Regarding RQ1, in general, the tests performed using the Mongoose Driver had a higher execution time compared to using MongoClient in two operations, while in the other operations the performance was similar.
-Thus, from the average execution time perspective of each operation performed on the MongoDB Database, Driver choice can impact performance, with MongoClient being the best choice for a Node.js application that makes use of MongoDB if time execution is a critical factor for this application.
+Regarding RQ1, in general, the tests performed using the Mongoose driver had a higher execution time compared to using MongoClient in two operations, while in the other operations the performance was similar.
+Thus, from the average execution time perspective of each operation performed on the MongoDB database, driver choice can impact performance, with MongoClient being the best choice for a Node.js application that makes use of MongoDB if time execution is a critical factor for this application.
 
 \subsection{~\emph{RQ2 -- Does the driver selection affect application performance under CPU usage?}}
 %\subsection{Análise -- QP2}
@@ -326,18 +441,18 @@ In short, in terms of processing time, driver choice can influence performance, 
 %\subsection{Análise -- QP3}
 \label{q3}
 
-Considering RQ3, we have that for insert and search operations, in most execution cases, Driver Mongoose has higher memory consumption, while for update and delete operations there are no significant differences.
+Considering RQ3, we have that for insert and search operations, in most execution cases, driver Mongoose has higher memory consumption, while for update and delete operations there are no significant differences.
 However, it is noteworthy that in none of the comparisons there was stable behavior
-Thus, in terms of memory consumption, the choice of Driver does not significantly impact all operations, despite the lower consumption by Driver MongoClient.
+Thus, in terms of memory consumption, the choice of driver does not significantly impact all operations, despite the lower consumption by driver MongoClient.
 
 \subsection{Overview}
 \label{qgeral}
 
-In general, the data obtained indicate that insertion and search operations are the most costly in execution time, in the worst cases approximately 70 000 to 80 000 ms, while the others are less than 5000 ms.
+In general, the data obtained indicate that insertion and search operations are the most costly in execution time, in the worst cases approximately 70,000 to 80,000 ms, while the others are less than 5,000 ms.
 From the perspective of CPU consumption time the same analysis is also used, the operations indicate approximate proportionality compared to the total execution time.
 As for memory usage, both operations are also costly, even if nonlinear, at levels close to 30 to 40MB, to the detriment of other operations with usage close to or less than 1MB.
 
-Considering the average difference in record size of the adopted dataset, Driver MongoClient was indifferent, showing no significant oscillations, while Mongoose presented performance directly proportional to the record size.
+Considering the average difference in record size of the adopted dataset, driver MongoClient was indifferent, showing no significant oscillations, while Mongoose presented performance directly proportional to the record size.
 
 In terms of driver comparison, MongoClient performed more stable from the perspective of all adopted metrics than Mongoose. Therefore, it is concluded that, under the exclusive performance criterion, MongoClient presents itself as the best option for the Mongoose. It should be noted that if any additional resources provided by one of the options, such as data verification or ease of implementation, are relevant factors, the choice should be reevaluated, however, this study is quantitative and is not intended to measure the use of additional resources. which may vary from context and application used.
 
@@ -367,10 +482,10 @@ In terms of driver comparison, MongoClient performed more stable from the perspe
 \section{Final Remarks}
 \label{section:consideracoes}
 
-This paper presents a study that analyzes the influence of using Drives, contrasting the use of two distinct Drivers, MongoClient and Mongoose, on the performance of a Node.js application that makes use of the NoSQL MongoDB database.%Este artigo apresenta um estudo analisando o desempenho de uma aplicação Node.js que faz uso do Banco de Dados \emph{NoSQL} MongoDB contrastando a utilização de dois~\emph{Drivers} distintos: \emph{MongoClient} e \emph{Mongoose}.
+This paper presents a study that analyzes the influence of using drivers, contrasting the use of two distinct drivers, MongoClient and Mongoose, on the performance of a Node.js application that makes use of the NoSQL MongoDB database.%Este artigo apresenta um estudo analisando o desempenho de uma aplicação Node.js que faz uso do Banco de Dados \emph{NoSQL} MongoDB contrastando a utilização de dois~\emph{drivers} distintos: \emph{MongoClient} e \emph{Mongoose}.
 A performance analysis study was conducted considering aspects such as runtime, CPU time, and RAM usage in performing CRUD operations. Also, the impacts resulting from the variation in the average size of the records in the dataset were compared.
 
-In general, from the quantitative results, it was found that the performance of a Node.js application integrated with MongoDB when using Driver MongoClient is generally better compared to using Driver Mongoose, especially under the runtime and CPU consumption and, less significantly, RAM consumption, considering an application developed in a Node.js environment.
+In general, from the quantitative results, it was found that the performance of a Node.js application integrated with MongoDB when using driver MongoClient is generally better compared to using driver Mongoose, especially under the runtime and CPU consumption and, less significantly, RAM consumption, considering an application developed in a Node.js environment.
 
 As an additional contribution, there is the implementation and availability of the testing tool, in order to enable the execution of future analyzes in Node.js environments.
 
